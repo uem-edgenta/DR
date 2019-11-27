@@ -1,0 +1,31 @@
+{
+	"name": "1010-Hourly10to6",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "INT_FIN_267_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/fin/customer",
+					"interfaceName": "INT_FIN_267",
+					"Department": "fin",
+					"ScheduleType": "1"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2019-10-10T02:00:00Z",
+				"endTime": "2019-10-10T10:01:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

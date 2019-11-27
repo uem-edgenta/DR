@@ -1,0 +1,573 @@
+{
+	"name": "SCM_205_PART_4",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Pipeline ID",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('Select top 1 EventID from EventLog where FileNameZip = ''',pipeline().parameters.fileName,'''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set PipelineID",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Pipeline ID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "LookupPipelineID",
+					"value": {
+						"value": "@activity('Get Pipeline ID').output.firstRow.eventid",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Status Failed",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set PipelineID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(pipeline().parameters.status,'SUCCESS'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Success Status Update",
+							"type": "ExecuteSSISPackage",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"packageLocation": {
+									"packagePath": "edsaasdrssis/UEMEd_INTEGRATION_SCM/SCM_205_Load.dtsx",
+									"type": "SSISDB"
+								},
+								"environmentPath": null,
+								"connectVia": {
+									"referenceName": "egsaasdrir",
+									"type": "IntegrationRuntimeReference"
+								},
+								"loggingLevel": "Basic",
+								"packageParameters": {
+									"Status": {
+										"value": {
+											"value": "@pipeline().parameters.status",
+											"type": "Expression"
+										}
+									},
+									"failedRow": {
+										"value": {
+											"value": "@pipeline().parameters.failedRow",
+											"type": "Expression"
+										}
+									},
+									"filePath": {
+										"value": "-"
+									},
+									"pipelineID": {
+										"value": {
+											"value": "@variables('LookupPipelineID')",
+											"type": "Expression"
+										}
+									},
+									"successRow": {
+										"value": {
+											"value": "@pipeline().parameters.successRow",
+											"type": "Expression"
+										}
+									},
+									"totalRow": {
+										"value": {
+											"value": "@pipeline().parameters.totalRow",
+											"type": "Expression"
+										}
+									},
+									"zipname": {
+										"value": {
+											"value": "@pipeline().parameters.fileName",
+											"type": "Expression"
+										}
+									}
+								}
+							}
+						},
+						{
+							"name": "WebActivity1",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Success Status Update",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',variables('LookupPipelineID'),'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"\",\n\"FileName\" : \"',variables('fileProcessedFileRoss'),'\",\n\"Object\" : \"Supplier\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Success Status Update').ActivityRunId,'\",\n\"ActivityTask\" : \"Update Azure Main Table Status\",\n\"ActivityType\" : \"',pipeline().parameters.pipelineID,'\",\n\"StartTime\" : \"',activity('Success Status Update').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Success Status Update').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Success Status Update').Status,'\",\n\"Output\" : ',activity('Success Status Update').Output,',\n\"Error\" : ',activity('Success Status Update').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of update main table status in Azure database.\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Load Processed File",
+							"type": "ExecuteSSISPackage",
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"packageLocation": {
+									"packagePath": "edsaasdrssis/UEMEd_INTEGRATION_SCM/SCM_205_Load.dtsx",
+									"type": "SSISDB"
+								},
+								"environmentPath": null,
+								"connectVia": {
+									"referenceName": "egsaasdrir",
+									"type": "IntegrationRuntimeReference"
+								},
+								"loggingLevel": "Basic",
+								"packageParameters": {
+									"Status": {
+										"value": {
+											"value": "@pipeline().parameters.status",
+											"type": "Expression"
+										}
+									},
+									"failedRow": {
+										"value": {
+											"value": "@pipeline().parameters.failedRow",
+											"type": "Expression"
+										}
+									},
+									"filePath": {
+										"value": {
+											"value": "@concat(variables('fileProcessedFolderAzure'),'/',variables('Department'),'/',variables('InterfaceFolder'),'/processedfile/',variables('fileProcessedFileRoss'))",
+											"type": "Expression"
+										}
+									},
+									"pipelineID": {
+										"value": {
+											"value": "@variables('LookupPipelineID')",
+											"type": "Expression"
+										}
+									},
+									"specialCase": {
+										"value": {
+											"value": "@variables('SpecialCase')",
+											"type": "Expression"
+										}
+									},
+									"successRow": {
+										"value": {
+											"value": "@pipeline().parameters.successRow",
+											"type": "Expression"
+										}
+									},
+									"totalRow": {
+										"value": {
+											"value": "@pipeline().parameters.totalRow",
+											"type": "Expression"
+										}
+									},
+									"zipname": {
+										"value": {
+											"value": "@pipeline().parameters.fileName",
+											"type": "Expression"
+										}
+									}
+								}
+							}
+						},
+						{
+							"name": "Get Data from ROSS",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set File Name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "FileSystemSource",
+									"recursive": true
+								},
+								"sink": {
+									"type": "BlobSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ROSSFileShare",
+									"type": "DatasetReference",
+									"parameters": {
+										"FileLocation": {
+											"value": "@variables('fileProcessedFolderRoss')",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@variables('fileProcessedFileRoss')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "FOLDER_ROSS",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@variables('InterfaceFolder')",
+											"type": "Expression"
+										},
+										"FolderName": "processedfile",
+										"PathFolder": {
+											"value": "@variables('fileProcessedFolderAzure')",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@variables('Department')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Set File Name",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileProcessedFileRoss",
+								"value": {
+									"value": "@replace(pipeline().parameters.filePath,concat(variables('fileProcessedFolderRoss'),'/'),'')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Log for Get Data from ROSS",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Get Data from ROSS",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',variables('LookupPipelineID'),'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"\",\n\"FileName\" : \"',variables('fileProcessedFileRoss'),'\",\n\"Object\" : \"Supplier\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Get Data from ROSS').ActivityRunId,'\",\n\"ActivityTask\" : \"Get ROSS Processed Data\",\n\"ActivityType\" : \"',pipeline().parameters.pipelineID,'\",\n\"StartTime\" : \"',activity('Get Data from ROSS').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data from ROSS').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data from ROSS').Status,'\",\n\"Output\" : ',activity('Get Data from ROSS').Output,',\n\"Error\" : ',activity('Get Data from ROSS').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of locate and retrieve the ROSS validation file from SFTP.\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Log for ROSS Processed File",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Load Processed File",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',variables('LookupPipelineID'),'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"\",\n\"FileName\" : \"',variables('fileProcessedFileRoss'),'\",\n\"Object\" : \"Supplier\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Load Processed File').ActivityRunId,'\",\n\"ActivityTask\" : \"Load ROSS Processed File\",\n\"ActivityType\" : \"',pipeline().parameters.pipelineID,'\",\n\"StartTime\" : \"',activity('Load Processed File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Load Processed File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Load Processed File').Status,'\",\n\"Output\" : ',activity('Load Processed File').Output,',\n\"Error\" : ',activity('Load Processed File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of loading ROSS Processed File to Azure database. This step include data validation and data loading\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Backup File",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Load Processed File",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "GENERAL_FILE_BACKUP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"InterfaceName": {
+										"value": "@variables('InterfaceFolder')",
+										"type": "Expression"
+									},
+									"ParentPipelineID": {
+										"value": "@variables('LookupPipelineID')",
+										"type": "Expression"
+									},
+									"SourceFolder": "uem/dev/edgenta/azure/outbound/main/source",
+									"DestinationFolder": {
+										"value": "@variables('fileProcessedFolderAzure')",
+										"type": "Expression"
+									},
+									"LogFolder": "outbound/log",
+									"SourceArchiveFolder": "uem/dev/edgenta/azure/outbound/archive/source",
+									"Department": {
+										"value": "@variables('Department')",
+										"type": "Expression"
+									},
+									"DestinationArchiveFolder": {
+										"value": "@variables('DestinationArchiveFolder')",
+										"type": "Expression"
+									},
+									"StagingFolder": "uem/dev/edgenta/azure/outbound/main/source",
+									"FileName": {
+										"value": "@variables('fileProcessedFileRoss')",
+										"type": "Expression"
+									},
+									"FileLocation": "/uem/dev/edgenta/azure/outbound/scm/project",
+									"ScheduleType": "1",
+									"SourceSystem": {
+										"value": "@variables('SourceSystem')",
+										"type": "Expression"
+									},
+									"DestinationSystem": "Azure"
+								}
+							}
+						},
+						{
+							"name": "Get Metadata File",
+							"type": "GetMetadata",
+							"dependsOn": [
+								{
+									"activity": "Get Data from ROSS",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "FILE_FUSION",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": "log",
+										"FileName": {
+											"value": "@replace(toupper(pipeline().parameters.fileName),'ZIP','txt')",
+											"type": "Expression"
+										},
+										"PathFolder": {
+											"value": "@variables('LogFolder')",
+											"type": "Expression"
+										},
+										"Department": "outbound"
+									}
+								},
+								"fieldList": [
+									"exists"
+								]
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "SpecialCase",
+								"value": {
+									"value": "@activity('Get Metadata File').output.Exists",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"filePath": {
+				"type": "string"
+			},
+			"pipelineID": {
+				"type": "string"
+			},
+			"totalRow": {
+				"type": "int"
+			},
+			"successRow": {
+				"type": "int"
+			},
+			"failedRow": {
+				"type": "int"
+			},
+			"fileName": {
+				"type": "string"
+			},
+			"status": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"fileProcessedFolderRoss": {
+				"type": "String",
+				"defaultValue": "/uem_edgenta/dev/erp/ross/fusion_outbound/po/fileprocessed"
+			},
+			"fileProcessedFileRoss": {
+				"type": "String"
+			},
+			"fileProcessedFolderAzure": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/destination/ross"
+			},
+			"Department": {
+				"type": "String",
+				"defaultValue": "scm"
+			},
+			"InterfaceFolder": {
+				"type": "String",
+				"defaultValue": "INT_SCM_205"
+			},
+			"DestinationArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/destination/ross"
+			},
+			"SourceSystem": {
+				"type": "String",
+				"defaultValue": "ROSS"
+			},
+			"LookupPipelineID": {
+				"type": "String"
+			},
+			"SpecialCase": {
+				"type": "Boolean"
+			},
+			"LogFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure"
+			}
+		},
+		"folder": {
+			"name": "INT_SCM_205"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

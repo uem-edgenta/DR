@@ -1,0 +1,91 @@
+{
+	"name": "Error Report File Generating",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Date List",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select distinct CAST(StartTime as date) Date\nfrom EventLog el\ninner join CodeMaster cm on el.Status = cm.Code and cm.CodeType = ''STS''\ninner join CodeMaster sch on el.ScheduleType = sch.Code and sch.CodeType = ''SCH''\nouter apply (\n\tselect ''FAIL'' [Data Status]\n\tfrom ETLAudit ea\n\twhere el.EventID = ea.EventID and RowFailed > 0\n) a\nwhere el.ScheduleID <> '''' and el.ScheduleID <> ''1'' and EventType = ''O'' and (Status = 2 or [Data Status] = ''FAIL'') \nand CAST(StartTime as date) BETWEEN CAST(''',pipeline().parameters.StartDate,''' as date) and CAST(''',pipeline().parameters.EndDate,''' as date)')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Date List",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Date List').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Generate Error Report",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Daily Error Report File",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"SingularDate": {
+										"value": "@formatDateTime(item().Date,'yyyy-MM-dd')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"StartDate": {
+				"type": "string",
+				"defaultValue": "2019-10-01"
+			},
+			"EndDate": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"test": {
+				"type": "Array"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

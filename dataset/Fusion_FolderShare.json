@@ -1,0 +1,24 @@
+{
+	"name": "Fusion_FolderShare",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "fusionSftp",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileLocation": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "FileShare",
+		"typeProperties": {
+			"fileName": "",
+			"folderPath": {
+				"value": "@dataset().fileLocation",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

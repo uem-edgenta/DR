@@ -1,0 +1,33 @@
+{
+	"name": "OUT_STAGING_FILE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "egsaasdrBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Department": {
+				"type": "string"
+			},
+			"InterfaceName": {
+				"type": "string"
+			},
+			"FileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": {
+				"value": "@replace(dataset().FileName,'zip','csv')",
+				"type": "Expression"
+			},
+			"folderPath": {
+				"value": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/main/stg/',dataset().Department,'/',dataset().InterfaceName,'/dataset().FileName')",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

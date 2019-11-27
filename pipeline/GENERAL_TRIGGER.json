@@ -1,0 +1,332 @@
+{
+	"name": "GENERAL_TRIGGER",
+	"properties": {
+		"activities": [
+			{
+				"name": "If 337",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.InterfaceName,'INT_PPM_337')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Send Trigger for 337",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://uemaoicdev01-uemgroup.integration.ocp.oraclecloud.com/ic/api/integration/v1/integrations/INT_PPM_BILLINGE_EXTERNAL%7C01.00.0000/schedule/jobs",
+								"method": "POST",
+								"body": {
+									"action": "NOW"
+								},
+								"authentication": {
+									"type": "Basic",
+									"username": "erp_int_user",
+									"password": {
+										"type": "SecureString",
+										"value": "**********"
+									}
+								}
+							}
+						},
+						{
+							"name": "ExecutePipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Send Trigger for 337",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "API_LOG",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"EventID": {
+										"value": "@pipeline().parameters.ParentPipelineID",
+										"type": "Expression"
+									},
+									"EventName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"Object": "WORKTYPENUMBER",
+									"SourceSystem": "ROSS-Azure",
+									"DestSystem": "UEMGroup-Oracle",
+									"JobID": {
+										"value": "@activity('Send Trigger for 337').ActivityRunId",
+										"type": "Expression"
+									},
+									"ActivityTask": "Send Trigger File Request to ORACLE",
+									"StartTime": {
+										"value": "@activity('Send Trigger for 337').ExecutionStartTime",
+										"type": "Expression"
+									},
+									"EndTime": {
+										"value": "@activity('Send Trigger for 337').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@activity('Send Trigger for 337').Status",
+										"type": "Expression"
+									},
+									"Output": {
+										"value": "@activity('Send Trigger for 337').output",
+										"type": "Expression"
+									},
+									"Error": {
+										"value": "@if(empty(activity('Send Trigger for 337').Error),'',activity('Send Trigger for 337').Error)",
+										"type": "Expression"
+									},
+									"EventType": "INBOUND",
+									"FilePath": "The step describes the process of send request to ORACLE API",
+									"Input": "{\n\t\"action\":\"NOW\"\n}",
+									"FileZipName": "tes"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If 363",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.InterfaceName,'INT_PPM_363')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Send Trigger for 363",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://uemaoicdev01-uemgroup.integration.ocp.oraclecloud.com/ic/api/integration/v1/integrations/INT_PPM_COSTACCR_EXTERNAL%7C01.00.0000/schedule/jobs",
+								"method": "POST",
+								"body": {
+									"action": "NOW"
+								},
+								"authentication": {
+									"type": "Basic",
+									"username": "erp_int_user",
+									"password": {
+										"type": "SecureString",
+										"value": "**********"
+									}
+								}
+							}
+						},
+						{
+							"name": "ExecutePipeline2",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Send Trigger for 363",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "API_LOG",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"EventID": {
+										"value": "@pipeline().parameters.ParentPipelineID",
+										"type": "Expression"
+									},
+									"EventName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"Object": "WORKTYPENUMBER",
+									"SourceSystem": "ROSS-Azure",
+									"DestSystem": "UEMGroup-Oracle",
+									"JobID": {
+										"value": "@activity('Send Trigger for 363').ActivityRunId",
+										"type": "Expression"
+									},
+									"ActivityTask": "Send Trigger File Request to ORACLE",
+									"StartTime": {
+										"value": "@activity('Send Trigger for 363').ExecutionStartTime",
+										"type": "Expression"
+									},
+									"EndTime": {
+										"value": "@activity('Send Trigger for 363').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@activity('Send Trigger for 363').Status",
+										"type": "Expression"
+									},
+									"Output": {
+										"value": "@activity('Send Trigger for 363').output",
+										"type": "Expression"
+									},
+									"Error": {
+										"value": "@if(empty(activity('Send Trigger for 363').Error),'',activity('Send Trigger for 363').Error)",
+										"type": "Expression"
+									},
+									"EventType": "INBOUND",
+									"FilePath": "The step describes the process of send request to ORACLE API",
+									"Input": "{\n\t\"action\":\"NOW\"\n}",
+									"FileZipName": "tes"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If 303",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.InterfaceName,'INT_SCM_303')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Send Trigger for 303",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://uemaoicdev01-uemgroup.integration.ocp.oraclecloud.com/ic/api/integration/v1/integrations/INT_SCM_303_MASTERPR%7C01.00.0000/schedule/jobs",
+								"method": "POST",
+								"body": {
+									"action": "NOW"
+								},
+								"authentication": {
+									"type": "Basic",
+									"username": "erp_int_user",
+									"password": {
+										"type": "SecureString",
+										"value": "**********"
+									}
+								}
+							}
+						},
+						{
+							"name": "ExecutePipeline3",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Send Trigger for 303",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "API_LOG",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"EventID": {
+										"value": "@pipeline().parameters.ParentPipelineID",
+										"type": "Expression"
+									},
+									"EventName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"Object": "WORKTYPENUMBER",
+									"SourceSystem": "ROSS-Azure",
+									"DestSystem": "UEMGroup-Oracle",
+									"JobID": {
+										"value": "@activity('Send Trigger for 303').ActivityRunId",
+										"type": "Expression"
+									},
+									"ActivityTask": "Send Trigger File Request to ORACLE",
+									"StartTime": {
+										"value": "@activity('Send Trigger for 303').ExecutionStartTime",
+										"type": "Expression"
+									},
+									"EndTime": {
+										"value": "@activity('Send Trigger for 303').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@activity('Send Trigger for 303').Status",
+										"type": "Expression"
+									},
+									"Output": {
+										"value": "@activity('Send Trigger for 303').output",
+										"type": "Expression"
+									},
+									"Error": {
+										"value": "@if(empty(activity('Send Trigger for 303').Error),'',activity('Send Trigger for 303').Error)",
+										"type": "Expression"
+									},
+									"EventType": "INBOUND",
+									"FilePath": "The step describes the process of send request to ORACLE API",
+									"Input": "{\n\t\"action\":\"NOW\"\n}",
+									"FileZipName": "tes"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "GENERAL"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

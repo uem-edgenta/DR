@@ -1,0 +1,27 @@
+{
+	"name": "egsaasdrir",
+	"properties": {
+		"type": "Managed",
+		"typeProperties": {
+			"computeProperties": {
+				"location": "Southeast Asia",
+				"nodeSize": "Standard_D8_v3",
+				"numberOfNodes": 1,
+				"maxParallelExecutionsPerNode": 5
+			},
+			"ssisProperties": {
+				"catalogInfo": {
+					"catalogServerEndpoint": "edsgdrsql02.database.windows.net",
+					"catalogAdminUserName": "sqladmin",
+					"catalogAdminPassword": {
+						"type": "SecureString",
+						"value": "**********"
+					},
+					"catalogPricingTier": "S1"
+				},
+				"edition": "Standard",
+				"licenseType": "LicenseIncluded"
+			}
+		}
+	}
+}

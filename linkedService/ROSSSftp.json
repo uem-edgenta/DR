@@ -1,0 +1,16 @@
+{
+	"name": "ROSSSftp",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "Sftp02.uemedgenta.com",
+			"port": 22,
+			"skipHostKeyValidation": true,
+			"authenticationType": "Basic",
+			"userName": "collexe",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkVEU0FBU0RSREYwMl80NDViMDg2NS1jMDE2LTRmYTAtYWY4MC1iNThlZWEyODdiZmQiDQp9"
+		}
+	}
+}

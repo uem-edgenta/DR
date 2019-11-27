@@ -1,0 +1,705 @@
+{
+	"name": "SCM_201_PART1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Deflate ZIP",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink",
+						"copyBehavior": "PreserveHierarchy"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ZIP_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"ZipName": {
+								"value": "@variables('ZipFileName')",
+								"type": "Expression"
+							},
+							"PathFolder": {
+								"value": "@pipeline().parameters.SourceFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "FOLDER_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FolderName": "-1",
+							"PathFolder": {
+								"value": "@pipeline().parameters.StagingFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Check Checksum",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Delete File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/ValidChecksum",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"cksmPath\":\"egsaasdrblob01/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',variables('ZipFileName'),'/checksum.txt\",\n\"filePath\":\"egsaasdrblob01/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',variables('ZipFileName'),'/',replace(variables('ZipFileName'),'zip','csv'),'\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If checksum is match",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Check Checksum",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Check Checksum').output.Response,'true')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Send Failed ACK",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Lookup ACK Data Failed",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
+								"method": "POST",
+								"body": {
+									"value": "@concat(\n'{\"sourceSystem\":\" ',activity('Lookup ACK Data Failed').output.firstRow.source,\n'\",\"zipfileName\":\"',variables('ZipFileName')\n,'\",\"dataFileName\":\"',replace(variables('ZipFileName'),'zip','csv')\n,'\",\"errorLocation\":\"',activity('Lookup ACK Data Failed').output.firstRow.ErrorLocation\n,'\",\"businessObject\":\"',activity('Lookup ACK Data Failed').output.firstRow.BusinessObject\n,'\",\"notificationType\":\"',activity('Lookup ACK Data Failed').output.firstRow.NotificationType\n,'\",\"eventOccurredTime\":\"',string(activity('Lookup ACK Data Failed').output.firstRow.starttime)\n,'\",\"messageDescription\":\"',activity('Lookup ACK Data Failed').output.firstRow.ErrorMessage\n,'\",\"fileLine\":\"\"}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Log For Send ACK",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Send Failed ACK",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edsaasdrfc01.azurewebsites.net/api/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send Failed ACK').ActivityRunId,'\",\n\"ActivityTask\" : \"Send ACK\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send Failed ACK').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send Failed ACK').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send Failed ACK').Status,'\",\n\"Output\" : ',activity('Send Failed ACK').Output,',\n\"Error\" : \"',if(empty(activity('Send Failed ACK').Error),'',string(activity('Send Failed ACK').Error)),'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 2,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Log for Checksum Check",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edsaasdrfc01.azurewebsites.net/api/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Check Checksum').ActivityRunId,'\",\n\"ActivityTask\" : \"Check Checksum\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Check Checksum').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Check Checksum').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Check Checksum').Status,'\",\n\"Output\" : ',activity('Check Checksum').Output,',\n\"Error\" : \"',activity('Check Checksum').Error,'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Lookup ACK Data Failed",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Add Log for Checksum Check",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select etl.starttime,source,FileNameZip,FileNameData,el.BusinessObject,CASE WHEN etl.Status = 1 THEN ''ACK'' ELSE ''ERROR'' END NotificationType,etl.ErrorMessage,FileLine,\nCASE WHEN etl.Status = 1 THEN '''' ELSE ''/uem/dev/edgenta/azure/outbound/log/''+replace(el.FileNameZip,''.zip'','''')+''_Error_Log.zip'' END ErrorLocation\n from eventlog el inner join eventtasklog etl on el.EventID = etl.EventID\nwhere el.eventid = ''',pipeline().parameters.ParentPipelineID,''' and etl.StepName=''Check Checksum''')",
+										"type": "Expression"
+									}
+								},
+								"dataset": {
+									"referenceName": "LOG_TABLE",
+									"type": "DatasetReference"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Execute SSIS",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_201_PART_2",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"InterfaceName": {
+										"value": "@pipeline().parameters.InterfaceName",
+										"type": "Expression"
+									},
+									"ID": {
+										"value": "@pipeline().parameters.ParentPipelineID",
+										"type": "Expression"
+									},
+									"ZipFileName": {
+										"value": "@variables('ZipFileName')",
+										"type": "Expression"
+									},
+									"ParentPipelineID": {
+										"value": "@pipeline().parameters.ParentPipelineID",
+										"type": "Expression"
+									},
+									"SourceFolder": {
+										"value": "@pipeline().parameters.SourceFolder",
+										"type": "Expression"
+									},
+									"DestinationFolder": {
+										"value": "@pipeline().parameters.DestinationFolder",
+										"type": "Expression"
+									},
+									"StagingFolder": {
+										"value": "@pipeline().parameters.StagingFolder",
+										"type": "Expression"
+									},
+									"LogFolder": {
+										"value": "@pipeline().parameters.LogFolder",
+										"type": "Expression"
+									},
+									"SourceArchiveFolder": {
+										"value": "@pipeline().parameters.SourceArchiveFolder",
+										"type": "Expression"
+									},
+									"DestinationArchiveFolder": {
+										"value": "@pipeline().parameters.DestinationArchiveFolder",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get ZIP File Name",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ZIP_FILE_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"PathFolder": {
+								"value": "@pipeline().parameters.SourceFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "Delete File",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Backup ZIP FIle",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ZIP_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"ZipName": {
+								"value": "@variables('ZipFileName')",
+								"type": "Expression"
+							},
+							"PathFolder": {
+								"value": "@pipeline().parameters.SourceFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false
+				}
+			},
+			{
+				"name": "Backup ZIP FIle",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Deflate ZIP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "FILE_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@variables('ZipFileName')",
+								"type": "Expression"
+							},
+							"PathFolder": {
+								"value": "@pipeline().parameters.SourceFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "BACKUP_ZIP_FUSION",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Set Variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get ZIP File Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ZipFileName",
+					"value": {
+						"value": "@first(activity('Get ZIP File Name').output.childItems).Name",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Get File",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get ZIP File Name",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Get ZIP File Name').ActivityRunId,'\",\n\"ActivityTask\" : \"Get File Name\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Get ZIP File Name').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get ZIP File Name').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get ZIP File Name').Status,'\",\n\"Output\" : ',activity('Get ZIP File Name').Output,',\n\"Error\" : ',activity('Get ZIP File Name').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Deflate ZIP",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Deflate ZIP",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Deflate ZIP').ActivityRunId,'\",\n\"ActivityTask\" : \"Deflate ZIP\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Deflate ZIP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Deflate ZIP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Deflate ZIP').Status,'\",\n\"Output\" : ',activity('Deflate ZIP').Output,',\n\"Error\" : ',activity('Deflate ZIP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Send ACK",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Lookup ACK Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
+					"method": "POST",
+					"body": {
+						"value": "@concat(\n'{\"sourceSystem\":\" ',activity('Lookup ACK Data').output.firstRow.source,\n'\",\"zipfileName\":\"',variables('ZipFileName')\n,'\",\"dataFileName\":\"',replace(variables('ZipFileName'),'zip','csv')\n,'\",\"errorLocation\":\"',activity('Lookup ACK Data').output.firstRow.ErrorLocation\n,'\",\"businessObject\":\"',activity('Lookup ACK Data').output.firstRow.BusinessObject\n,'\",\"notificationType\":\"',activity('Lookup ACK Data').output.firstRow.NotificationType\n,'\",\"eventOccurredTime\":\"',string(activity('Lookup ACK Data').output.firstRow.starttime)\n,'\",\"messageDescription\":\"',if(equals('ACK',activity('Lookup ACK Data').output.firstRow.NotificationType),'','Checksum is not matched'),'\",\"fileLine\":\"\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Checksum",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Check Checksum",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Check Checksum').ActivityRunId,'\",\n\"ActivityTask\" : \"Check Checksum\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Check Checksum').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Check Checksum').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Check Checksum').Status,'\",\n\"Output\" : ',activity('Check Checksum').Output,',\n\"Error\" : ',activity('Check Checksum').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Lookup ACK Data",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Add Log for Checksum",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select etl.starttime,source,FileNameZip,FileNameData,el.BusinessObject,CASE WHEN etl.Status = 1 THEN ''ACK'' ELSE ''ERROR'' END NotificationType,etl.ErrorMessage,FileLine,\nCASE WHEN etl.Status = 1 THEN '''' ELSE ''/uem/dev/edgenta/azure/outbound/log/''+replace(el.FileNameZip,''.zip'','''')+''_Error_Log.zip'' END ErrorLocation\n from eventlog el inner join eventtasklog etl on el.EventID = etl.EventID\nwhere el.eventid = ''',pipeline().parameters.ParentPipelineID,''' and etl.StepName=''Check Checksum''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "WebActivity1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Send ACK",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"',activity('Lookup ACK Data').output.firstRow.BusinessObject,'\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send ACK').ActivityRunId,'\",\n\"ActivityTask\" : \"Send ACK\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',string(activity('Lookup ACK Data').output.firstRow.starttime),'\",\n\"EndTime\" : \"',activity('Send ACK').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Lookup ACK Data').output.firstRow.NotificationType,'\",\n\"Output\" : \"\",\n\"Error\" : \"',if(equals('ACK',activity('Lookup ACK Data').output.firstRow.NotificationType),'','Checksum is not matched'),'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 2,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "WebActivity2",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "WebActivity1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send ACK').ActivityRunId,'\",\n\"ActivityTask\" : \"',if(equals('ACK',activity('Lookup ACK Data').output.firstRow.NotificationType),'Send Success Received File ACK','Send Failed Received File ACK'),'\",\n\"ActivityType\" : \"1\",\n\"StartTime\" : \"',activity('Send ACK').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send ACK').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send ACK').Status,'\",\n\"Output\" : ',concat(\n'{\"sourceSystem\":\" ',activity('Lookup ACK Data').output.firstRow.source,\n'\",\"zipfileName\":\"',variables('ZipFileName')\n,'\",\"dataFileName\":\"',replace(variables('ZipFileName'),'zip','csv')\n,'\",\"errorLocation\":\"',activity('Lookup ACK Data').output.firstRow.ErrorLocation\n,'\",\"businessObject\":\"',activity('Lookup ACK Data').output.firstRow.BusinessObject\n,'\",\"notificationType\":\"',activity('Lookup ACK Data').output.firstRow.NotificationType\n,'\",\"eventOccurredTime\":\"',string(activity('Lookup ACK Data').output.firstRow.starttime)\n,'\",\"messageDescription\":\"',if(equals('ACK',activity('Lookup ACK Data').output.firstRow.NotificationType),'','Checksum is not matched'),'\",\"fileLine\":\"\"}'),',\n\"Error\" : \"',if(empty(activity('Send ACK').Error),'',string(activity('Send ACK').Error)),'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string",
+				"defaultValue": "scm_204"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			},
+			"SourceFolder": {
+				"type": "string"
+			},
+			"DestinationFolder": {
+				"type": "string"
+			},
+			"LogFolder": {
+				"type": "string"
+			},
+			"SourceArchiveFolder": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			},
+			"DestinationArchiveFolder": {
+				"type": "string"
+			},
+			"StagingFolder": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ZipFileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "INT_SCM_201"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

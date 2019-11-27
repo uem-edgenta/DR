@@ -1,0 +1,448 @@
+{
+	"name": "GENERAL_DIR",
+	"properties": {
+		"activities": [
+			{
+				"name": "If INT_PPM_206",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_PPM_206')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline3",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_PPM_206_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_205",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_SCM_205')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline9",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_SCM_205_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_201",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_SCM_201')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline4",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_SCM_201_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_203",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_SCM_203')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_SCM_203_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_FIN_253",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_FIN_253')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline8",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_FIN_253_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_FIN_254",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_FIN_254')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline7",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_FIN_254_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_FIN_267",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_FIN_267')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline2",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_FIN_267_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_204",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_SCM_204')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline5",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_SCM_204_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_231",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.interfaceName,'INT_SCM_231')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline6",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "INT_SCM_231_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"fileLocation": {
+				"type": "string",
+				"defaultValue": "/uem/dev/edgenta/azure/outbound/fin/customer"
+			},
+			"interfaceName": {
+				"type": "string",
+				"defaultValue": "INT_FIN_267"
+			},
+			"Department": {
+				"type": "string",
+				"defaultValue": "fin"
+			},
+			"ScheduleType": {
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
+		"variables": {
+			"SourceFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/source"
+			},
+			"DestinationFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/destination"
+			},
+			"LogFolder": {
+				"type": "String",
+				"defaultValue": "outbound/log"
+			},
+			"SourceArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/source"
+			},
+			"Department": {
+				"type": "String",
+				"defaultValue": "fin"
+			},
+			"DestinationArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/destination"
+			},
+			"StagingFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/source"
+			},
+			"ScheduleType": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"test": {
+				"type": "Array"
+			},
+			"test2": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "GENERAL"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

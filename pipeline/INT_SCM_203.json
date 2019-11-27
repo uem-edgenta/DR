@@ -1,0 +1,257 @@
+{
+	"name": "INT_SCM_203",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Data from Fusion SFTP",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "FileSystemSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "FUSION_FileShare",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": {
+								"value": "@pipeline().parameters.fileName",
+								"type": "Expression"
+							},
+							"fileLocation": {
+								"value": "@pipeline().parameters.fileLocation",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ZIP_FILE_FUS",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.interfaceName",
+								"type": "Expression"
+							},
+							"PathFolder": {
+								"value": "@variables('SourceFolder')",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@variables('Department')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Add Log",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Data from Fusion SFTP",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"\",\n\"FileName\" : \"\",\n\"Object\" : \"Supplier\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Get Data from Fusion SFTP').ActivityRunId,'\",\n\"ActivityTask\" : \"Get Data from Fusion SFTP\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Get Data from Fusion SFTP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data from Fusion SFTP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data from Fusion SFTP').Status,'\",\n\"Output\" : ',activity('Get Data from Fusion SFTP').Output,',\n\"Error\" : ',activity('Get Data from Fusion SFTP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "GetMetadata Folder",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Get Data from Fusion SFTP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ZIP_FILE_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"PathFolder": {
+								"value": "@variables('SourceFolder')",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@variables('Department')",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "GetMetadata Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@empty(first(activity('GetMetadata Folder').output.childItems).Name)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "ExecutePipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_203_PART_1N",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"InterfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"ParentPipelineID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"SourceFolder": {
+										"value": "@variables('SourceFolder')",
+										"type": "Expression"
+									},
+									"DestinationFolder": {
+										"value": "@variables('DestinationFolder')",
+										"type": "Expression"
+									},
+									"LogFolder": {
+										"value": "@variables('LogFolder')",
+										"type": "Expression"
+									},
+									"SourceArchiveFolder": {
+										"value": "@variables('DestinationArchiveFolder')",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@variables('Department')",
+										"type": "Expression"
+									},
+									"DestinationArchiveFolder": {
+										"value": "@variables('DestinationArchiveFolder')",
+										"type": "Expression"
+									},
+									"StagingFolder": {
+										"value": "@variables('StagingFolder')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"fileName": {
+				"type": "string",
+				"defaultValue": "INT_SCM_203_SUPPLIER_Export_42071_20190510025758.zip"
+			},
+			"fileLocation": {
+				"type": "string",
+				"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/supplier"
+			},
+			"interfaceName": {
+				"type": "string",
+				"defaultValue": "INT_SCM_203"
+			}
+		},
+		"variables": {
+			"SourceFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/src"
+			},
+			"DestinationFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/dest"
+			},
+			"LogFolder": {
+				"type": "String",
+				"defaultValue": "outbound/log"
+			},
+			"SourceArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/src"
+			},
+			"Department": {
+				"type": "String",
+				"defaultValue": "scm"
+			},
+			"DestinationArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/dest"
+			},
+			"StagingFolder": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "INT_SCM_203"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

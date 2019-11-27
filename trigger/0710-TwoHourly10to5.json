@@ -1,0 +1,43 @@
+{
+	"name": "0710-TwoHourly10to5",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "INT_SCM_204_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/scm/blanketAgreement",
+					"interfaceName": "INT_SCM_204",
+					"Department": "scm",
+					"ScheduleType": "1"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "INT_SCM_205_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/scm/po",
+					"interfaceName": "INT_SCM_205",
+					"Department": "scm",
+					"ScheduleType": "1"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 2,
+				"startTime": "2019-10-07T02:00:00Z",
+				"endTime": "2019-10-07T09:01:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

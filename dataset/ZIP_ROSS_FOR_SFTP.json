@@ -1,0 +1,37 @@
+{
+	"name": "ZIP_ROSS_FOR_SFTP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "egsaasdrBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"InterfaceFolder": {
+				"type": "string"
+			},
+			"ZipName": {
+				"type": "string",
+				"defaultValue": "-1"
+			},
+			"FolderPath": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": {
+				"value": "@if(equals(dataset().ZipName,'-1'),'',dataset().ZipName)",
+				"type": "Expression"
+			},
+			"folderPath": {
+				"value": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder))",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

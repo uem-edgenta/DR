@@ -1,0 +1,32 @@
+{
+	"name": "ZIP_FILE_FUSION",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "egsaasdrBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"InterfaceFolder": {
+				"type": "string"
+			},
+			"PathFolder": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"compression": {
+				"type": "ZipDeflate"
+			},
+			"folderPath": {
+				"value": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

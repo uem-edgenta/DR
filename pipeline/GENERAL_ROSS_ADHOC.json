@@ -1,0 +1,171 @@
+{
+	"name": "GENERAL_ROSS_ADHOC",
+	"properties": {
+		"activities": [
+			{
+				"name": "If Adhoc Trigger",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "ScheduleType",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('ScheduleType').output.firstRow.ScheduleType,'2')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Trigger ROSS",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://ross.uemedgenta.com:8060/api/file/GetFileName_SIT",
+								"method": "POST",
+								"body": {
+									"value": "@concat('{\n  \"FileNamePass\": \"',concat(pipeline().parameters.FileName,'.zip'),'\",\n  \"Interface_ID\": \"',pipeline().parameters.InterfaceID,'\"\n}')",
+									"type": "Expression"
+								},
+								"authentication": {
+									"type": "Basic",
+									"username": "ROSS",
+									"password": {
+										"type": "SecureString",
+										"value": "**********"
+									}
+								}
+							}
+						},
+						{
+							"name": "Add Log for ROSS Trigger",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Trigger ROSS",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "API_LOG",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"EventID": {
+										"value": "@pipeline().parameters.ParentPipelineID",
+										"type": "Expression"
+									},
+									"EventName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"Object": "WORKTYPENUMBER",
+									"SourceSystem": "Edgenta-Azure",
+									"DestSystem": "Edgenta-ROSS",
+									"JobID": {
+										"value": "@activity('Trigger ROSS').ActivityRunId",
+										"type": "Expression"
+									},
+									"ActivityTask": "Send Trigger File Request to ROSS",
+									"StartTime": {
+										"value": "@activity('Trigger ROSS').ExecutionStartTime",
+										"type": "Expression"
+									},
+									"EndTime": {
+										"value": "@activity('Trigger ROSS').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@activity('Trigger ROSS').Status",
+										"type": "Expression"
+									},
+									"Output": {
+										"value": "@activity('Trigger ROSS').output",
+										"type": "Expression"
+									},
+									"Error": {
+										"value": "@if(empty(activity('Trigger ROSS').Error),'',activity('Trigger ROSS').Error)",
+										"type": "Expression"
+									},
+									"EventType": "OUTBOUND",
+									"FilePath": "The step describes the process of triggering ROSS ADHOC API",
+									"Input": {
+										"value": "@concat('{\n  \"FileNamePass\": \"',concat(pipeline().parameters.FileName,'.zip'),'\",\n  \"Interface_ID\": \"',pipeline().parameters.InterfaceID,'\"\n}')",
+										"type": "Expression"
+									},
+									"FileZipName": {
+										"value": "@pipeline().parameters.FileName",
+										"type": "Expression"
+									},
+									"ErrorLoc": "-"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ScheduleType",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select scheduletype from eventlog where eventid = ''',pipeline().parameters.ParentPipelineID,'''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"FileName": {
+				"type": "string",
+				"defaultValue": "INT_FIN_252_ARINVOICE_Export_112958_20190726040518.zip"
+			},
+			"InterfaceID": {
+				"type": "string",
+				"defaultValue": "INT_FIN_252"
+			},
+			"ParentPipelineID": {
+				"type": "string",
+				"defaultValue": "7ca08189-1283-4f09-ac8c-d02c81863e4f"
+			}
+		},
+		"folder": {
+			"name": "GENERAL"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

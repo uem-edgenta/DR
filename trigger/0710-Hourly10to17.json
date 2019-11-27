@@ -1,0 +1,44 @@
+{
+	"name": "0710-Hourly10to17",
+	"properties": {
+		"description": "INT_SCM_201, INT_SCM_203",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "INT_SCM_201_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/scm/item",
+					"interfaceName": "INT_SCM_201",
+					"Department": "scm",
+					"ScheduleType": "1"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "INT_SCM_203_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/scm/supplier",
+					"interfaceName": "INT_SCM_203",
+					"Department": "scm",
+					"ScheduleType": "1"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2019-10-07T02:00:00Z",
+				"endTime": "2019-10-07T09:01:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
