@@ -1,0 +1,1236 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "edsaasdrdf02"
+		},
+		"ADHOC_BLOB_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"ADHOC_BLOB_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().FileLocation"
+		},
+		"BACKUP_ZIP_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "egsaasdrblob01/uem/dev/edgenta/azure/outbound/archive/src"
+		},
+		"FILE_FUSION_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"FILE_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"FOLDER_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))"
+		},
+		"FOLDER_ROSS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))"
+		},
+		"OUT_ARCHIVE_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/archive/src/',dataset().Department,'/',dataset().InterfaceName)"
+		},
+		"OUT_SOURCE_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/main/src/',dataset().Department,'/',dataset().InterfaceName)"
+		},
+		"OUT_SOURCE_FILE_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"OUT_SOURCE_FILE_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('/uem/dev/edgenta/azure/outbound/main/src/',dataset().Department,'/',dataset().InterfaceName)"
+		},
+		"OUT_STAGING_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/main/stg/',dataset().Department,'/',dataset().InterfaceName)"
+		},
+		"OUT_STAGING_FILE_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@replace(dataset().FileName,'zip','csv')"
+		},
+		"OUT_STAGING_FILE_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/main/stg/',dataset().Department,'/',dataset().InterfaceName,'/dataset().FileName')"
+		},
+		"ZIP_FILE_FUS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"ZIP_FILE_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"ZIP_FILE_ROSS_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat(dataset().FileName)"
+		},
+		"ZIP_FILE_ROSS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))"
+		},
+		"ZIP_FILE_ROSS_CS_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat(dataset().FileName)"
+		},
+		"ZIP_FILE_ROSS_CS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/INT_SCM_340_TEST')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Data from Database",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select --identifier [UniqueID],\n--CASE WHEN convert(varchar(10),creation_time,120) = convert(varchar(10),DATEADD(hh,8,last_changed,,120) THEN 'A' ELSE 'U' END [ChangeIndicator],\n--priority,\n--status,\nraised_condition [workType],\nreference_number [workTypeNumber],\nsummary [workDescription], \nconvert(varchar(10),creation_time,120) [startDateActive],\nISNULL(convert(varchar(10),DATEADD(hh,8,completed_time),120),'2099-01-01') [endDateActive]--,\n--last_changed,\n--creation_time\nfrom efsb_jobs\nwhere job_state = 'ACTIVE'\nAND DATEADD(hh,8,last_changed) >= DATEADD(mi,-30,getdate())\nAND convert(varchar(10),creation_time,120) = convert(varchar(10),DATEADD(hh,8,last_changed),120)"
+							},
+							"dataset": {
+								"referenceName": "urbanizeDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Add Log for Get Data from Database",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Get Data from Database",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/adf/AuditLog",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"WORKTYPENUMBER\",\n\"SourceSystem\" : \"Urbanize-Azure\",\n\"DestSystem\" : \"Edgenta-Azure\",\n\"JobId\" : \"',activity('Get Data from Database').ActivityRunId,'\",\n\"ActivityTask\" : \"Get Record from Urbanize Database\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Get Data from Database').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data from Database').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data from Database').Status,'\",\n\"Output\" : ',activity('Get Data from Database').Output,',\n\"Error\" : ',activity('Get Data from Database').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of retrieve data from Urbanize Database\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Get Data for Updated Record",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "If Condition1",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select --identifier [UniqueID],\n--CASE WHEN convert(varchar(10),creation_time,120) = convert(varchar(10),last_changed,120) THEN 'A' ELSE 'U' END [ChangeIndicator],\n--priority,\n--status,\nraised_condition [workType],\nreference_number [workTypeNumber],\nsummary [workDescription],\nconvert(varchar(10),creation_time,120) [startDateActive],\nISNULL(convert(varchar(10),DATEADD(hh,8,completed_time),120),'2099-01-01') [endDateActive]\n--last_changed,\n--completed_time\nfrom efsb_jobs\nwhere job_state = 'ACTIVE'\nAND DATEADD(hh,8,last_changed) >= DATEADD(mi,-30,getdate())\nAND convert(varchar(10),creation_time,120) <> convert(varchar(10),DATEADD(hh,8,last_changed),120)"
+							},
+							"dataset": {
+								"referenceName": "urbanizeDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Data from Database",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(activity('Get Data from Database').output.count,0)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Send Request for New Record",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://edgenta.azure-api.net/int/scm/340",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"A\",\n   \"workOrder\":',activity('Get Data from Database').output.value,'\n}')",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "Basic",
+											"username": "uem_edgenta",
+											"password": {
+												"type": "SecureString",
+												"value": "**********"
+											}
+										}
+									}
+								},
+								{
+									"name": "ExecutePipeline4",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Send Request for New Record",
+											"dependencyConditions": [
+												"Completed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "API_LOG",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"EventID": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"EventName": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"FileZipName": {
+												"value": "@variables('ZipFileName')",
+												"type": "Expression"
+											},
+											"Object": "WORKTYPENUMBER",
+											"SourceSystem": "Urbanize-Azure",
+											"DestSystem": "UEMGroup-Oracle",
+											"JobID": {
+												"value": "@activity('Send Request for New Record').ActivityRunId",
+												"type": "Expression"
+											},
+											"ActivityTask": "Send Request to ORACLE for Updated Work Type Records",
+											"StartTime": {
+												"value": "@activity('Send Request for New Record').ExecutionStartTime",
+												"type": "Expression"
+											},
+											"EndTime": {
+												"value": "@activity('Send Request for New Record').ExecutionEndTime",
+												"type": "Expression"
+											},
+											"Status": {
+												"value": "@activity('Send Request for New Record').Status",
+												"type": "Expression"
+											},
+											"Output": {
+												"value": "@activity('Send Request for New Record').output",
+												"type": "Expression"
+											},
+											"Error": {
+												"value": "@if(empty(activity('Send Request for New Record').Error),'',activity('Send Request for New Record').Error)",
+												"type": "Expression"
+											},
+											"EventType": "INBOUND",
+											"FilePath": "The step describes the process of send request to ORACLE API",
+											"Input": {
+												"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"A\",\n   \"workOrder\":',activity('Get Data from Database').output.value,'\n}')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "If Condition2",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Data for Updated Record",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(activity('Get Data for Updated Record').output.count,0)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Send Request",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://edgenta.azure-api.net/int/scm/340",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"U\",\n   \"workOrder\":',activity('Get Data for Updated Record').output.value,'\n}')",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "Basic",
+											"username": "uem_edgenta",
+											"password": {
+												"type": "SecureString",
+												"value": "**********"
+											}
+										}
+									}
+								},
+								{
+									"name": "ExecutePipeline5",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Send Request",
+											"dependencyConditions": [
+												"Completed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "API_LOG",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"EventID": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"EventName": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"FileZipName": {
+												"value": "@variables('ZipFileName')",
+												"type": "Expression"
+											},
+											"Object": "WORKTYPENUMBER",
+											"SourceSystem": "ROSS-Azure",
+											"DestSystem": "UEMGroup-Oracle",
+											"JobID": {
+												"value": "@activity('Send Request').ActivityRunId",
+												"type": "Expression"
+											},
+											"ActivityTask": "Send Request to ORACLE for Updated Work Type Records",
+											"StartTime": {
+												"value": "@activity('Send Request').ExecutionStartTime",
+												"type": "Expression"
+											},
+											"EndTime": {
+												"value": "@activity('Send Request').ExecutionEndTime",
+												"type": "Expression"
+											},
+											"Status": {
+												"value": "@activity('Send Request').Status",
+												"type": "Expression"
+											},
+											"Output": {
+												"value": "@activity('Send Request').output",
+												"type": "Expression"
+											},
+											"Error": {
+												"value": "@if(empty(activity('Send Request').Error),'',activity('Send Request').Error)",
+												"type": "Expression"
+											},
+											"EventType": "INBOUND",
+											"FilePath": "The step describes the process of send request to ORACLE API",
+											"Input": {
+												"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"U\",\n   \"workOrder\":',activity('Get Data for Updated Record').output.value,'\n}')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"ScheduleType": {
+						"type": "string",
+						"defaultValue": "2"
+					}
+				},
+				"variables": {
+					"AddWorkTypeList": {
+						"type": "Array"
+					},
+					"UpdateWorkTypeList": {
+						"type": "Array"
+					},
+					"WorkTypeRecord": {
+						"type": "String"
+					},
+					"AddWorkTypeObject": {
+						"type": "String"
+					},
+					"UpdateWorkTypeObject": {
+						"type": "String"
+					},
+					"ZipFileName": {
+						"type": "String",
+						"defaultValue": "INT_SCM_340"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADHOC_BLOB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					},
+					"FileLocation": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": {
+						"value": "[parameters('ADHOC_BLOB_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('ADHOC_BLOB_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBLOBSFTPFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileLocation": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().FileLocation",
+							"type": "Expression"
+						},
+						"container": "sftp"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBLOBSFTPFileDef')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileLocation": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().FileLocation",
+							"type": "Expression"
+						},
+						"container": "sftp"
+					},
+					"compression": {
+						"type": "ZipDeflate"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBLOBSFTPFolder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileLocation": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().FileLocation",
+							"type": "Expression"
+						},
+						"container": "sftp"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BACKUP_ZIP_FUSION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"folderPath": "[parameters('BACKUP_ZIP_FUSION_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DELIMITED_TEXT')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"InterfaceFolder": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					},
+					"PathFolder": {
+						"type": "string"
+					},
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@if(equals(dataset().InterfaceFolder,'-1'),concat(dataset().PathFolder,'/',dataset().Department),concat(dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))",
+							"type": "Expression"
+						},
+						"container": "egsaasdrblob01"
+					},
+					"columnDelimiter": "\t",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FILE_FUSION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"InterfaceFolder": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					},
+					"PathFolder": {
+						"type": "string"
+					},
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": {
+						"value": "[parameters('FILE_FUSION_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('FILE_FUSION_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FOLDER_FUSION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"InterfaceFolder": {
+						"type": "string"
+					},
+					"FolderName": {
+						"type": "string",
+						"defaultValue": "-1"
+					},
+					"PathFolder": {
+						"type": "string"
+					},
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"folderPath": {
+						"value": "[parameters('FOLDER_FUSION_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FOLDER_ROSS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"InterfaceFolder": {
+						"type": "string"
+					},
+					"FolderName": {
+						"type": "string",
+						"defaultValue": "-1"
+					},
+					"PathFolder": {
+						"type": "string"
+					},
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"folderPath": {
+						"value": "[parameters('FOLDER_ROSS_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LOG_TABLE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "edsaasdrdb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AuditID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EventID",
+						"type": "varchar"
+					},
+					{
+						"name": "PackageID",
+						"type": "varchar"
+					},
+					{
+						"name": "ZipFile",
+						"type": "varchar"
+					},
+					{
+						"name": "SourceSystem",
+						"type": "varchar"
+					},
+					{
+						"name": "Destination",
+						"type": "varchar"
+					},
+					{
+						"name": "BusinessObject",
+						"type": "varchar"
+					},
+					{
+						"name": "ErrorLocation",
+						"type": "varchar"
+					},
+					{
+						"name": "PathRef",
+						"type": "varchar"
+					},
+					{
+						"name": "AuditType",
+						"type": "varchar"
+					},
+					{
+						"name": "PackageType",
+						"type": "varchar"
+					},
+					{
+						"name": "StartTime",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EndTime",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "RowCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RowInsert",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RowUpdate",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RowDelete",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RowFailed",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Status",
+						"type": "varchar"
+					},
+					{
+						"name": "ExecStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "ExecMessage",
+						"type": "varchar"
+					},
+					{
+						"name": "ExecGUID",
+						"type": "uniqueidentifier"
+					},
+					{
+						"name": "Killed",
+						"type": "varchar"
+					},
+					{
+						"name": "VerBuild",
+						"type": "varchar"
+					},
+					{
+						"name": "rowGuid",
+						"type": "uniqueidentifier"
+					},
+					{
+						"name": "CreatedBy",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "LastUpdate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "UpdateBy",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[dbo].[ETLAudit]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OUT_ARCHIVE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Department": {
+						"type": "string"
+					},
+					"InterfaceName": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"folderPath": {
+						"value": "[parameters('OUT_ARCHIVE_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OUT_SOURCE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Department": {
+						"type": "string"
+					},
+					"InterfaceName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"compression": {
+						"type": "ZipDeflate"
+					},
+					"folderPath": {
+						"value": "[parameters('OUT_SOURCE_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OUT_SOURCE_FILE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Department": {
+						"type": "string"
+					},
+					"InterfaceName": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "-1"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"compression": {
+						"type": "ZipDeflate"
+					},
+					"fileName": {
+						"value": "[parameters('OUT_SOURCE_FILE_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('OUT_SOURCE_FILE_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OUT_STAGING')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Department": {
+						"type": "string"
+					},
+					"InterfaceName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"folderPath": {
+						"value": "[parameters('OUT_STAGING_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OUT_STAGING_FILE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Department": {
+						"type": "string"
+					},
+					"InterfaceName": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": {
+						"value": "[parameters('OUT_STAGING_FILE_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('OUT_STAGING_FILE_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ZIP_FILE_FUS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"InterfaceFolder": {
+						"type": "string"
+					},
+					"PathFolder": {
+						"type": "string"
+					},
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"folderPath": {
+						"value": "[parameters('ZIP_FILE_FUS_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ZIP_FILE_FUSION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"InterfaceFolder": {
+						"type": "string"
+					},
+					"PathFolder": {
+						"type": "string"
+					},
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"compression": {
+						"type": "ZipDeflate"
+					},
+					"folderPath": {
+						"value": "[parameters('ZIP_FILE_FUSION_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ZIP_FILE_ROSS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"InterfaceFolder": {
+						"type": "string"
+					},
+					"FolderName": {
+						"type": "string",
+						"defaultValue": "-1"
+					},
+					"FileName": {
+						"type": "string"
+					},
+					"FolderPath": {
+						"type": "string"
+					},
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": {
+						"value": "[parameters('ZIP_FILE_ROSS_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('ZIP_FILE_ROSS_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ZIP_FILE_ROSS_CS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "egsaasdrBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"InterfaceFolder": {
+						"type": "string"
+					},
+					"FolderName": {
+						"type": "string",
+						"defaultValue": "-1"
+					},
+					"FileName": {
+						"type": "string"
+					},
+					"FolderPath": {
+						"type": "string"
+					},
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": {
+						"value": "[parameters('ZIP_FILE_ROSS_CS_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('ZIP_FILE_ROSS_CS_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

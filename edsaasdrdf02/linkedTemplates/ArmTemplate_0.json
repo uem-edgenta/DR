@@ -1,0 +1,1704 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "edsaasdrdf02"
+		},
+		"ROSSSftp_privateKeyContent": {
+			"type": "secureString",
+			"metadata": "Secure string for 'privateKeyContent' of 'ROSSSftp'"
+		},
+		"ROSSSftp_passPhrase": {
+			"type": "secureString",
+			"metadata": "Secure string for 'passPhrase' of 'ROSSSftp'"
+		},
+		"fusionSftp_privateKeyContent": {
+			"type": "secureString",
+			"metadata": "Secure string for 'privateKeyContent' of 'fusionSftp'"
+		},
+		"fusionSftp_passPhrase": {
+			"type": "secureString",
+			"metadata": "Secure string for 'passPhrase' of 'fusionSftp'"
+		},
+		"urbanizedb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'urbanizedb'"
+		},
+		"HCMSftp_privateKeyContent": {
+			"type": "secureString",
+			"metadata": "Secure string for 'privateKeyContent' of 'HCMSftp'"
+		},
+		"HCMSftp_passPhrase": {
+			"type": "secureString",
+			"metadata": "Secure string for 'passPhrase' of 'HCMSftp'"
+		},
+		"edsaasdrdb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'edsaasdrdb'"
+		},
+		"edsaasdrfc_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'edsaasdrfc'"
+		},
+		"egsaasdrBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'egsaasdrBlobStorage'"
+		},
+		"ROSSSftp_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "sftp01.uemedgenta.com"
+		},
+		"ROSSSftp_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "oracle"
+		},
+		"fusionSftp_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "129.154.84.0"
+		},
+		"fusionSftp_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "edgenta_int"
+		},
+		"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"type": "string",
+			"defaultValue": "edsgdrsql02.database.windows.net"
+		},
+		"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"type": "secureString"
+		},
+		"FUSION_FileShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().fileName"
+		},
+		"FUSION_FileShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().fileLocation"
+		},
+		"Fusion_FlatFileShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().fileName"
+		},
+		"Fusion_FlatFileShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().fileLocation"
+		},
+		"Fusion_FolderShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"Fusion_FolderShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().fileLocation"
+		},
+		"ROSSFileShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"ROSSFileShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().FileLocation"
+		},
+		"ROSSFileShareZip_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"ROSSFileShareZip_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().FileLocation"
+		},
+		"ROSSFolderShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"ROSSFolderShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().FileLocation"
+		},
+		"HCMSftp_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "129.154.84.0"
+		},
+		"HCMSftp_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "dev_timeclock"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/API_LOG')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Add Step Input",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/adf/AuditLog",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.EventID,'\",\n\"EventName\" : \"',pipeline().parameters.EventName,'\",\n\"FileZipName\" : \"',pipeline().parameters.FileZipName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.FileZipName,'zip','csv'),'\",\n\"Object\" : \"',pipeline().parameters.Object,'\",\n\"SourceSystem\" : \"',pipeline().parameters.SourceSystem,'\",\n\"DestSystem\" : \"',pipeline().parameters.DestSystem,'\",\n\"JobId\" : \"',pipeline().parameters.JobID,'\",\n\"ActivityTask\" : \"',pipeline().parameters.ActivityTask,'\",\n\"ActivityType\" : \"1\",\n\"StartTime\" : \"',pipeline().parameters.StartTime,'\",\n\"EndTime\" : \"',pipeline().parameters.EndTime,'\",\n\"Status\" : \"',pipeline().parameters.Status,'\",\n\"Output\" : ',pipeline().parameters.Input,',\n\"Error\" : ',pipeline().parameters.Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 3,\n\"EventType\" : \"',pipeline().parameters.EventType,'\",\n\"FilePath\" : \"',pipeline().parameters.FilePath,'\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Add StepOutput",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Add Step Input",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/adf/AuditLog",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.EventID,'\",\n\"EventName\" : \"',pipeline().parameters.EventName,'\",\n\"FileZipName\" : \"',pipeline().parameters.FileZipName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.FileZipName,'zip','csv'),'\",\n\"Object\" : \"',pipeline().parameters.Object,'\",\n\"SourceSystem\" : \"',pipeline().parameters.SourceSystem,'\",\n\"DestSystem\" : \"',pipeline().parameters.DestSystem,'\",\n\"JobId\" : \"',pipeline().parameters.JobID,'\",\n\"ActivityTask\" : \"',pipeline().parameters.ActivityTask,'\",\n\"ActivityType\" : \"2\",\n\"StartTime\" : \"',pipeline().parameters.StartTime,'\",\n\"EndTime\" : \"',pipeline().parameters.EndTime,'\",\n\"Status\" : \"',pipeline().parameters.Status,'\",\n\"Output\" : ',pipeline().parameters.Output,',\n\"Error\" : ',pipeline().parameters.Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 3,\n\"EventType\" : \"',pipeline().parameters.EventType,'\",\n\"FilePath\" : \"',pipeline().parameters.FilePath,'\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"EventID": {
+						"type": "string"
+					},
+					"EventName": {
+						"type": "string"
+					},
+					"FileZipName": {
+						"type": "string"
+					},
+					"Object": {
+						"type": "string"
+					},
+					"SourceSystem": {
+						"type": "string"
+					},
+					"DestSystem": {
+						"type": "string"
+					},
+					"JobID": {
+						"type": "string"
+					},
+					"ActivityTask": {
+						"type": "string"
+					},
+					"StartTime": {
+						"type": "string"
+					},
+					"EndTime": {
+						"type": "string"
+					},
+					"Status": {
+						"type": "string"
+					},
+					"Output": {
+						"type": "string"
+					},
+					"Error": {
+						"type": "string"
+					},
+					"ErrorLoc": {
+						"type": "string"
+					},
+					"EventType": {
+						"type": "string"
+					},
+					"FilePath": {
+						"type": "string"
+					},
+					"Input": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GENERAL_ERROR_LOG')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Send Error Log to ORACLE",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Create Error Log",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/adf/sftp/oracle",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('{\"blobPath\":\"egsaasdrblob01/',concat(pipeline().parameters.LogFolder,'/',replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt'),'\",\"fileName\":\"',concat(replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt'),'\",\"sftpTarget\":\"',variables('OraErrorPath'),'/',pipeline().parameters.Department,'/',variables('Foldername'),'\",\"sftpType\": 0}')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Add Log for Send Error Log to ORACLE",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Send Error Log to ORACLE",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/adf/AuditLog",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send Error Log to ORACLE').ActivityRunId,'\",\n\"ActivityTask\" : \"Send Error Log to ',pipeline().parameters.SourceSystem,'\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send Error Log to ORACLE').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send Error Log to ORACLE').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send Error Log to ORACLE').Status,'\",\n\"Output\" : ',activity('Send Error Log to ORACLE').Output,',\n\"Error\" : ',activity('Send Error Log to ORACLE').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of sending error log file to ',pipeline().parameters.SourceSystem,'\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Create Error Log",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/log/error-log",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('{\n\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\"filePath\": \"/egsaasdrblob01/',pipeline().parameters.LogFolder,'\",\n\"fileName\": \"',replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt\"\n}')",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "Basic",
+								"username": "uem_edgenta",
+								"password": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							}
+						}
+					}
+				],
+				"parameters": {
+					"ParentPipelineID": {
+						"type": "string",
+						"defaultValue": "205af391-e0ef-4b29-a0a5-b25c79da186f"
+					},
+					"LogFolder": {
+						"type": "string",
+						"defaultValue": "outbound/log"
+					},
+					"zipfileName": {
+						"type": "string",
+						"defaultValue": "INT_PPM_206_PROJECT_Export_51034_20190703024120.zip"
+					},
+					"Department": {
+						"type": "string",
+						"defaultValue": "ppm"
+					},
+					"SourceSystem": {
+						"type": "string",
+						"defaultValue": "ORACLE"
+					}
+				},
+				"variables": {
+					"OraErrorPath": {
+						"type": "String",
+						"defaultValue": "/uem/dev/edgenta/azure/error"
+					},
+					"FolderName": {
+						"type": "String",
+						"defaultValue": "project"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ROSSSftp')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Sftp",
+				"typeProperties": {
+					"host": "[parameters('ROSSSftp_properties_typeProperties_host')]",
+					"port": "2223",
+					"skipHostKeyValidation": true,
+					"authenticationType": "SshPublicKey",
+					"userName": "[parameters('ROSSSftp_properties_typeProperties_userName')]",
+					"privateKeyContent": {
+						"type": "SecureString",
+						"value": "[parameters('ROSSSftp_privateKeyContent')]"
+					},
+					"passPhrase": {
+						"type": "SecureString",
+						"value": "[parameters('ROSSSftp_passPhrase')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/fusionSftp')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Sftp",
+				"typeProperties": {
+					"host": "[parameters('fusionSftp_properties_typeProperties_host')]",
+					"port": 22,
+					"skipHostKeyValidation": true,
+					"authenticationType": "SshPublicKey",
+					"userName": "[parameters('fusionSftp_properties_typeProperties_userName')]",
+					"privateKeyContent": {
+						"type": "SecureString",
+						"value": "[parameters('fusionSftp_privateKeyContent')]"
+					},
+					"passPhrase": {
+						"type": "SecureString",
+						"value": "[parameters('fusionSftp_passPhrase')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/urbanizedb')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('urbanizedb_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/egsaasdrir')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "Southeast Asia",
+						"nodeSize": "Standard_D8_v3",
+						"numberOfNodes": 1,
+						"maxParallelExecutionsPerNode": 5
+					},
+					"ssisProperties": {
+						"catalogInfo": {
+							"catalogServerEndpoint": "[parameters('egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]",
+							"catalogAdminUserName": "[parameters('egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName')]",
+							"catalogAdminPassword": {
+								"type": "SecureString",
+								"value": "[parameters('egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+							},
+							"catalogPricingTier": "S1"
+						},
+						"edition": "Standard",
+						"licenseType": "LicenseIncluded"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntimeAzure01')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "Southeast Asia",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLiveInMinutes": 60
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GENERAL_TRIGGER')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "If 337",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(pipeline().parameters.InterfaceName,'INT_PPM_337')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Send Trigger for 337",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://uemaoicdev01-uemgroup.integration.ocp.oraclecloud.com/ic/api/integration/v1/integrations/INT_PPM_BILLINGE_EXTERNAL%7C01.00.0000/schedule/jobs",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"action": "NOW"
+										},
+										"authentication": {
+											"type": "Basic",
+											"username": "erp_int_user",
+											"password": {
+												"type": "SecureString",
+												"value": "**********"
+											}
+										}
+									}
+								},
+								{
+									"name": "ExecutePipeline1",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Send Trigger for 337",
+											"dependencyConditions": [
+												"Completed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "API_LOG",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"EventID": {
+												"value": "@pipeline().parameters.ParentPipelineID",
+												"type": "Expression"
+											},
+											"EventName": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"Object": "WORKTYPENUMBER",
+											"SourceSystem": "ROSS-Azure",
+											"DestSystem": "UEMGroup-Oracle",
+											"JobID": {
+												"value": "@activity('Send Trigger for 337').ActivityRunId",
+												"type": "Expression"
+											},
+											"ActivityTask": "Send Trigger File Request to ORACLE",
+											"StartTime": {
+												"value": "@activity('Send Trigger for 337').ExecutionStartTime",
+												"type": "Expression"
+											},
+											"EndTime": {
+												"value": "@activity('Send Trigger for 337').ExecutionEndTime",
+												"type": "Expression"
+											},
+											"Status": {
+												"value": "@activity('Send Trigger for 337').Status",
+												"type": "Expression"
+											},
+											"Output": {
+												"value": "@activity('Send Trigger for 337').output",
+												"type": "Expression"
+											},
+											"Error": {
+												"value": "@if(empty(activity('Send Trigger for 337').Error),'',activity('Send Trigger for 337').Error)",
+												"type": "Expression"
+											},
+											"EventType": "INBOUND",
+											"FilePath": "The step describes the process of send request to ORACLE API",
+											"Input": "{\n\t\"action\":\"NOW\"\n}",
+											"FileZipName": "tes"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "If 363",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(pipeline().parameters.InterfaceName,'INT_PPM_363')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Send Trigger for 363",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://uemaoicdev01-uemgroup.integration.ocp.oraclecloud.com/ic/api/integration/v1/integrations/INT_PPM_COSTACCR_EXTERNAL%7C01.00.0000/schedule/jobs",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"action": "NOW"
+										},
+										"authentication": {
+											"type": "Basic",
+											"username": "erp_int_user",
+											"password": {
+												"type": "SecureString",
+												"value": "**********"
+											}
+										}
+									}
+								},
+								{
+									"name": "ExecutePipeline2",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Send Trigger for 363",
+											"dependencyConditions": [
+												"Completed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "API_LOG",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"EventID": {
+												"value": "@pipeline().parameters.ParentPipelineID",
+												"type": "Expression"
+											},
+											"EventName": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"Object": "WORKTYPENUMBER",
+											"SourceSystem": "ROSS-Azure",
+											"DestSystem": "UEMGroup-Oracle",
+											"JobID": {
+												"value": "@activity('Send Trigger for 363').ActivityRunId",
+												"type": "Expression"
+											},
+											"ActivityTask": "Send Trigger File Request to ORACLE",
+											"StartTime": {
+												"value": "@activity('Send Trigger for 363').ExecutionStartTime",
+												"type": "Expression"
+											},
+											"EndTime": {
+												"value": "@activity('Send Trigger for 363').ExecutionEndTime",
+												"type": "Expression"
+											},
+											"Status": {
+												"value": "@activity('Send Trigger for 363').Status",
+												"type": "Expression"
+											},
+											"Output": {
+												"value": "@activity('Send Trigger for 363').output",
+												"type": "Expression"
+											},
+											"Error": {
+												"value": "@if(empty(activity('Send Trigger for 363').Error),'',activity('Send Trigger for 363').Error)",
+												"type": "Expression"
+											},
+											"EventType": "INBOUND",
+											"FilePath": "The step describes the process of send request to ORACLE API",
+											"Input": "{\n\t\"action\":\"NOW\"\n}",
+											"FileZipName": "tes"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "If 303",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(pipeline().parameters.InterfaceName,'INT_SCM_303')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Send Trigger for 303",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://uemaoicdev01-uemgroup.integration.ocp.oraclecloud.com/ic/api/integration/v1/integrations/INT_SCM_303_MASTERPR%7C01.00.0000/schedule/jobs",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"action": "NOW"
+										},
+										"authentication": {
+											"type": "Basic",
+											"username": "erp_int_user",
+											"password": {
+												"type": "SecureString",
+												"value": "**********"
+											}
+										}
+									}
+								},
+								{
+									"name": "ExecutePipeline3",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Send Trigger for 303",
+											"dependencyConditions": [
+												"Completed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "API_LOG",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"EventID": {
+												"value": "@pipeline().parameters.ParentPipelineID",
+												"type": "Expression"
+											},
+											"EventName": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"Object": "WORKTYPENUMBER",
+											"SourceSystem": "ROSS-Azure",
+											"DestSystem": "UEMGroup-Oracle",
+											"JobID": {
+												"value": "@activity('Send Trigger for 303').ActivityRunId",
+												"type": "Expression"
+											},
+											"ActivityTask": "Send Trigger File Request to ORACLE",
+											"StartTime": {
+												"value": "@activity('Send Trigger for 303').ExecutionStartTime",
+												"type": "Expression"
+											},
+											"EndTime": {
+												"value": "@activity('Send Trigger for 303').ExecutionEndTime",
+												"type": "Expression"
+											},
+											"Status": {
+												"value": "@activity('Send Trigger for 303').Status",
+												"type": "Expression"
+											},
+											"Output": {
+												"value": "@activity('Send Trigger for 303').output",
+												"type": "Expression"
+											},
+											"Error": {
+												"value": "@if(empty(activity('Send Trigger for 303').Error),'',activity('Send Trigger for 303').Error)",
+												"type": "Expression"
+											},
+											"EventType": "INBOUND",
+											"FilePath": "The step describes the process of send request to ORACLE API",
+											"Input": "{\n\t\"action\":\"NOW\"\n}",
+											"FileZipName": "tes"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"InterfaceName": {
+						"type": "string"
+					},
+					"ParentPipelineID": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "GENERAL"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/API_LOG')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FUSION_FileShare')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "fusionSftp",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					},
+					"fileLocation": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"typeProperties": {
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Optimal"
+					},
+					"fileName": {
+						"value": "[parameters('FUSION_FileShare_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('FUSION_FileShare_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/fusionSftp')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Fusion_FlatFileShare')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "fusionSftp",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					},
+					"fileLocation": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"typeProperties": {
+					"fileName": {
+						"value": "[parameters('Fusion_FlatFileShare_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('Fusion_FlatFileShare_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/fusionSftp')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Fusion_FolderShare')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "fusionSftp",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileLocation": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"typeProperties": {
+					"fileName": "[parameters('Fusion_FolderShare_properties_typeProperties_fileName')]",
+					"folderPath": {
+						"value": "[parameters('Fusion_FolderShare_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/fusionSftp')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ROSSFileShare')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ROSSSftp",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileLocation": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"typeProperties": {
+					"fileName": {
+						"value": "[parameters('ROSSFileShare_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('ROSSFileShare_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ROSSSftp')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ROSSFileShareZip')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ROSSSftp",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileLocation": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"typeProperties": {
+					"compression": {
+						"type": "ZipDeflate"
+					},
+					"fileName": {
+						"value": "[parameters('ROSSFileShareZip_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('ROSSFileShareZip_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ROSSSftp')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ROSSFolderShare')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ROSSSftp",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileLocation": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"typeProperties": {
+					"fileName": "[parameters('ROSSFolderShare_properties_typeProperties_fileName')]",
+					"folderPath": {
+						"value": "[parameters('ROSSFolderShare_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ROSSSftp')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/urbanizeDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "urbanizedb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "identifier",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "reference_number",
+						"type": "varchar"
+					},
+					{
+						"name": "summary",
+						"type": "varchar"
+					},
+					{
+						"name": "description",
+						"type": "varchar"
+					},
+					{
+						"name": "raised_condition",
+						"type": "varchar"
+					},
+					{
+						"name": "external_reference",
+						"type": "varchar"
+					},
+					{
+						"name": "status",
+						"type": "varchar"
+					},
+					{
+						"name": "creation_time",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "tolerance",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "due_time",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "due_time_with_tollerance",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "nearing_breach",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "response_time",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "response_expiration",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Response_SLA",
+						"type": "varchar"
+					},
+					{
+						"name": "completion_expiration",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "completed_time",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Completion_SLA",
+						"type": "varchar"
+					},
+					{
+						"name": "job_state",
+						"type": "varchar"
+					},
+					{
+						"name": "Created_Due",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "next_action",
+						"type": "varchar"
+					},
+					{
+						"name": "creator",
+						"type": "varchar"
+					},
+					{
+						"name": "assignee",
+						"type": "varchar"
+					},
+					{
+						"name": "supplier_name",
+						"type": "varchar"
+					},
+					{
+						"name": "supplier_ext_reference",
+						"type": "varchar"
+					},
+					{
+						"name": "segment",
+						"type": "varchar"
+					},
+					{
+						"name": "account",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "property",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "product_bundle_order",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Urbanise_URL",
+						"type": "varchar"
+					},
+					{
+						"name": "job_template",
+						"type": "varchar"
+					},
+					{
+						"name": "Priority",
+						"type": "varchar"
+					},
+					{
+						"name": "last_changed",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "quotation",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"tableName": "efsb_jobs"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/urbanizedb')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HCMSftp')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Sftp",
+				"typeProperties": {
+					"host": "[parameters('HCMSftp_properties_typeProperties_host')]",
+					"port": 22,
+					"skipHostKeyValidation": true,
+					"authenticationType": "SshPublicKey",
+					"userName": "[parameters('HCMSftp_properties_typeProperties_userName')]",
+					"privateKeyContent": {
+						"type": "SecureString",
+						"value": "[parameters('HCMSftp_privateKeyContent')]"
+					},
+					"passPhrase": {
+						"type": "SecureString",
+						"value": "[parameters('HCMSftp_passPhrase')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeAzure01",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeAzure01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/edsaasdrdb')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('edsaasdrdb_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeAzure01",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeAzure01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/edsaasdrfc')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "https://edsaasdrfc01.azurewebsites.net",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('edsaasdrfc_functionKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeAzure01",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeAzure01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/egsaasdrBlobStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('egsaasdrBlobStorage_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeAzure01",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeAzure01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/INT_SCM_340')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Data from Database",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select --identifier [UniqueID],\n--CASE WHEN convert(varchar(10),creation_time,120) = convert(varchar(10),DATEADD(hh,8,last_changed,,120) THEN 'A' ELSE 'U' END [ChangeIndicator],\n--priority,\n--status,\nraised_condition [workType],\nreference_number [workTypeNumber],\nsummary [workDescription], \nconvert(varchar(10),creation_time,120) [startDateActive],\nISNULL(convert(varchar(10),DATEADD(hh,8,completed_time),120),'2099-01-01') [endDateActive]--,\n--last_changed,\n--creation_time\nfrom efsb_jobs\nwhere job_state = 'ACTIVE'\nAND DATEADD(hh,8,last_changed) >= DATEADD(mi,-30,getdate())\nAND convert(varchar(10),creation_time,120) = convert(varchar(10),DATEADD(hh,8,last_changed),120)"
+							},
+							"dataset": {
+								"referenceName": "urbanizeDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Add Log for Get Data from Database",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Get Data from Database",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/adf/AuditLog",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"WORKTYPENUMBER\",\n\"SourceSystem\" : \"Urbanize-Azure\",\n\"DestSystem\" : \"Edgenta-Azure\",\n\"JobId\" : \"',activity('Get Data from Database').ActivityRunId,'\",\n\"ActivityTask\" : \"Get Record from Urbanize Database\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Get Data from Database').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data from Database').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data from Database').Status,'\",\n\"Output\" : ',activity('Get Data from Database').Output,',\n\"Error\" : ',activity('Get Data from Database').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of retrieve data from Urbanize Database\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Get Data for Updated Record",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "If Condition1",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select --identifier [UniqueID],\n--CASE WHEN convert(varchar(10),creation_time,120) = convert(varchar(10),last_changed,120) THEN 'A' ELSE 'U' END [ChangeIndicator],\n--priority,\n--status,\nraised_condition [workType],\nreference_number [workTypeNumber],\nsummary [workDescription],\nconvert(varchar(10),creation_time,120) [startDateActive],\nISNULL(convert(varchar(10),DATEADD(hh,8,completed_time),120),'2099-01-01') [endDateActive]\n--last_changed,\n--completed_time\nfrom efsb_jobs\nwhere job_state = 'ACTIVE'\nAND DATEADD(hh,8,last_changed) >= DATEADD(mi,-30,getdate())\nAND convert(varchar(10),creation_time,120) <> convert(varchar(10),DATEADD(hh,8,last_changed),120)"
+							},
+							"dataset": {
+								"referenceName": "urbanizeDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "WebActivity1",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Get Data for Updated Record",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/adf/AuditLog",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"WORKTYPENUMBER\",\n\"SourceSystem\" : \"Urbanize-Azure\",\n\"DestSystem\" : \"Edgenta-Azure\",\n\"JobId\" : \"',activity('Get Data for Updated Record').ActivityRunId,'\",\n\"ActivityTask\" : \"Get Updated Record from Urbanize Database\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Get Data for Updated Record').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data for Updated Record').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data for Updated Record').Status,'\",\n\"Output\" : ',activity('Get Data for Updated Record').Output,',\n\"Error\" : ',activity('Get Data for Updated Record').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of retrieve updated data from Urbanize Database\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Data from Database",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(activity('Get Data from Database').output.count,0)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Send Request for New Record",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://edgenta.azure-api.net/int/scm/340",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"A\",\n   \"workOrder\":',activity('Get Data from Database').output.value,'\n}')",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "Basic",
+											"username": "uem_edgenta",
+											"password": {
+												"type": "SecureString",
+												"value": "**********"
+											}
+										}
+									}
+								},
+								{
+									"name": "ExecutePipeline4",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Send Request for New Record",
+											"dependencyConditions": [
+												"Completed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "API_LOG",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"EventID": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"EventName": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"FileZipName": {
+												"value": "@variables('ZipFileName')",
+												"type": "Expression"
+											},
+											"Object": "WORKTYPENUMBER",
+											"SourceSystem": "Urbanize-Azure",
+											"DestSystem": "UEMGroup-Oracle",
+											"JobID": {
+												"value": "@activity('Send Request for New Record').ActivityRunId",
+												"type": "Expression"
+											},
+											"ActivityTask": "Send Request to ORACLE for Updated Work Type Records",
+											"StartTime": {
+												"value": "@activity('Send Request for New Record').ExecutionStartTime",
+												"type": "Expression"
+											},
+											"EndTime": {
+												"value": "@activity('Send Request for New Record').ExecutionEndTime",
+												"type": "Expression"
+											},
+											"Status": {
+												"value": "@activity('Send Request for New Record').Status",
+												"type": "Expression"
+											},
+											"Output": {
+												"value": "@activity('Send Request for New Record').output",
+												"type": "Expression"
+											},
+											"Error": {
+												"value": "@if(empty(activity('Send Request for New Record').Error),'',activity('Send Request for New Record').Error)",
+												"type": "Expression"
+											},
+											"EventType": "INBOUND",
+											"FilePath": "The step describes the process of send request to ORACLE API",
+											"Input": {
+												"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"A\",\n   \"workOrder\":',activity('Get Data from Database').output.value,'\n}')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "If Condition2",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Data for Updated Record",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(activity('Get Data for Updated Record').output.count,0)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Send Request",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://edgenta.azure-api.net/int/scm/340",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"U\",\n   \"workOrder\":',activity('Get Data for Updated Record').output.value,'\n}')",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "Basic",
+											"username": "uem_edgenta",
+											"password": {
+												"type": "SecureString",
+												"value": "**********"
+											}
+										}
+									}
+								},
+								{
+									"name": "ExecutePipeline5",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Send Request",
+											"dependencyConditions": [
+												"Completed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "API_LOG",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"EventID": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"EventName": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"FileZipName": {
+												"value": "@variables('ZipFileName')",
+												"type": "Expression"
+											},
+											"Object": "WORKTYPENUMBER",
+											"SourceSystem": "ROSS-Azure",
+											"DestSystem": "UEMGroup-Oracle",
+											"JobID": {
+												"value": "@activity('Send Request').ActivityRunId",
+												"type": "Expression"
+											},
+											"ActivityTask": "Send Request to ORACLE for Updated Work Type Records",
+											"StartTime": {
+												"value": "@activity('Send Request').ExecutionStartTime",
+												"type": "Expression"
+											},
+											"EndTime": {
+												"value": "@activity('Send Request').ExecutionEndTime",
+												"type": "Expression"
+											},
+											"Status": {
+												"value": "@activity('Send Request').Status",
+												"type": "Expression"
+											},
+											"Output": {
+												"value": "@activity('Send Request').output",
+												"type": "Expression"
+											},
+											"Error": {
+												"value": "@if(empty(activity('Send Request').Error),'',activity('Send Request').Error)",
+												"type": "Expression"
+											},
+											"EventType": "INBOUND",
+											"FilePath": "The step describes the process of send request to ORACLE API",
+											"Input": {
+												"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"U\",\n   \"workOrder\":',activity('Get Data for Updated Record').output.value,'\n}')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"ScheduleType": {
+						"type": "string",
+						"defaultValue": "2"
+					}
+				},
+				"variables": {
+					"AddWorkTypeList": {
+						"type": "Array"
+					},
+					"UpdateWorkTypeList": {
+						"type": "Array"
+					},
+					"WorkTypeRecord": {
+						"type": "String"
+					},
+					"AddWorkTypeObject": {
+						"type": "String"
+					},
+					"UpdateWorkTypeObject": {
+						"type": "String"
+					},
+					"ZipFileName": {
+						"type": "String",
+						"defaultValue": "INT_SCM_340"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/urbanizeDB')]",
+				"[concat(variables('factoryId'), '/pipelines/API_LOG')]"
+			]
+		}
+	]
+}

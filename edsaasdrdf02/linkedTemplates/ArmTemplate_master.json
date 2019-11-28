@@ -1,0 +1,1292 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "edsaasdrdf02"
+		},
+		"HCMSftp_privateKeyContent": {
+			"type": "secureString",
+			"metadata": "Secure string for 'privateKeyContent' of 'HCMSftp'"
+		},
+		"HCMSftp_passPhrase": {
+			"type": "secureString",
+			"metadata": "Secure string for 'passPhrase' of 'HCMSftp'"
+		},
+		"ROSSSftp_privateKeyContent": {
+			"type": "secureString",
+			"metadata": "Secure string for 'privateKeyContent' of 'ROSSSftp'"
+		},
+		"ROSSSftp_passPhrase": {
+			"type": "secureString",
+			"metadata": "Secure string for 'passPhrase' of 'ROSSSftp'"
+		},
+		"edsaasdrdb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'edsaasdrdb'"
+		},
+		"edsaasdrfc_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'edsaasdrfc'"
+		},
+		"egsaasdrBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'egsaasdrBlobStorage'"
+		},
+		"fusionSftp_privateKeyContent": {
+			"type": "secureString",
+			"metadata": "Secure string for 'privateKeyContent' of 'fusionSftp'"
+		},
+		"fusionSftp_passPhrase": {
+			"type": "secureString",
+			"metadata": "Secure string for 'passPhrase' of 'fusionSftp'"
+		},
+		"urbanizedb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'urbanizedb'"
+		},
+		"ADHOC_BLOB_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"ADHOC_BLOB_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().FileLocation"
+		},
+		"BACKUP_ZIP_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "egsaasdrblob01/uem/dev/edgenta/azure/outbound/archive/src"
+		},
+		"FILE_FUSION_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"FILE_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"FOLDER_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))"
+		},
+		"FOLDER_ROSS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))"
+		},
+		"FUSION_FileShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().fileName"
+		},
+		"FUSION_FileShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().fileLocation"
+		},
+		"Fusion_FlatFileShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().fileName"
+		},
+		"Fusion_FlatFileShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().fileLocation"
+		},
+		"Fusion_FolderShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"Fusion_FolderShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().fileLocation"
+		},
+		"OUT_ARCHIVE_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/archive/src/',dataset().Department,'/',dataset().InterfaceName)"
+		},
+		"OUT_SOURCE_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/main/src/',dataset().Department,'/',dataset().InterfaceName)"
+		},
+		"OUT_SOURCE_FILE_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"OUT_SOURCE_FILE_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('/uem/dev/edgenta/azure/outbound/main/src/',dataset().Department,'/',dataset().InterfaceName)"
+		},
+		"OUT_STAGING_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/main/stg/',dataset().Department,'/',dataset().InterfaceName)"
+		},
+		"OUT_STAGING_FILE_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@replace(dataset().FileName,'zip','csv')"
+		},
+		"OUT_STAGING_FILE_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/main/stg/',dataset().Department,'/',dataset().InterfaceName,'/dataset().FileName')"
+		},
+		"ROSSFileShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"ROSSFileShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().FileLocation"
+		},
+		"ROSSFileShareZip_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().FileName"
+		},
+		"ROSSFileShareZip_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().FileLocation"
+		},
+		"ROSSFolderShare_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"ROSSFolderShare_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@dataset().FileLocation"
+		},
+		"ZIP_FILE_FUS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"ZIP_FILE_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"ZIP_FILE_ROSS_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat(dataset().FileName)"
+		},
+		"ZIP_FILE_ROSS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))"
+		},
+		"ZIP_FILE_ROSS_CS_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat(dataset().FileName)"
+		},
+		"ZIP_FILE_ROSS_CS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))"
+		},
+		"ZIP_FUSION_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().ZipName"
+		},
+		"ZIP_FUSION_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department),concat('egsaasdrblob01/',dataset().PathFolder,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"ZIP_ROSS_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().ZipName,'-1'),'',dataset().ZipName)"
+		},
+		"ZIP_ROSS_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"ZIP_ROSS_FOR_SFTP_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().ZipName,'-1'),'',dataset().ZipName)"
+		},
+		"ZIP_ROSS_FOR_SFTP_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder))"
+		},
+		"HCMSftp_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "129.154.84.0"
+		},
+		"HCMSftp_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "dev_timeclock"
+		},
+		"ROSSSftp_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "sftp01.uemedgenta.com"
+		},
+		"ROSSSftp_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "oracle"
+		},
+		"fusionSftp_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "129.154.84.0"
+		},
+		"fusionSftp_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "edgenta_int"
+		},
+		"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/item"
+		},
+		"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_201"
+		},
+		"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/supplier"
+		},
+		"0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_203"
+		},
+		"0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/blanketAgreement"
+		},
+		"0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_204"
+		},
+		"0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/po"
+		},
+		"0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_205"
+		},
+		"0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/item"
+		},
+		"0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_201"
+		},
+		"0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/supplier"
+		},
+		"0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_203"
+		},
+		"0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/blanketAgreement"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_204"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/po"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_205"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/inventoryItemCost"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_231"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/inventoryItemCost"
+		},
+		"0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_231"
+		},
+		"0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/ppm/project"
+		},
+		"0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_PPM_206"
+		},
+		"0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "ppm"
+		},
+		"0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/fin/supplierPayment"
+		},
+		"0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_FIN_249"
+		},
+		"0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "fin"
+		},
+		"0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/fin/arInvoice"
+		},
+		"0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_FIN_252"
+		},
+		"0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "fin"
+		},
+		"0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/po"
+		},
+		"0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_205"
+		},
+		"0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/fin/customer"
+		},
+		"1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_FIN_267"
+		},
+		"1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "fin"
+		},
+		"1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/po"
+		},
+		"1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_205"
+		},
+		"1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/inventoryItemCost"
+		},
+		"1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_231"
+		},
+		"1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/ppm/project"
+		},
+		"1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_PPM_206"
+		},
+		"1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "ppm"
+		},
+		"1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/fin/invoiceReceipt"
+		},
+		"1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_FIN_254"
+		},
+		"1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "fin"
+		},
+		"1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem_edgenta/dev/erp/ross/fusion_inbound/approvedcop"
+		},
+		"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_303"
+		},
+		"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/fin/arCreditNote"
+		},
+		"1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_FIN_253"
+		},
+		"1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "fin"
+		},
+		"1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem_edgenta/dev/erp/ross/fusion_inbound/billingevents"
+		},
+		"1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_PPM_337"
+		},
+		"1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "ppm"
+		},
+		"1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem_edgenta/dev/erp/ross/fusion_inbound/costaccrual"
+		},
+		"1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_PPM_363"
+		},
+		"1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "ppm"
+		},
+		"1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+			"type": "string",
+			"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/po"
+		},
+		"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+			"type": "string",
+			"defaultValue": "INT_SCM_205"
+		},
+		"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department": {
+			"type": "string",
+			"defaultValue": "scm"
+		},
+		"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+			"type": "string",
+			"defaultValue": "1"
+		},
+		"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"type": "string",
+			"defaultValue": "edsgdrsql02.database.windows.net"
+		},
+		"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"type": "secureString"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ROSSSftp_privateKeyContent": {
+						"value": "[parameters('ROSSSftp_privateKeyContent')]"
+					},
+					"ROSSSftp_passPhrase": {
+						"value": "[parameters('ROSSSftp_passPhrase')]"
+					},
+					"fusionSftp_privateKeyContent": {
+						"value": "[parameters('fusionSftp_privateKeyContent')]"
+					},
+					"fusionSftp_passPhrase": {
+						"value": "[parameters('fusionSftp_passPhrase')]"
+					},
+					"urbanizedb_connectionString": {
+						"value": "[parameters('urbanizedb_connectionString')]"
+					},
+					"HCMSftp_privateKeyContent": {
+						"value": "[parameters('HCMSftp_privateKeyContent')]"
+					},
+					"HCMSftp_passPhrase": {
+						"value": "[parameters('HCMSftp_passPhrase')]"
+					},
+					"edsaasdrdb_connectionString": {
+						"value": "[parameters('edsaasdrdb_connectionString')]"
+					},
+					"edsaasdrfc_functionKey": {
+						"value": "[parameters('edsaasdrfc_functionKey')]"
+					},
+					"egsaasdrBlobStorage_connectionString": {
+						"value": "[parameters('egsaasdrBlobStorage_connectionString')]"
+					},
+					"ROSSSftp_properties_typeProperties_host": {
+						"value": "[parameters('ROSSSftp_properties_typeProperties_host')]"
+					},
+					"ROSSSftp_properties_typeProperties_userName": {
+						"value": "[parameters('ROSSSftp_properties_typeProperties_userName')]"
+					},
+					"fusionSftp_properties_typeProperties_host": {
+						"value": "[parameters('fusionSftp_properties_typeProperties_host')]"
+					},
+					"fusionSftp_properties_typeProperties_userName": {
+						"value": "[parameters('fusionSftp_properties_typeProperties_userName')]"
+					},
+					"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+						"value": "[parameters('egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]"
+					},
+					"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+						"value": "[parameters('egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName')]"
+					},
+					"egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+						"value": "[parameters('egsaasdrir_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+					},
+					"FUSION_FileShare_properties_typeProperties_fileName": {
+						"value": "[parameters('FUSION_FileShare_properties_typeProperties_fileName')]"
+					},
+					"FUSION_FileShare_properties_typeProperties_folderPath": {
+						"value": "[parameters('FUSION_FileShare_properties_typeProperties_folderPath')]"
+					},
+					"Fusion_FlatFileShare_properties_typeProperties_fileName": {
+						"value": "[parameters('Fusion_FlatFileShare_properties_typeProperties_fileName')]"
+					},
+					"Fusion_FlatFileShare_properties_typeProperties_folderPath": {
+						"value": "[parameters('Fusion_FlatFileShare_properties_typeProperties_folderPath')]"
+					},
+					"Fusion_FolderShare_properties_typeProperties_fileName": {
+						"value": "[parameters('Fusion_FolderShare_properties_typeProperties_fileName')]"
+					},
+					"Fusion_FolderShare_properties_typeProperties_folderPath": {
+						"value": "[parameters('Fusion_FolderShare_properties_typeProperties_folderPath')]"
+					},
+					"ROSSFileShare_properties_typeProperties_fileName": {
+						"value": "[parameters('ROSSFileShare_properties_typeProperties_fileName')]"
+					},
+					"ROSSFileShare_properties_typeProperties_folderPath": {
+						"value": "[parameters('ROSSFileShare_properties_typeProperties_folderPath')]"
+					},
+					"ROSSFileShareZip_properties_typeProperties_fileName": {
+						"value": "[parameters('ROSSFileShareZip_properties_typeProperties_fileName')]"
+					},
+					"ROSSFileShareZip_properties_typeProperties_folderPath": {
+						"value": "[parameters('ROSSFileShareZip_properties_typeProperties_folderPath')]"
+					},
+					"ROSSFolderShare_properties_typeProperties_fileName": {
+						"value": "[parameters('ROSSFolderShare_properties_typeProperties_fileName')]"
+					},
+					"ROSSFolderShare_properties_typeProperties_folderPath": {
+						"value": "[parameters('ROSSFolderShare_properties_typeProperties_folderPath')]"
+					},
+					"HCMSftp_properties_typeProperties_host": {
+						"value": "[parameters('HCMSftp_properties_typeProperties_host')]"
+					},
+					"HCMSftp_properties_typeProperties_userName": {
+						"value": "[parameters('HCMSftp_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ADHOC_BLOB_properties_typeProperties_fileName": {
+						"value": "[parameters('ADHOC_BLOB_properties_typeProperties_fileName')]"
+					},
+					"ADHOC_BLOB_properties_typeProperties_folderPath": {
+						"value": "[parameters('ADHOC_BLOB_properties_typeProperties_folderPath')]"
+					},
+					"BACKUP_ZIP_FUSION_properties_typeProperties_folderPath": {
+						"value": "[parameters('BACKUP_ZIP_FUSION_properties_typeProperties_folderPath')]"
+					},
+					"FILE_FUSION_properties_typeProperties_fileName": {
+						"value": "[parameters('FILE_FUSION_properties_typeProperties_fileName')]"
+					},
+					"FILE_FUSION_properties_typeProperties_folderPath": {
+						"value": "[parameters('FILE_FUSION_properties_typeProperties_folderPath')]"
+					},
+					"FOLDER_FUSION_properties_typeProperties_folderPath": {
+						"value": "[parameters('FOLDER_FUSION_properties_typeProperties_folderPath')]"
+					},
+					"FOLDER_ROSS_properties_typeProperties_folderPath": {
+						"value": "[parameters('FOLDER_ROSS_properties_typeProperties_folderPath')]"
+					},
+					"OUT_ARCHIVE_properties_typeProperties_folderPath": {
+						"value": "[parameters('OUT_ARCHIVE_properties_typeProperties_folderPath')]"
+					},
+					"OUT_SOURCE_properties_typeProperties_folderPath": {
+						"value": "[parameters('OUT_SOURCE_properties_typeProperties_folderPath')]"
+					},
+					"OUT_SOURCE_FILE_properties_typeProperties_fileName": {
+						"value": "[parameters('OUT_SOURCE_FILE_properties_typeProperties_fileName')]"
+					},
+					"OUT_SOURCE_FILE_properties_typeProperties_folderPath": {
+						"value": "[parameters('OUT_SOURCE_FILE_properties_typeProperties_folderPath')]"
+					},
+					"OUT_STAGING_properties_typeProperties_folderPath": {
+						"value": "[parameters('OUT_STAGING_properties_typeProperties_folderPath')]"
+					},
+					"OUT_STAGING_FILE_properties_typeProperties_fileName": {
+						"value": "[parameters('OUT_STAGING_FILE_properties_typeProperties_fileName')]"
+					},
+					"OUT_STAGING_FILE_properties_typeProperties_folderPath": {
+						"value": "[parameters('OUT_STAGING_FILE_properties_typeProperties_folderPath')]"
+					},
+					"ZIP_FILE_FUS_properties_typeProperties_folderPath": {
+						"value": "[parameters('ZIP_FILE_FUS_properties_typeProperties_folderPath')]"
+					},
+					"ZIP_FILE_FUSION_properties_typeProperties_folderPath": {
+						"value": "[parameters('ZIP_FILE_FUSION_properties_typeProperties_folderPath')]"
+					},
+					"ZIP_FILE_ROSS_properties_typeProperties_fileName": {
+						"value": "[parameters('ZIP_FILE_ROSS_properties_typeProperties_fileName')]"
+					},
+					"ZIP_FILE_ROSS_properties_typeProperties_folderPath": {
+						"value": "[parameters('ZIP_FILE_ROSS_properties_typeProperties_folderPath')]"
+					},
+					"ZIP_FILE_ROSS_CS_properties_typeProperties_fileName": {
+						"value": "[parameters('ZIP_FILE_ROSS_CS_properties_typeProperties_fileName')]"
+					},
+					"ZIP_FILE_ROSS_CS_properties_typeProperties_folderPath": {
+						"value": "[parameters('ZIP_FILE_ROSS_CS_properties_typeProperties_folderPath')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ZIP_FUSION_properties_typeProperties_fileName": {
+						"value": "[parameters('ZIP_FUSION_properties_typeProperties_fileName')]"
+					},
+					"ZIP_FUSION_properties_typeProperties_folderPath": {
+						"value": "[parameters('ZIP_FUSION_properties_typeProperties_folderPath')]"
+					},
+					"ZIP_ROSS_properties_typeProperties_fileName": {
+						"value": "[parameters('ZIP_ROSS_properties_typeProperties_fileName')]"
+					},
+					"ZIP_ROSS_properties_typeProperties_folderPath": {
+						"value": "[parameters('ZIP_ROSS_properties_typeProperties_folderPath')]"
+					},
+					"ZIP_ROSS_FOR_SFTP_properties_typeProperties_fileName": {
+						"value": "[parameters('ZIP_ROSS_FOR_SFTP_properties_typeProperties_fileName')]"
+					},
+					"ZIP_ROSS_FOR_SFTP_properties_typeProperties_folderPath": {
+						"value": "[parameters('ZIP_ROSS_FOR_SFTP_properties_typeProperties_folderPath')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_2')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_4",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_4')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_6",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_6.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_5')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_7",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_7.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation": {
+						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation')]"
+					},
+					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_interfaceName": {
+						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_interfaceName')]"
+					},
+					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_Department": {
+						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_Department')]"
+					},
+					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_ScheduleType')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_6')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_8",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_8.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_7')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_9",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_9.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_fileLocation": {
+						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_fileLocation')]"
+					},
+					"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_interfaceName": {
+						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_interfaceName')]"
+					},
+					"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_Department": {
+						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_Department')]"
+					},
+					"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_ScheduleType')]"
+					},
+					"0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_fileLocation": {
+						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_fileLocation')]"
+					},
+					"0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_interfaceName": {
+						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_interfaceName')]"
+					},
+					"0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_Department": {
+						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_Department')]"
+					},
+					"0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_203_DIR_parameters_ScheduleType')]"
+					},
+					"0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_fileLocation": {
+						"value": "[parameters('0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_fileLocation')]"
+					},
+					"0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_interfaceName": {
+						"value": "[parameters('0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_interfaceName')]"
+					},
+					"0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_Department": {
+						"value": "[parameters('0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_Department')]"
+					},
+					"0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0710-TwoHourly10to5_properties_INT_SCM_204_DIR_parameters_ScheduleType')]"
+					},
+					"0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+						"value": "[parameters('0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_fileLocation')]"
+					},
+					"0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+						"value": "[parameters('0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_interfaceName')]"
+					},
+					"0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_Department": {
+						"value": "[parameters('0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_Department')]"
+					},
+					"0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0710-TwoHourly10to5_properties_INT_SCM_205_DIR_parameters_ScheduleType')]"
+					},
+					"0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_fileLocation": {
+						"value": "[parameters('0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_fileLocation')]"
+					},
+					"0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_interfaceName": {
+						"value": "[parameters('0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_interfaceName')]"
+					},
+					"0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_Department": {
+						"value": "[parameters('0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_Department')]"
+					},
+					"0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0810-Hourly10to5_properties_INT_SCM_201_DIR_parameters_ScheduleType')]"
+					},
+					"0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_fileLocation": {
+						"value": "[parameters('0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_fileLocation')]"
+					},
+					"0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_interfaceName": {
+						"value": "[parameters('0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_interfaceName')]"
+					},
+					"0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_Department": {
+						"value": "[parameters('0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_Department')]"
+					},
+					"0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0810-Hourly10to5_properties_INT_SCM_203_DIR_parameters_ScheduleType')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_fileLocation": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_fileLocation')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_interfaceName": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_interfaceName')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_Department": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_Department')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_204_DIR_parameters_ScheduleType')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_fileLocation')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_interfaceName')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_Department": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_Department')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_205_DIR_parameters_ScheduleType')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_fileLocation": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_fileLocation')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_interfaceName": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_interfaceName')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_Department": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_Department')]"
+					},
+					"0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0810-TwoHourly10to8_properties_INT_SCM_231_DIR_parameters_ScheduleType')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_fileLocation": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_fileLocation')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_interfaceName": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_interfaceName')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_Department": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_Department')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_ScheduleType')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_fileLocation": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_fileLocation')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_interfaceName": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_interfaceName')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_Department": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_Department')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_ScheduleType')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_fileLocation": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_fileLocation')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_interfaceName": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_interfaceName')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_Department": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_Department')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_FIN_249_DIR_parameters_ScheduleType')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_fileLocation": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_fileLocation')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_interfaceName": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_interfaceName')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_Department": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_Department')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_FIN_252_DIR_parameters_ScheduleType')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department')]"
+					},
+					"0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+						"value": "[parameters('0910-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType')]"
+					},
+					"1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_fileLocation": {
+						"value": "[parameters('1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_fileLocation')]"
+					},
+					"1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_interfaceName": {
+						"value": "[parameters('1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_interfaceName')]"
+					},
+					"1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_Department": {
+						"value": "[parameters('1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_Department')]"
+					},
+					"1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1010-Hourly10to6_properties_INT_FIN_267_DIR_parameters_ScheduleType')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_fileLocation": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_fileLocation')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_interfaceName": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_interfaceName')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_Department": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_Department')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_SCM_231_DIR_parameters_ScheduleType')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_fileLocation": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_fileLocation')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_interfaceName": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_interfaceName')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_Department": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_Department')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_PPM_206_DIR_parameters_ScheduleType')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_fileLocation": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_fileLocation')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_interfaceName": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_interfaceName')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_Department": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_Department')]"
+					},
+					"1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1010-TwoHourly10to6_properties_INT_FIN_254_DIR_parameters_ScheduleType')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_fileLocation": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_fileLocation')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_interfaceName": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_interfaceName')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_Department": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_Department')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_FIN_253_DIR_parameters_ScheduleType')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_fileLocation": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_fileLocation')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_interfaceName": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_interfaceName')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_Department": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_Department')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_PPM_337_DIR_parameters_ScheduleType')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_fileLocation": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_fileLocation')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_interfaceName": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_interfaceName')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_Department": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_Department')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_PPM_363_DIR_parameters_ScheduleType')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_fileLocation')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_interfaceName')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_Department')]"
+					},
+					"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_8')]"
+			]
+		}
+	]
+}
