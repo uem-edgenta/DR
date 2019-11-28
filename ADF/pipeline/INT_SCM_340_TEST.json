@@ -86,34 +86,6 @@
 				}
 			},
 			{
-				"name": "WebActivity1",
-				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "Get Data for Updated Record",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"url": "https://edgenta.azure-api.net/adf/AuditLog",
-					"method": "POST",
-					"body": {
-						"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"WORKTYPENUMBER\",\n\"SourceSystem\" : \"Urbanize-Azure\",\n\"DestSystem\" : \"Edgenta-Azure\",\n\"JobId\" : \"',activity('Get Data for Updated Record').ActivityRunId,'\",\n\"ActivityTask\" : \"Get Updated Record from Urbanize Database\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Get Data for Updated Record').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data for Updated Record').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data for Updated Record').Status,'\",\n\"Output\" : ',activity('Get Data for Updated Record').Output,',\n\"Error\" : ',activity('Get Data for Updated Record').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of retrieve updated data from Urbanize Database\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "If Condition1",
 				"type": "IfCondition",
 				"dependsOn": [
