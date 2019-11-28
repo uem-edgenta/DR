@@ -1,0 +1,31 @@
+{
+	"name": "1110-Hourly10to7",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "INT_SCM_303_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem_edgenta/dev/erp/ross/fusion_inbound/approvedcop",
+					"interfaceName": "INT_SCM_303",
+					"Department": "scm",
+					"ScheduleType": "1"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2019-10-11T02:00:00Z",
+				"endTime": "2019-10-11T11:00:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

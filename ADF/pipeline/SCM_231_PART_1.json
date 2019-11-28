@@ -1,0 +1,885 @@
+{
+	"name": "SCM_231_PART_1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get and Deflate ZIP",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "FileSystemSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink",
+						"copyBehavior": "PreserveHierarchy"
+					},
+					"enableStaging": false,
+					"parallelCopies": 4,
+					"dataIntegrationUnits": 32
+				},
+				"inputs": [
+					{
+						"referenceName": "FUSION_FileShare",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": {
+								"value": "@variables('ZipFileName')",
+								"type": "Expression"
+							},
+							"fileLocation": {
+								"value": "@pipeline().parameters.FileLocation",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "FOLDER_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FolderName": "-1",
+							"PathFolder": {
+								"value": "@pipeline().parameters.StagingFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Check Checksum",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get and Deflate ZIP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/ValidChecksum",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"cksmPath\":\"egsaasdrblob01/',pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',variables('ZipFileName'),'/checksum.txt\",\n\"filePath\":\"egsaasdrblob01/',pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',variables('ZipFileName'),'/',replace(variables('ZipFileName'),'zip','csv'),'\", \"isEncrypted\":true}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If checksum is match",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Decrypt File",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals('1','1')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Send Failed ACK",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Lookup ACK Data Failed",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/api/PostAck",
+								"method": "POST",
+								"body": {
+									"value": "@concat(\n'{\"sourceSystem\":\"',activity('Lookup ACK Data Failed').output.firstRow.source,\n'\",\"zipfileName\":\"',variables('ZipFileName')\n,'\",\"dataFileName\":\"',replace(variables('ZipFileName'),'zip','csv')\n,'\",\"errorLocation\":\"',activity('Lookup ACK Data Failed').output.firstRow.ErrorLocation\n,'\",\"businessObject\":\"',activity('Lookup ACK Data Failed').output.firstRow.BusinessObject\n,'\",\"notificationType\":\"',activity('Lookup ACK Data Failed').output.firstRow.NotificationType\n,'\",\"eventOccurredTime\":\"',string(activity('Lookup ACK Data Failed').output.firstRow.starttime)\n,'\",\"messageDescription\":\"',activity('Lookup ACK Data Failed').output.firstRow.ErrorMessage\n,'\",\"fileLine\":\"\"}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Log For Send ACK",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Send Failed ACK",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/api/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"inventoryItemCost\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send Failed ACK').ActivityRunId,'\",\n\"ActivityTask\" : \"Send Success Received File ',pipeline().parameters.SourceSystem,' ACK\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send Failed ACK').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send Failed ACK').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send Failed ACK').Status,'\",\n\"Output\" : ',activity('Send Failed ACK').Output,',\n\"Error\" : \"',if(empty(activity('Send Failed ACK').Error),'',string(activity('Send Failed ACK').Error)),'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 2,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of send the error message of received file via API of ',pipeline().parameters.SourceSystem,' system\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Log for Checksum Check",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/api/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"inventoryItemCost\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Check Checksum').ActivityRunId,'\",\n\"ActivityTask\" : \"Check ',pipeline().parameters.SourceSystem,' File Checksum\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Check Checksum').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Check Checksum').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Check Checksum').Status,'\",\n\"Output\" : ',activity('Check Checksum').Output,',\n\"Error\" : \"',activity('Check Checksum').Error,'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of check and validate the Checksum file provided by ',pipeline().parameters.SourceSystem,' system in .ZIP file\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Lookup ACK Data Failed",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Add Log for Checksum Check",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select etl.starttime,source,FileNameZip,FileNameData,el.BusinessObject,CASE WHEN etl.Status = 1 THEN ''ACK'' ELSE ''ERROR'' END NotificationType,etl.ErrorMessage,'''' fileline,\nCASE WHEN etl.Status = 1 THEN '''' ELSE ''/uem/dev/edgenta/azure/outbound/log/''+replace(el.FileNameZip,''.zip'','''')+''_Error_Log.zip'' END ErrorLocation\n from eventlog el inner join eventtasklog etl on el.EventID = etl.EventID\nwhere el.eventid = ''',pipeline().parameters.ParentPipelineID,''' and etl.StepName=''Check Checksum''')",
+										"type": "Expression"
+									}
+								},
+								"dataset": {
+									"referenceName": "LOG_TABLE",
+									"type": "DatasetReference"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_231_PART_2",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"InterfaceName": {
+										"value": "@pipeline().parameters.InterfaceName",
+										"type": "Expression"
+									},
+									"ID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"ZipFileName": {
+										"value": "@variables('ZipFileName')",
+										"type": "Expression"
+									},
+									"ParentPipelineID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"SourceFolder": {
+										"value": "@pipeline().parameters.SourceFolder",
+										"type": "Expression"
+									},
+									"DestinationFolder": {
+										"value": "@pipeline().parameters.DestinationFolder",
+										"type": "Expression"
+									},
+									"StagingFolder": {
+										"value": "@pipeline().parameters.StagingFolder",
+										"type": "Expression"
+									},
+									"LogFolder": {
+										"value": "@pipeline().parameters.LogFolder",
+										"type": "Expression"
+									},
+									"SourceArchiveFolder": {
+										"value": "@pipeline().parameters.SourceArchiveFolder",
+										"type": "Expression"
+									},
+									"DestinationArchiveFolder": {
+										"value": "@pipeline().parameters.DestinationArchiveFolder",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"SourceSystem": {
+										"value": "@pipeline().parameters.SourceSystem",
+										"type": "Expression"
+									},
+									"DestinationSystem": {
+										"value": "@pipeline().parameters.DestinationSystem",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Add Log for Deflate ZIP",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get and Deflate ZIP",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"INVENTORYITEMCOST\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"ROSS-Azure\",\n\"JobId\" : \"',activity('Get and Deflate ZIP').ActivityRunId,'\",\n\"ActivityTask\" : \"Get and Deflate ',pipeline().parameters.SourceSystem,' ZIP\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Get and Deflate ZIP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get and Deflate ZIP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get and Deflate ZIP').Status,'\",\n\"Output\" : ',activity('Get and Deflate ZIP').Output,',\n\"Error\" : ',activity('Get and Deflate ZIP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of locate and retrieve the .ZIP file from ',pipeline().parameters.SourceSystem,'SFTP. Deflating process will be run once retrieved the .ZIP and move .CSV to BLOB\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Send ACK",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Lookup ACK Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
+					"method": "POST",
+					"body": {
+						"value": "@concat(\n'{\"sourceSystem\":\"',activity('Lookup ACK Data').output.firstRow.source,\n'\",\"zipfileName\":\"',variables('ZipFileName')\n,'\",\"dataFileName\":\"',replace(variables('ZipFileName'),'zip','csv')\n,'\",\"errorLocation\":\"\",\"businessObject\":\"',activity('Lookup ACK Data').output.firstRow.BusinessObject\n,'\",\"notificationType\":\"',activity('Lookup ACK Data').output.firstRow.NotificationType\n,'\",\"eventOccurredTime\":\"',string(activity('Lookup ACK Data').output.firstRow.starttime)\n,'\",\"messageDescription\":\"',if(equals('ACK',activity('Lookup ACK Data').output.firstRow.NotificationType),'','Checksum is not matched'),'\",\"fileLine\":\"\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Checksum",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Check Checksum",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"inventoryItemCost\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Check Checksum').ActivityRunId,'\",\n\"ActivityTask\" : \"Check ',pipeline().parameters.SourceSystem,' File Checksum\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Check Checksum').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Check Checksum').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Check Checksum').Status,'\",\n\"Output\" : ',activity('Check Checksum').Output,',\n\"Error\" : ',activity('Check Checksum').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of check and validate the Checksum file provided by ',pipeline().parameters.SourceSystem,' system in .ZIP file\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Lookup ACK Data",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Add Log for Checksum",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select etl.starttime,source,FileNameZip,FileNameData,el.BusinessObject,CASE WHEN etl.Status = 1 THEN ''ACK'' ELSE ''ERROR'' END NotificationType,etl.ErrorMessage,'''' fileline,\nCASE WHEN etl.Status = 1 THEN '''' ELSE ''/uem/dev/edgenta/azure/outbound/log/''+replace(el.FileNameZip,''.zip'','''')+''_Error_Log.zip'' END ErrorLocation\n from eventlog el inner join eventtasklog etl on el.EventID = etl.EventID\nwhere el.eventid = ''',pipeline().RunId,''' and etl.StepName=''Check ',pipeline().parameters.SourceSystem,' File Checksum''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set Variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ZipFileName",
+					"value": {
+						"value": "@pipeline().parameters.FileName",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Decrypt File",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Check Checksum",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/PGPDecrypt",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"filePath\":\"egsaasdrblob01/',pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',variables('ZipFileName'),'/',replace(variables('ZipFileName'),'zip','csv'),'\",\"outputPath\":\"egsaasdrblob01/',pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',variables('ZipFileName'),'/',replace(variables('ZipFileName'),'zip','csv'),'\",\"passPhrase\":\"edgentA@123\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Decrypt File",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Decrypt File",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"inventoryItemCost\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Decrypt File').ActivityRunId,'\",\n\"ActivityTask\" : \"Decrypt ',pipeline().parameters.SourceSystem,' .csv File\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Decrypt File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Decrypt File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Decrypt File').Status,'\",\n\"Output\" : ',activity('Decrypt File').Output,',\n\"Error\" : ',activity('Decrypt File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of decrypt .csv file provided by ',pipeline().parameters.SourceSystem,' system\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Backup source file when completed",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If checksum is match",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_SOURCE_BACKUP",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"SourceFolder": {
+							"value": "@pipeline().parameters.SourceFolder",
+							"type": "Expression"
+						},
+						"DestinationFolder": {
+							"value": "@pipeline().parameters.DestinationFolder",
+							"type": "Expression"
+						},
+						"LogFolder": {
+							"value": "@pipeline().parameters.LogFolder",
+							"type": "Expression"
+						},
+						"SourceArchiveFolder": {
+							"value": "@pipeline().parameters.SourceArchiveFolder",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"DestinationArchiveFolder": {
+							"value": "@pipeline().parameters.DestinationArchiveFolder",
+							"type": "Expression"
+						},
+						"StagingFolder": {
+							"value": "@pipeline().parameters.StagingFolder",
+							"type": "Expression"
+						},
+						"FileName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"FileLocation": {
+							"value": "@pipeline().parameters.FileLocation",
+							"type": "Expression"
+						},
+						"ScheduleType": {
+							"value": "@pipeline().parameters.ScheduleType",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						},
+						"DestinationSystem": {
+							"value": "@pipeline().parameters.DestinationSystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Backup Source File when skipped",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If checksum is match",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_SOURCE_BACKUP",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"SourceFolder": {
+							"value": "@pipeline().parameters.SourceFolder",
+							"type": "Expression"
+						},
+						"DestinationFolder": {
+							"value": "@pipeline().parameters.DestinationFolder",
+							"type": "Expression"
+						},
+						"LogFolder": {
+							"value": "@pipeline().parameters.LogFolder",
+							"type": "Expression"
+						},
+						"SourceArchiveFolder": {
+							"value": "@pipeline().parameters.SourceArchiveFolder",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"DestinationArchiveFolder": {
+							"value": "@pipeline().parameters.DestinationArchiveFolder",
+							"type": "Expression"
+						},
+						"StagingFolder": {
+							"value": "@pipeline().parameters.StagingFolder",
+							"type": "Expression"
+						},
+						"FileName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"FileLocation": {
+							"value": "@pipeline().parameters.FileLocation",
+							"type": "Expression"
+						},
+						"ScheduleType": {
+							"value": "@pipeline().parameters.ScheduleType",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						},
+						"DestinationSystem": {
+							"value": "@pipeline().parameters.DestinationSystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Send Failed Decrypt ACK",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Decrypt File",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.FileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.FileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"inventoryItemCost\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Decrypt File').ExecutionStartTime),'\",\n\"messageDescription\":\"Failed to Decrypt ORACLE .csv File\",\"fileLine\":\"\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ExecutePipeline2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Send ACK",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "API_LOG",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EventID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"EventName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"FileZipName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"Object": "inventoryItemCost",
+						"SourceSystem": "Edgenta-Azure",
+						"DestSystem": "ROSS-Azure",
+						"JobID": {
+							"value": "@activity('Send ACK').ActivityRunId",
+							"type": "Expression"
+						},
+						"ActivityTask": {
+							"value": "@if(equals('ACK',activity('Lookup ACK Data').output.firstRow.NotificationType),'Send Success Received File ACK','Send Failed Received File ACK')",
+							"type": "Expression"
+						},
+						"StartTime": {
+							"value": "@activity('Send ACK').ExecutionStartTime",
+							"type": "Expression"
+						},
+						"EndTime": {
+							"value": "@activity('Send ACK').ExecutionEndTime",
+							"type": "Expression"
+						},
+						"Status": {
+							"value": "@if(contains('200,201,202,231',string(activity('Send ACK').Output.Status)),'Succeeded','Failed')",
+							"type": "Expression"
+						},
+						"Output": {
+							"value": "@activity('Send ACK').output",
+							"type": "Expression"
+						},
+						"Error": {
+							"value": "@if(empty(activity('Send ACK').Error),'',string(activity('Send ACK').Error))",
+							"type": "Expression"
+						},
+						"EventType": "OUTBOUND",
+						"FilePath": "The step describes the process of send the success message of received file via API of source system",
+						"Input": {
+							"value": "@concat(\n'{\"sourceSystem\":\" ',activity('Lookup ACK Data').output.firstRow.source,\n'\",\"zipfileName\":\"',variables('ZipFileName')\n,'\",\"dataFileName\":\"',replace(variables('ZipFileName'),'zip','csv')\n,'\",\"errorLocation\":\"',activity('Lookup ACK Data').output.firstRow.ErrorLocation\n,'\",\"businessObject\":\"',activity('Lookup ACK Data').output.firstRow.BusinessObject\n,'\",\"notificationType\":\"',activity('Lookup ACK Data').output.firstRow.NotificationType\n,'\",\"eventOccurredTime\":\"',string(activity('Lookup ACK Data').output.firstRow.starttime)\n,'\",\"messageDescription\":\"',if(equals('ACK',activity('Lookup ACK Data').output.firstRow.NotificationType),'','Checksum is not matched'),'\",\"fileLine\":\"\"}')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Add Log for Send Failed Decrypt ACK",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Send Failed Decrypt ACK",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "API_LOG",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EventID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"EventName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"FileZipName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"Object": "inventoryItemCost",
+						"SourceSystem": "Edgenta-Azure",
+						"DestSystem": "ROSS-Azure",
+						"JobID": {
+							"value": "@activity('Send Failed Decrypt ACK').ActivityRunId",
+							"type": "Expression"
+						},
+						"ActivityTask": {
+							"value": "@concat('Send File Processing ',pipeline().parameters.SourceSystem,' ACK')",
+							"type": "Expression"
+						},
+						"StartTime": {
+							"value": "@activity('Send Failed Decrypt ACK').ExecutionStartTime",
+							"type": "Expression"
+						},
+						"EndTime": {
+							"value": "@activity('Send Failed Decrypt ACK').ExecutionEndTime",
+							"type": "Expression"
+						},
+						"Status": {
+							"value": "@if(contains('200,201,202,231',string(activity('Send Failed Decrypt ACK').Output.Status)),'Succeeded','Failed')",
+							"type": "Expression"
+						},
+						"Output": {
+							"value": "@activity('Send Failed Decrypt ACK').output",
+							"type": "Expression"
+						},
+						"Error": {
+							"value": "@if(empty(activity('Send Failed Decrypt ACK').Error),'',string(activity('Send Failed Decrypt ACK').Error))",
+							"type": "Expression"
+						},
+						"EventType": "OUTBOUND",
+						"FilePath": {
+							"value": "@concat('The step describes the process of sending the failed message of processed file via API of ',pipeline().parameters.SourceSystem,'  system')",
+							"type": "Expression"
+						},
+						"Input": {
+							"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.FileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.FileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"inventoryItemCost\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Decrypt File').ExecutionStartTime),'\",\n\"messageDescription\":\"Failed to Decrypt ORACLE .csv File\",\"fileLine\":\"\"}')",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string",
+				"defaultValue": "INT_SCM_231"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			},
+			"SourceFolder": {
+				"type": "string",
+				"defaultValue": "uem/sit/edgenta/azure/outbound/main/source"
+			},
+			"DestinationFolder": {
+				"type": "string",
+				"defaultValue": "uem/sit/edgenta/azure/outbound/main/destination"
+			},
+			"LogFolder": {
+				"type": "string",
+				"defaultValue": "outbound/log"
+			},
+			"SourceArchiveFolder": {
+				"type": "string",
+				"defaultValue": "uem/sit/edgenta/azure/outbound/archive/source"
+			},
+			"Department": {
+				"type": "string",
+				"defaultValue": "scm"
+			},
+			"DestinationArchiveFolder": {
+				"type": "string",
+				"defaultValue": "uem/sit/edgenta/azure/outbound/archive/destination"
+			},
+			"StagingFolder": {
+				"type": "string",
+				"defaultValue": "uem/sit/edgenta/azure/outbound/main/source"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "INT_SCM_231_inventoryItemCost_Export_43271_20190515093732.zip"
+			},
+			"FileLocation": {
+				"type": "string",
+				"defaultValue": "/uem/dev/edgenta/azure/outbound/scm/inventoryItemCost"
+			},
+			"ScheduleType": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"SourceSystem": {
+				"type": "string"
+			},
+			"DestinationSystem": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ZipFileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "INT_SCM_231"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

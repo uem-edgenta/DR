@@ -1,0 +1,251 @@
+{
+	"name": "GENERAL_IN_PART_3A_SP",
+	"properties": {
+		"activities": [
+			{
+				"name": "Compress Folder",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false,
+					"parallelCopies": 4,
+					"enableSkipIncompatibleRow": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ZIP_FILE_ROSS",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FolderName": {
+								"value": "@replace(pipeline().parameters.ZipFileName,'.zip','')",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "*",
+								"type": "Expression"
+							},
+							"FolderPath": {
+								"value": "@pipeline().parameters.DestinationFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ZIP_ROSS",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"ZipName": {
+								"value": "@concat(pipeline().parameters.ZipFileName,'.zip')",
+								"type": "Expression"
+							},
+							"FolderPath": {
+								"value": "@pipeline().parameters.DestinationFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Add Log for File Compression",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Compress Folder",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Compress Folder').ActivityRunId,'\",\n\"ActivityTask\" : \"Compress ',pipeline().parameters.DestinationSystem,' Folder\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Compress Folder').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Compress Folder').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Compress Folder').Status,'\",\n\"Output\" : ',activity('Compress Folder').Output,',\n\"Error\" : ',activity('Compress Folder').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of compressing ',pipeline().parameters.DestinationSystem,' folder into .ZIP\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Send to ORACLE SFTP",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Compress Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/sftp/oracle",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"blobPath\":\"/egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',concat(pipeline().parameters.ZipFileName,'.zip'),'\",\"fileName\":\"',concat(pipeline().parameters.ZipFileName,'.zip'),'\",\"sftpTarget\":\"/uem/dev/edgenta/azure/inbound/',pipeline().parameters.Department,'/',pipeline().parameters.Foldername,'\",\"sftpType\": 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for File Sending",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Send to ORACLE SFTP",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"Fusion-Oracle\",\n\"JobId\" : \"',activity('Send to ORACLE SFTP').ActivityRunId,'\",\n\"ActivityTask\" : \"Send zip file to SFTP for ',pipeline().parameters.DestinationSystem,'\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send to ORACLE SFTP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send to ORACLE SFTP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send to ORACLE SFTP').Status,'\",\n\"Output\" : ',activity('Send to ORACLE SFTP').Output,',\n\"Error\" : ',activity('Send to ORACLE SFTP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of sending .ZIP to Oracle SFTP ',pipeline().parameters.DestinationSystem,' from BLOB\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline for Trigger",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Send to ORACLE SFTP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_TRIGGER",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().parameters.ParentPipelineID",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string",
+				"defaultValue": "scm_204"
+			},
+			"ZipFileName": {
+				"type": "string",
+				"defaultValue": "INT_SCM_204_BLANKETAGREEMENT_Export_12345_20190513211645.zip"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			},
+			"SourceFolder": {
+				"type": "string"
+			},
+			"DestinationFolder": {
+				"type": "string"
+			},
+			"StagingFolder": {
+				"type": "string"
+			},
+			"SourceArchiveFolder": {
+				"type": "string"
+			},
+			"DestinationArchiveFolder": {
+				"type": "string"
+			},
+			"LogFolder": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			},
+			"Foldername": {
+				"type": "string"
+			},
+			"SourceSystem": {
+				"type": "string"
+			},
+			"DestinationSystem": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ZipFileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "GENERAL"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

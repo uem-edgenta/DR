@@ -1,0 +1,147 @@
+{
+	"name": "LOG_TABLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "edsaasdrdb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AuditID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EventID",
+				"type": "varchar"
+			},
+			{
+				"name": "PackageID",
+				"type": "varchar"
+			},
+			{
+				"name": "ZipFile",
+				"type": "varchar"
+			},
+			{
+				"name": "SourceSystem",
+				"type": "varchar"
+			},
+			{
+				"name": "Destination",
+				"type": "varchar"
+			},
+			{
+				"name": "BusinessObject",
+				"type": "varchar"
+			},
+			{
+				"name": "ErrorLocation",
+				"type": "varchar"
+			},
+			{
+				"name": "PathRef",
+				"type": "varchar"
+			},
+			{
+				"name": "AuditType",
+				"type": "varchar"
+			},
+			{
+				"name": "PackageType",
+				"type": "varchar"
+			},
+			{
+				"name": "StartTime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "EndTime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "RowCount",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RowInsert",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RowUpdate",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RowDelete",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RowFailed",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "ExecStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "ExecMessage",
+				"type": "varchar"
+			},
+			{
+				"name": "ExecGUID",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "Killed",
+				"type": "varchar"
+			},
+			{
+				"name": "VerBuild",
+				"type": "varchar"
+			},
+			{
+				"name": "rowGuid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "CreatedBy",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "LastUpdate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "UpdateBy",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"tableName": "[dbo].[ETLAudit]"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

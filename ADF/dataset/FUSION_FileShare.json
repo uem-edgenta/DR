@@ -1,0 +1,34 @@
+{
+	"name": "FUSION_FileShare",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "fusionSftp",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			},
+			"fileLocation": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "FileShare",
+		"typeProperties": {
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Optimal"
+			},
+			"fileName": {
+				"value": "@dataset().fileName",
+				"type": "Expression"
+			},
+			"folderPath": {
+				"value": "@dataset().fileLocation",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

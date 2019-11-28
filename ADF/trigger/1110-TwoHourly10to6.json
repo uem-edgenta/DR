@@ -1,0 +1,67 @@
+{
+	"name": "1110-TwoHourly10to6",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "INT_FIN_253_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/fin/arCreditNote",
+					"interfaceName": "INT_FIN_253",
+					"Department": "fin",
+					"ScheduleType": "1"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "INT_PPM_337_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem_edgenta/dev/erp/ross/fusion_inbound/billingevents",
+					"interfaceName": "INT_PPM_337",
+					"Department": "ppm",
+					"ScheduleType": "1"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "INT_PPM_363_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem_edgenta/dev/erp/ross/fusion_inbound/costaccrual",
+					"interfaceName": "INT_PPM_363",
+					"Department": "ppm",
+					"ScheduleType": "1"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "INT_SCM_205_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/scm/po",
+					"interfaceName": "INT_SCM_205",
+					"Department": "scm",
+					"ScheduleType": "1"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 2,
+				"startTime": "2019-10-11T02:00:00Z",
+				"endTime": "2019-10-11T10:01:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

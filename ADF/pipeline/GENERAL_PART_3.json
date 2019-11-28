@@ -1,0 +1,236 @@
+{
+	"name": "GENERAL_PART_3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Generate Checksum",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set ZipFileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/GenChecksum",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\n\"filePath\":\"egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(variables('ZipFileName'),'zip',''),'/',concat(variables('ZipFileName'),'.csv'),'\", \"outputPath\": \"egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(variables('ZipFileName'),'zip',''),'/checksum.txt\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set ZipFileName",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get FileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ZipFileName",
+					"value": {
+						"value": "@replace(last(split(activity('Get FileName').Output.firstRow.Destination,'/')),'.csv','')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get FileName",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT DISTINCT Destination FROM ETLAudit WHERE packagetype =''2'' and EventID = ''',pipeline().parameters.ParentPipelineID,'''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Generate Checksum",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Generate Checksum",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Generate Checksum').ActivityRunId,'\",\n\"ActivityTask\" : \"Generate ',pipeline().parameters.DestinationSystem,' Checksum\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Generate Checksum').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Generate Checksum').ExecutionEndTime,'\",\n\"Status\" : \"',if(equals(activity('Generate Checksum').Output.Response,''),'Failed','Succeeded'),'\",\n\"Output\" : ',activity('Generate Checksum').Output,',\n\"Error\" : ',activity('Generate Checksum').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' checksum generating after .CSV file has generated successfully\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ROSS Copy Processing",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Generate Checksum",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_PART_3A",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ZipFileName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().parameters.ParentPipelineID",
+							"type": "Expression"
+						},
+						"SourceFolder": {
+							"value": "@pipeline().parameters.SourceFolder",
+							"type": "Expression"
+						},
+						"DestinationFolder": {
+							"value": "@pipeline().parameters.DestinationFolder",
+							"type": "Expression"
+						},
+						"StagingFolder": {
+							"value": "@pipeline().parameters.StagingFolder",
+							"type": "Expression"
+						},
+						"SourceArchiveFolder": {
+							"value": "@pipeline().parameters.SourceArchiveFolder",
+							"type": "Expression"
+						},
+						"DestinationArchiveFolder": {
+							"value": "@pipeline().parameters.DestinationArchiveFolder",
+							"type": "Expression"
+						},
+						"LogFolder": {
+							"value": "@pipeline().parameters.LogFolder",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"Foldername": {
+							"value": "@pipeline().parameters.Foldername",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						},
+						"DestinationSystem": {
+							"value": "@pipeline().parameters.DestinationSystem",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string",
+				"defaultValue": "scm_204"
+			},
+			"ZipFileName": {
+				"type": "string",
+				"defaultValue": "INT_SCM_204_BLANKETAGREEMENT_Export_12345_20190513211645.zip"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			},
+			"SourceFolder": {
+				"type": "string"
+			},
+			"DestinationFolder": {
+				"type": "string"
+			},
+			"StagingFolder": {
+				"type": "string"
+			},
+			"SourceArchiveFolder": {
+				"type": "string"
+			},
+			"DestinationArchiveFolder": {
+				"type": "string"
+			},
+			"LogFolder": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			},
+			"Foldername": {
+				"type": "string"
+			},
+			"SourceSystem": {
+				"type": "string"
+			},
+			"DestinationSystem": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ZipFileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "GENERAL"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

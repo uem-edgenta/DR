@@ -1,0 +1,897 @@
+{
+	"name": "PROCESSED_FILE",
+	"properties": {
+		"activities": [
+			{
+				"name": "If INT_FIN_267",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_FIN_267')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FIN_267_PART_4_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_201",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(contains(pipeline().parameters.fileName,'INT_SCM_201'),contains(pipeline().parameters.stepname,'ROSS'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline2",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_201_PART_4_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_204",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_SCM_204')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline3",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_204_PART_4_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_203",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_SCM_203')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline4",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_203_PART_4_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_PPM_206",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_PPM_206')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline5",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PPM_206_PART_4_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_PPM_337",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_PPM_337')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline7",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PPM_337_PART_4_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_PPM_363",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_PPM_363')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline8",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PPM_363_PART_4_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_231",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_SCM_231')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline9",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_231_PART_4",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_205",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_SCM_205')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline6",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_205_PART_4",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_303",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_SCM_303')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline10",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_303_PART_4_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_FIN_249",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_FIN_249')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline11",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FIN_249_PART_4",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_FIN_252",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_FIN_252')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline12",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FIN_252_PART_4",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_FIN_253",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_FIN_253')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline13",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FIN_253_PART_4",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_FIN_254",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(pipeline().parameters.fileName,'INT_FIN_254')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline14",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FIN_254_PART_4",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If INT_SCM_201_ECLIP",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(contains(pipeline().parameters.fileName,'INT_SCM_201'),contains(pipeline().parameters.stepname,'ECLIP'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ExecutePipeline2_copy1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "SCM_201_PART_4_ECLIP_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"filePath": {
+										"value": "@pipeline().parameters.filePath",
+										"type": "Expression"
+									},
+									"pipelineID": {
+										"value": "@pipeline().parameters.pipelineID",
+										"type": "Expression"
+									},
+									"totalRow": {
+										"value": "@pipeline().parameters.totalRow",
+										"type": "Expression"
+									},
+									"successRow": {
+										"value": "@pipeline().parameters.successRow",
+										"type": "Expression"
+									},
+									"failedRow": {
+										"value": "@pipeline().parameters.failedRow",
+										"type": "Expression"
+									},
+									"fileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"status": {
+										"value": "@pipeline().parameters.status",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"filePath": {
+				"type": "string",
+				"defaultValue": "sftp/collexe/uem_edgenta/dev/erp/ross/fusion_outbound/project/fileprocessed/INT_PPM_206_PROJECT_EXPORT_53015_20191008042701_fileprocessed.csv"
+			},
+			"pipelineID": {
+				"type": "string",
+				"defaultValue": "4afc8608-f6a5-48b9-9877-de7012b62a2f"
+			},
+			"totalRow": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"failedRow": {
+				"type": "int",
+				"defaultValue": 1
+			},
+			"successRow": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"fileName": {
+				"type": "string",
+				"defaultValue": "INT_PPM_206_PROJECT_EXPORT_53015_20190704042701.zip"
+			},
+			"status": {
+				"type": "string",
+				"defaultValue": "FAIL"
+			},
+			"stepname": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

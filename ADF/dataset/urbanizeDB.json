@@ -1,0 +1,179 @@
+{
+	"name": "urbanizeDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "urbanizedb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "identifier",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "reference_number",
+				"type": "varchar"
+			},
+			{
+				"name": "summary",
+				"type": "varchar"
+			},
+			{
+				"name": "description",
+				"type": "varchar"
+			},
+			{
+				"name": "raised_condition",
+				"type": "varchar"
+			},
+			{
+				"name": "external_reference",
+				"type": "varchar"
+			},
+			{
+				"name": "status",
+				"type": "varchar"
+			},
+			{
+				"name": "creation_time",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "tolerance",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "due_time",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "due_time_with_tollerance",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "nearing_breach",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "response_time",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "response_expiration",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Response_SLA",
+				"type": "varchar"
+			},
+			{
+				"name": "completion_expiration",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "completed_time",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Completion_SLA",
+				"type": "varchar"
+			},
+			{
+				"name": "job_state",
+				"type": "varchar"
+			},
+			{
+				"name": "Created_Due",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "next_action",
+				"type": "varchar"
+			},
+			{
+				"name": "creator",
+				"type": "varchar"
+			},
+			{
+				"name": "assignee",
+				"type": "varchar"
+			},
+			{
+				"name": "supplier_name",
+				"type": "varchar"
+			},
+			{
+				"name": "supplier_ext_reference",
+				"type": "varchar"
+			},
+			{
+				"name": "segment",
+				"type": "varchar"
+			},
+			{
+				"name": "account",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "property",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "product_bundle_order",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Urbanise_URL",
+				"type": "varchar"
+			},
+			{
+				"name": "job_template",
+				"type": "varchar"
+			},
+			{
+				"name": "Priority",
+				"type": "varchar"
+			},
+			{
+				"name": "last_changed",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "quotation",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"tableName": "efsb_jobs"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,426 @@
+{
+	"name": "SCM_205_PART_3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Generate Checksum",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set ZipFileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/GenChecksum",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\n\"filePath\":\"egsaasdrblob01/',pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(variables('ZipFileName'),'zip',''),'/',concat(variables('ZipFileName'),'.csv'),'\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set ZipFileName",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get FileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ZipFileName",
+					"value": {
+						"value": "@last(split(activity('Get FileName').Output.firstRow.Destination,'/'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get FileName",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT DISTINCT Destination FROM ETLAudit WHERE EventID = ''',pipeline().parameters.ParentPipelineID,'''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "If Get Checksum",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Generate Checksum",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(activity('Generate Checksum').output.Response,''))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Generate Checksum File",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select ''',activity('Generate Checksum').output.Response,'''')",
+										"type": "Expression"
+									}
+								},
+								"sink": {
+									"type": "BlobSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "LOG_TABLE",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ZIP_FILE_ROSS_CS",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@pipeline().parameters.InterfaceName",
+											"type": "Expression"
+										},
+										"FolderName": {
+											"value": "@replace(variables('ZipFileName'),'.zip','')",
+											"type": "Expression"
+										},
+										"FileName": "checksum.txt",
+										"FolderPath": {
+											"value": "@pipeline().parameters.StagingFolder",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@pipeline().parameters.Department",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Compress Folder",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Generate Checksum File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BlobSource",
+									"recursive": true
+								},
+								"sink": {
+									"type": "BlobSink"
+								},
+								"enableStaging": false,
+								"enableSkipIncompatibleRow": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ZIP_FILE_ROSS",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@pipeline().parameters.InterfaceName",
+											"type": "Expression"
+										},
+										"FolderName": {
+											"value": "@replace(variables('ZipFileName'),'.zip','')",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "*",
+											"type": "Expression"
+										},
+										"FolderPath": {
+											"value": "@pipeline().parameters.StagingFolder",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@pipeline().parameters.Department",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ZIP_ROSS",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@pipeline().parameters.InterfaceName",
+											"type": "Expression"
+										},
+										"ZipName": {
+											"value": "@concat(variables('ZipFileName'),'.zip')",
+											"type": "Expression"
+										},
+										"FolderPath": {
+											"value": "@pipeline().parameters.DestinationFolder",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@pipeline().parameters.Department",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Add log for Checksum File Generating",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Generate Checksum File",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Generate Checksum File').ActivityRunId,'\",\n\"ActivityTask\" : \"Generate Checksum File\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Generate Checksum File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Generate Checksum File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Generate Checksum File').Status,'\",\n\"Output\" : ',activity('Generate Checksum File').Output,',\n\"Error\" : ',activity('Generate Checksum File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Log for File Compression",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Compress Folder",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Compress Folder').ActivityRunId,'\",\n\"ActivityTask\" : \"Compress Folder\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Compress Folder').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Compress Folder').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Compress Folder').Status,'\",\n\"Output\" : ',activity('Compress Folder').Output,',\n\"Error\" : ',activity('Compress Folder').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Send to ROSS SFTP",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Compress Folder",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/sftp/ross",
+								"method": "POST",
+								"body": {
+									"value": "@concat('{\"blobPath\":\"/egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',concat(variables('ZipFileName'),'.zip'),'\",\"fileName\":\"',concat(variables('ZipFileName'),'.zip'),'\",\"sftpTarget\":\"/uem_edgenta/dev/erp/ross/fusion_outbound/supplier\"}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Log for File Sending",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Send to ROSS SFTP",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send to ROSS SFTP').ActivityRunId,'\",\n\"ActivityTask\" : \"Send to ROSS SFTP\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send to ROSS SFTP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send to ROSS SFTP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send to ROSS SFTP').Status,'\",\n\"Output\" : ',activity('Send to ROSS SFTP').Output,',\n\"Error\" : ',activity('Send to ROSS SFTP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Add Log for Generate Checksum",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Generate Checksum",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Generate Checksum').ActivityRunId,'\",\n\"ActivityTask\" : \"Generate Checksum\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Generate Checksum').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Generate Checksum').ExecutionEndTime,'\",\n\"Status\" : \"',if(equals(activity('Generate Checksum').Output.Response,''),'Failed','Succeeded'),'\",\n\"Output\" : ',activity('Generate Checksum').Output,',\n\"Error\" : ',activity('Generate Checksum').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string",
+				"defaultValue": "scm_204"
+			},
+			"ZipFileName": {
+				"type": "string",
+				"defaultValue": "INT_SCM_204_BLANKETAGREEMENT_Export_12345_20190513211645.zip"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			},
+			"SourceFolder": {
+				"type": "string"
+			},
+			"DestinationFolder": {
+				"type": "string"
+			},
+			"StagingFolder": {
+				"type": "string"
+			},
+			"SourceArchiveFolder": {
+				"type": "string"
+			},
+			"DestinationArchiveFolder": {
+				"type": "string"
+			},
+			"LogFolder": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ZipFileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "INT_SCM_205"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

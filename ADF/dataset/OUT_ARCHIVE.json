@@ -1,0 +1,29 @@
+{
+	"name": "OUT_ARCHIVE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "egsaasdrBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Department": {
+				"type": "string"
+			},
+			"InterfaceName": {
+				"type": "string"
+			},
+			"FileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"folderPath": {
+				"value": "@concat('egsaasdrblob01/uem/dev/edgenta/azure/outbound/archive/src/',dataset().Department,'/',dataset().InterfaceName)",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

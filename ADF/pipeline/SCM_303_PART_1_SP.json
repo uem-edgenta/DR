@@ -1,0 +1,497 @@
+{
+	"name": "SCM_303_PART_1_SP",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get and Deflate ZIP",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						}
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false,
+					"parallelCopies": 4,
+					"dataIntegrationUnits": 32
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureBLOBSFTPFileDef",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileLocation": {
+								"value": "@concat('collexe/',pipeline().parameters.FileLocation)",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "FOLDER_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FolderName": "-1",
+							"PathFolder": {
+								"value": "@pipeline().parameters.StagingFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Set Variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ZipFileName",
+					"value": {
+						"value": "@pipeline().parameters.FileName",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Backup Source File Complete",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ExecutePipeline2",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_SOURCE_BACKUP",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"SourceFolder": {
+							"value": "@pipeline().parameters.SourceFolder",
+							"type": "Expression"
+						},
+						"DestinationFolder": {
+							"value": "@pipeline().parameters.DestinationFolder",
+							"type": "Expression"
+						},
+						"LogFolder": {
+							"value": "@pipeline().parameters.LogFolder",
+							"type": "Expression"
+						},
+						"SourceArchiveFolder": {
+							"value": "@pipeline().parameters.SourceArchiveFolder",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"DestinationArchiveFolder": {
+							"value": "@pipeline().parameters.DestinationArchiveFolder",
+							"type": "Expression"
+						},
+						"StagingFolder": {
+							"value": "@pipeline().parameters.StagingFolder",
+							"type": "Expression"
+						},
+						"FileName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"FileLocation": {
+							"value": "@pipeline().parameters.FileLocation",
+							"type": "Expression"
+						},
+						"ScheduleType": {
+							"value": "@pipeline().parameters.ScheduleType",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						},
+						"DestinationSystem": {
+							"value": "@pipeline().parameters.DestinationSystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Backup Source File Skipped",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ExecutePipeline2",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_SOURCE_BACKUP",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"SourceFolder": {
+							"value": "@pipeline().parameters.SourceFolder",
+							"type": "Expression"
+						},
+						"DestinationFolder": {
+							"value": "@pipeline().parameters.DestinationFolder",
+							"type": "Expression"
+						},
+						"LogFolder": {
+							"value": "@pipeline().parameters.LogFolder",
+							"type": "Expression"
+						},
+						"SourceArchiveFolder": {
+							"value": "@pipeline().parameters.SourceArchiveFolder",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"DestinationArchiveFolder": {
+							"value": "@pipeline().parameters.DestinationArchiveFolder",
+							"type": "Expression"
+						},
+						"StagingFolder": {
+							"value": "@pipeline().parameters.StagingFolder",
+							"type": "Expression"
+						},
+						"FileName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"FileLocation": {
+							"value": "@pipeline().parameters.FileLocation",
+							"type": "Expression"
+						},
+						"ScheduleType": {
+							"value": "@pipeline().parameters.ScheduleType",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						},
+						"DestinationSystem": {
+							"value": "@pipeline().parameters.DestinationSystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ExecutePipeline2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Get and Deflate ZIP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SCM_303_PART_2_SP",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"ZipFileName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"SourceFolder": {
+							"value": "@pipeline().parameters.SourceFolder",
+							"type": "Expression"
+						},
+						"DestinationFolder": {
+							"value": "@pipeline().parameters.DestinationFolder",
+							"type": "Expression"
+						},
+						"StagingFolder": {
+							"value": "@pipeline().parameters.StagingFolder",
+							"type": "Expression"
+						},
+						"LogFolder": {
+							"value": "@pipeline().parameters.LogFolder",
+							"type": "Expression"
+						},
+						"SourceArchiveFolder": {
+							"value": "@pipeline().parameters.SourceArchiveFolder",
+							"type": "Expression"
+						},
+						"DestinationArchiveFolder": {
+							"value": "@pipeline().parameters.DestinationArchiveFolder",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						},
+						"DestinationSystem": {
+							"value": "@pipeline().parameters.DestinationSystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Add Log for Deflate ZIP",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get and Deflate ZIP",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"PO\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"OracleFusion\",\n\"JobId\" : \"',activity('Get and Deflate ZIP').ActivityRunId,'\",\n\"ActivityTask\" : \"Get and Deflate ',pipeline().parameters.SourceSystem,' ZIP\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Get and Deflate ZIP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get and Deflate ZIP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get and Deflate ZIP').Status,'\",\n\"Output\" : ',activity('Get and Deflate ZIP').Output,',\n\"Error\" : ',activity('Get and Deflate ZIP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of locate and retrieve the .ZIP file from ',pipeline().parameters.SourceSystem,'SFTP. Deflating process will be run once retrieved the .ZIP and move .CSV to BLOB\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Backup Source File Complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "AzureBLOBSFTPFile",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileLocation": {
+								"value": "@concat('collexe/',pipeline().parameters.FileLocation)",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true
+					}
+				}
+			},
+			{
+				"name": "Delete2",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Backup Source File Skipped",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "AzureBLOBSFTPFile",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileLocation": {
+								"value": "@concat('collexe/',pipeline().parameters.FileLocation)",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true
+					}
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string",
+				"defaultValue": "INT_PPM_206"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			},
+			"SourceFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/inbound/main/source"
+			},
+			"DestinationFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/inbound/main/destination"
+			},
+			"LogFolder": {
+				"type": "string",
+				"defaultValue": "inbound/log"
+			},
+			"SourceArchiveFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/inbound/archive/source"
+			},
+			"Department": {
+				"type": "string",
+				"defaultValue": "ppm"
+			},
+			"DestinationArchiveFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/inbound/archive/destination"
+			},
+			"StagingFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/inbound/main/source"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "INT_PPM_206_PROJECT_Export_43271_20190515093732.zip"
+			},
+			"FileLocation": {
+				"type": "string",
+				"defaultValue": "/uem/dev/edgenta/azure/inbound/ppm/project"
+			},
+			"ScheduleType": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"SourceSystem": {
+				"type": "string"
+			},
+			"DestinationSystem": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ZipFileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "INT_SCM_303_SP"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,126 @@
+{
+	"name": "GENERAL_ERROR_LOG",
+	"properties": {
+		"activities": [
+			{
+				"name": "Send Error Log to ORACLE",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Create Error Log",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/sftp/oracle",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"blobPath\":\"egsaasdrblob01/',concat(pipeline().parameters.LogFolder,'/',replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt'),'\",\"fileName\":\"',concat(replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt'),'\",\"sftpTarget\":\"',variables('OraErrorPath'),'/',pipeline().parameters.Department,'/',variables('Foldername'),'\",\"sftpType\": 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Send Error Log to ORACLE",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Send Error Log to ORACLE",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send Error Log to ORACLE').ActivityRunId,'\",\n\"ActivityTask\" : \"Send Error Log to ',pipeline().parameters.SourceSystem,'\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send Error Log to ORACLE').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send Error Log to ORACLE').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send Error Log to ORACLE').Status,'\",\n\"Output\" : ',activity('Send Error Log to ORACLE').Output,',\n\"Error\" : ',activity('Send Error Log to ORACLE').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of sending error log file to ',pipeline().parameters.SourceSystem,'\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Create Error Log",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/log/error-log",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\n\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\"filePath\": \"/egsaasdrblob01/',pipeline().parameters.LogFolder,'\",\n\"fileName\": \"',replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt\"\n}')",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "Basic",
+						"username": "uem_edgenta",
+						"password": {
+							"type": "SecureString",
+							"value": "**********"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"ParentPipelineID": {
+				"type": "string",
+				"defaultValue": "205af391-e0ef-4b29-a0a5-b25c79da186f"
+			},
+			"LogFolder": {
+				"type": "string",
+				"defaultValue": "outbound/log"
+			},
+			"zipfileName": {
+				"type": "string",
+				"defaultValue": "INT_PPM_206_PROJECT_Export_51034_20190703024120.zip"
+			},
+			"Department": {
+				"type": "string",
+				"defaultValue": "ppm"
+			},
+			"SourceSystem": {
+				"type": "string",
+				"defaultValue": "ORACLE"
+			}
+		},
+		"variables": {
+			"OraErrorPath": {
+				"type": "String",
+				"defaultValue": "/uem/dev/edgenta/azure/error"
+			},
+			"FolderName": {
+				"type": "String",
+				"defaultValue": "project"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

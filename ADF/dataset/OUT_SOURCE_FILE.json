@@ -1,0 +1,37 @@
+{
+	"name": "OUT_SOURCE_FILE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "egsaasdrBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Department": {
+				"type": "string"
+			},
+			"InterfaceName": {
+				"type": "string"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "-1"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"compression": {
+				"type": "ZipDeflate"
+			},
+			"fileName": {
+				"value": "@dataset().FileName",
+				"type": "Expression"
+			},
+			"folderPath": {
+				"value": "@concat('/uem/dev/edgenta/azure/outbound/main/src/',dataset().Department,'/',dataset().InterfaceName)",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

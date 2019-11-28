@@ -1,0 +1,215 @@
+{
+	"name": "GENERAL_SOURCE_BACKUP_FILE",
+	"properties": {
+		"activities": [
+			{
+				"name": "Backup Source File",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false,
+					"parallelCopies": 6,
+					"dataIntegrationUnits": 32
+				},
+				"inputs": [
+					{
+						"referenceName": "FILE_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							},
+							"PathFolder": {
+								"value": "@pipeline().parameters.SourceFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "FOLDER_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FolderName": "-1",
+							"PathFolder": {
+								"value": "@pipeline().parameters.SourceArchiveFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Delete Source File",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Backup Source File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "FILE_FUSION",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							},
+							"PathFolder": {
+								"value": "@pipeline().parameters.SourceFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false
+				}
+			},
+			{
+				"name": "Add Log for Source File Backup",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Backup Source File",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.FileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.FileName,'zip','csv'),'\",\n\"Object\" : \"Supplier\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Backup Source File').ActivityRunId,'\",\n\"ActivityTask\" : \"Backup ',pipeline().parameters.SourceSystem,' Source File\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Backup Source File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Backup Source File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Backup Source File').Status,'\",\n\"Output\" : ',activity('Backup Source File').Output,',\n\"Error\" : ',activity('Backup Source File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of backup ',pipeline().parameters.SourceSystem,' source file in BLOB\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string",
+				"defaultValue": "INT_PPM_206"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			},
+			"SourceFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/source"
+			},
+			"DestinationFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/destination"
+			},
+			"LogFolder": {
+				"type": "string",
+				"defaultValue": "outbound/log"
+			},
+			"SourceArchiveFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/source"
+			},
+			"Department": {
+				"type": "string",
+				"defaultValue": "ppm"
+			},
+			"DestinationArchiveFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/destination"
+			},
+			"StagingFolder": {
+				"type": "string",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/source"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "INT_PPM_206_PROJECT_Export_43271_20190515093732.zip"
+			},
+			"FileLocation": {
+				"type": "string",
+				"defaultValue": "/uem/dev/edgenta/azure/outbound/ppm/project"
+			},
+			"ScheduleType": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"SourceSystem": {
+				"type": "string"
+			},
+			"DestinationSystem": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ZipFileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "GENERAL"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

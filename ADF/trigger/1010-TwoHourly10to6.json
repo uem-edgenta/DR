@@ -1,0 +1,67 @@
+{
+	"name": "1010-TwoHourly10to6",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "INT_SCM_205_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/scm/po",
+					"interfaceName": "INT_SCM_205",
+					"Department": "scm",
+					"ScheduleType": "1"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "INT_SCM_231_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/scm/inventoryItemCost",
+					"interfaceName": "INT_SCM_231",
+					"Department": "scm",
+					"ScheduleType": "1"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "INT_PPM_206_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/ppm/project",
+					"interfaceName": "INT_PPM_206",
+					"Department": "ppm",
+					"ScheduleType": "1"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "INT_FIN_254_DIR",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"fileLocation": "/uem/dev/edgenta/azure/outbound/fin/invoiceReceipt",
+					"interfaceName": "INT_FIN_254",
+					"Department": "fin",
+					"ScheduleType": "1"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 2,
+				"startTime": "2019-10-10T02:00:00Z",
+				"endTime": "2019-10-10T10:01:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

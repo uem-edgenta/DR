@@ -1,0 +1,40 @@
+{
+	"name": "ZIP_FILE_ROSS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "egsaasdrBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"InterfaceFolder": {
+				"type": "string"
+			},
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "-1"
+			},
+			"FileName": {
+				"type": "string"
+			},
+			"FolderPath": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": {
+				"value": "@concat(dataset().FileName)",
+				"type": "Expression"
+			},
+			"folderPath": {
+				"value": "@if(equals(dataset().FolderName,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder,'/',dataset().FolderName))",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

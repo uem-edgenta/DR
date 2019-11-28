@@ -1,0 +1,111 @@
+{
+	"name": "API_LOG",
+	"properties": {
+		"activities": [
+			{
+				"name": "Add Step Input",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.EventID,'\",\n\"EventName\" : \"',pipeline().parameters.EventName,'\",\n\"FileZipName\" : \"',pipeline().parameters.FileZipName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.FileZipName,'zip','csv'),'\",\n\"Object\" : \"',pipeline().parameters.Object,'\",\n\"SourceSystem\" : \"',pipeline().parameters.SourceSystem,'\",\n\"DestSystem\" : \"',pipeline().parameters.DestSystem,'\",\n\"JobId\" : \"',pipeline().parameters.JobID,'\",\n\"ActivityTask\" : \"',pipeline().parameters.ActivityTask,'\",\n\"ActivityType\" : \"1\",\n\"StartTime\" : \"',pipeline().parameters.StartTime,'\",\n\"EndTime\" : \"',pipeline().parameters.EndTime,'\",\n\"Status\" : \"',pipeline().parameters.Status,'\",\n\"Output\" : ',pipeline().parameters.Input,',\n\"Error\" : ',pipeline().parameters.Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 3,\n\"EventType\" : \"',pipeline().parameters.EventType,'\",\n\"FilePath\" : \"',pipeline().parameters.FilePath,'\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add StepOutput",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Add Step Input",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.EventID,'\",\n\"EventName\" : \"',pipeline().parameters.EventName,'\",\n\"FileZipName\" : \"',pipeline().parameters.FileZipName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.FileZipName,'zip','csv'),'\",\n\"Object\" : \"',pipeline().parameters.Object,'\",\n\"SourceSystem\" : \"',pipeline().parameters.SourceSystem,'\",\n\"DestSystem\" : \"',pipeline().parameters.DestSystem,'\",\n\"JobId\" : \"',pipeline().parameters.JobID,'\",\n\"ActivityTask\" : \"',pipeline().parameters.ActivityTask,'\",\n\"ActivityType\" : \"2\",\n\"StartTime\" : \"',pipeline().parameters.StartTime,'\",\n\"EndTime\" : \"',pipeline().parameters.EndTime,'\",\n\"Status\" : \"',pipeline().parameters.Status,'\",\n\"Output\" : ',pipeline().parameters.Output,',\n\"Error\" : ',pipeline().parameters.Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 3,\n\"EventType\" : \"',pipeline().parameters.EventType,'\",\n\"FilePath\" : \"',pipeline().parameters.FilePath,'\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"EventID": {
+				"type": "string"
+			},
+			"EventName": {
+				"type": "string"
+			},
+			"FileZipName": {
+				"type": "string"
+			},
+			"Object": {
+				"type": "string"
+			},
+			"SourceSystem": {
+				"type": "string"
+			},
+			"DestSystem": {
+				"type": "string"
+			},
+			"JobID": {
+				"type": "string"
+			},
+			"ActivityTask": {
+				"type": "string"
+			},
+			"StartTime": {
+				"type": "string"
+			},
+			"EndTime": {
+				"type": "string"
+			},
+			"Status": {
+				"type": "string"
+			},
+			"Output": {
+				"type": "string"
+			},
+			"Error": {
+				"type": "string"
+			},
+			"ErrorLoc": {
+				"type": "string"
+			},
+			"EventType": {
+				"type": "string"
+			},
+			"FilePath": {
+				"type": "string"
+			},
+			"Input": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

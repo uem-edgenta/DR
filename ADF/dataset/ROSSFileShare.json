@@ -1,0 +1,30 @@
+{
+	"name": "ROSSFileShare",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ROSSSftp",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FileLocation": {
+				"type": "string"
+			},
+			"FileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "FileShare",
+		"typeProperties": {
+			"fileName": {
+				"value": "@dataset().FileName",
+				"type": "Expression"
+			},
+			"folderPath": {
+				"value": "@dataset().FileLocation",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

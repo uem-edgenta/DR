@@ -1,0 +1,177 @@
+{
+	"name": "ADHOC",
+	"properties": {
+		"activities": [
+			{
+				"name": "If Declare File",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.fileName,'')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Execute File",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "GENERAL_PART_1B",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"InterfaceName": {
+										"value": "@pipeline().parameters.interfaceId",
+										"type": "Expression"
+									},
+									"ParentPipelineID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"SourceFolder": {
+										"value": "@variables('SourceFolder')",
+										"type": "Expression"
+									},
+									"DestinationFolder": {
+										"value": "@variables('DestinationFolder')",
+										"type": "Expression"
+									},
+									"LogFolder": {
+										"value": "@variables('LogFolder')",
+										"type": "Expression"
+									},
+									"SourceArchiveFolder": {
+										"value": "@variables('SourceArchiveFolder')",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@variables('Department')",
+										"type": "Expression"
+									},
+									"DestinationArchiveFolder": {
+										"value": "@variables('DestinationArchiveFolder')",
+										"type": "Expression"
+									},
+									"StagingFolder": {
+										"value": "@variables('SourceFolder')",
+										"type": "Expression"
+									},
+									"FileName": {
+										"value": "@pipeline().parameters.fileName",
+										"type": "Expression"
+									},
+									"FileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"ScheduleType": "1"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Execute Folder",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "GENERAL_DIR",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"fileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"interfaceName": {
+										"value": "@pipeline().parameters.interfaceId",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@substring(pipeline().parameters.interfaceId,4,3)",
+										"type": "Expression"
+									},
+									"ScheduleType": "2"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"fileName": {
+				"type": "string",
+				"defaultValue": "INT_PPM_337_BILLINGEVENTS_000153_IMPORT_2019081912174525.zip"
+			},
+			"sourceSystem": {
+				"type": "string",
+				"defaultValue": "Edgenta-Azure"
+			},
+			"fileLocation": {
+				"type": "string",
+				"defaultValue": "/uem_edgenta/dev/erp/ross/fusion_inbound/billingevents"
+			},
+			"interfaceId": {
+				"type": "string",
+				"defaultValue": "INT_PPM_337"
+			}
+		},
+		"variables": {
+			"TriggerBy": {
+				"type": "String",
+				"defaultValue": "ADHOC"
+			},
+			"SourceFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/source"
+			},
+			"DestinationFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/destination/ross"
+			},
+			"LogFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/log/"
+			},
+			"SourceArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/source"
+			},
+			"Department": {
+				"type": "String",
+				"defaultValue": "scm"
+			},
+			"DestinationArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/destination/ross"
+			},
+			"StagingFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/source"
+			},
+			"ScheduleType": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"SourceSystem": {
+				"type": "String",
+				"defaultValue": "ORACLE"
+			},
+			"DestinationSystem": {
+				"type": "String",
+				"defaultValue": "ROSS"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,15 @@
+{
+	"name": "BACKUP_ZIP_FUSION",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "egsaasdrBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"folderPath": "egsaasdrblob01/uem/dev/edgenta/azure/outbound/archive/src"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,383 @@
+{
+	"name": "INT_SCM_340_TEST",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Data from Database",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select --identifier [UniqueID],\n--CASE WHEN convert(varchar(10),creation_time,120) = convert(varchar(10),DATEADD(hh,8,last_changed,,120) THEN 'A' ELSE 'U' END [ChangeIndicator],\n--priority,\n--status,\nraised_condition [workType],\nreference_number [workTypeNumber],\nsummary [workDescription], \nconvert(varchar(10),creation_time,120) [startDateActive],\nISNULL(convert(varchar(10),DATEADD(hh,8,completed_time),120),'2099-01-01') [endDateActive]--,\n--last_changed,\n--creation_time\nfrom efsb_jobs\nwhere job_state = 'ACTIVE'\nAND DATEADD(hh,8,last_changed) >= DATEADD(mi,-30,getdate())\nAND convert(varchar(10),creation_time,120) = convert(varchar(10),DATEADD(hh,8,last_changed),120)"
+					},
+					"dataset": {
+						"referenceName": "urbanizeDB",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Add Log for Get Data from Database",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Data from Database",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"WORKTYPENUMBER\",\n\"SourceSystem\" : \"Urbanize-Azure\",\n\"DestSystem\" : \"Edgenta-Azure\",\n\"JobId\" : \"',activity('Get Data from Database').ActivityRunId,'\",\n\"ActivityTask\" : \"Get Record from Urbanize Database\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Get Data from Database').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data from Database').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data from Database').Status,'\",\n\"Output\" : ',activity('Get Data from Database').Output,',\n\"Error\" : ',activity('Get Data from Database').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of retrieve data from Urbanize Database\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get Data for Updated Record",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select --identifier [UniqueID],\n--CASE WHEN convert(varchar(10),creation_time,120) = convert(varchar(10),last_changed,120) THEN 'A' ELSE 'U' END [ChangeIndicator],\n--priority,\n--status,\nraised_condition [workType],\nreference_number [workTypeNumber],\nsummary [workDescription],\nconvert(varchar(10),creation_time,120) [startDateActive],\nISNULL(convert(varchar(10),DATEADD(hh,8,completed_time),120),'2099-01-01') [endDateActive]\n--last_changed,\n--completed_time\nfrom efsb_jobs\nwhere job_state = 'ACTIVE'\nAND DATEADD(hh,8,last_changed) >= DATEADD(mi,-30,getdate())\nAND convert(varchar(10),creation_time,120) <> convert(varchar(10),DATEADD(hh,8,last_changed),120)"
+					},
+					"dataset": {
+						"referenceName": "urbanizeDB",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "WebActivity1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Data for Updated Record",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"WORKTYPENUMBER\",\n\"SourceSystem\" : \"Urbanize-Azure\",\n\"DestSystem\" : \"Edgenta-Azure\",\n\"JobId\" : \"',activity('Get Data for Updated Record').ActivityRunId,'\",\n\"ActivityTask\" : \"Get Updated Record from Urbanize Database\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Get Data for Updated Record').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data for Updated Record').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data for Updated Record').Status,'\",\n\"Output\" : ',activity('Get Data for Updated Record').Output,',\n\"Error\" : ',activity('Get Data for Updated Record').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of retrieve updated data from Urbanize Database\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get Data from Database",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Get Data from Database').output.count,0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Send Request for New Record",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/int/scm/340",
+								"method": "POST",
+								"body": {
+									"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"A\",\n   \"workOrder\":',activity('Get Data from Database').output.value,'\n}')",
+									"type": "Expression"
+								},
+								"authentication": {
+									"type": "Basic",
+									"username": "uem_edgenta",
+									"password": {
+										"type": "SecureString",
+										"value": "**********"
+									}
+								}
+							}
+						},
+						{
+							"name": "ExecutePipeline4",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Send Request for New Record",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "API_LOG",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"EventID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"EventName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"FileZipName": {
+										"value": "@variables('ZipFileName')",
+										"type": "Expression"
+									},
+									"Object": "WORKTYPENUMBER",
+									"SourceSystem": "Urbanize-Azure",
+									"DestSystem": "UEMGroup-Oracle",
+									"JobID": {
+										"value": "@activity('Send Request for New Record').ActivityRunId",
+										"type": "Expression"
+									},
+									"ActivityTask": "Send Request to ORACLE for Updated Work Type Records",
+									"StartTime": {
+										"value": "@activity('Send Request for New Record').ExecutionStartTime",
+										"type": "Expression"
+									},
+									"EndTime": {
+										"value": "@activity('Send Request for New Record').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@activity('Send Request for New Record').Status",
+										"type": "Expression"
+									},
+									"Output": {
+										"value": "@activity('Send Request for New Record').output",
+										"type": "Expression"
+									},
+									"Error": {
+										"value": "@if(empty(activity('Send Request for New Record').Error),'',activity('Send Request for New Record').Error)",
+										"type": "Expression"
+									},
+									"EventType": "INBOUND",
+									"FilePath": "The step describes the process of send request to ORACLE API",
+									"Input": {
+										"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"A\",\n   \"workOrder\":',activity('Get Data from Database').output.value,'\n}')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If Condition2",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get Data for Updated Record",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Get Data for Updated Record').output.count,0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Send Request",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/int/scm/340",
+								"method": "POST",
+								"body": {
+									"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"U\",\n   \"workOrder\":',activity('Get Data for Updated Record').output.value,'\n}')",
+									"type": "Expression"
+								},
+								"authentication": {
+									"type": "Basic",
+									"username": "uem_edgenta",
+									"password": {
+										"type": "SecureString",
+										"value": "**********"
+									}
+								}
+							}
+						},
+						{
+							"name": "ExecutePipeline5",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Send Request",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "API_LOG",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"EventID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"EventName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"FileZipName": {
+										"value": "@variables('ZipFileName')",
+										"type": "Expression"
+									},
+									"Object": "WORKTYPENUMBER",
+									"SourceSystem": "ROSS-Azure",
+									"DestSystem": "UEMGroup-Oracle",
+									"JobID": {
+										"value": "@activity('Send Request').ActivityRunId",
+										"type": "Expression"
+									},
+									"ActivityTask": "Send Request to ORACLE for Updated Work Type Records",
+									"StartTime": {
+										"value": "@activity('Send Request').ExecutionStartTime",
+										"type": "Expression"
+									},
+									"EndTime": {
+										"value": "@activity('Send Request').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@activity('Send Request').Status",
+										"type": "Expression"
+									},
+									"Output": {
+										"value": "@activity('Send Request').output",
+										"type": "Expression"
+									},
+									"Error": {
+										"value": "@if(empty(activity('Send Request').Error),'',activity('Send Request').Error)",
+										"type": "Expression"
+									},
+									"EventType": "INBOUND",
+									"FilePath": "The step describes the process of send request to ORACLE API",
+									"Input": {
+										"value": "@concat('{  \n   \"sourceApplicationCode\":\"EPB-URBANIZE\",\n   \"changeIndicator\":\"U\",\n   \"workOrder\":',activity('Get Data for Updated Record').output.value,'\n}')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"ScheduleType": {
+				"type": "string",
+				"defaultValue": "2"
+			}
+		},
+		"variables": {
+			"AddWorkTypeList": {
+				"type": "Array"
+			},
+			"UpdateWorkTypeList": {
+				"type": "Array"
+			},
+			"WorkTypeRecord": {
+				"type": "String"
+			},
+			"AddWorkTypeObject": {
+				"type": "String"
+			},
+			"UpdateWorkTypeObject": {
+				"type": "String"
+			},
+			"ZipFileName": {
+				"type": "String",
+				"defaultValue": "INT_SCM_340"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

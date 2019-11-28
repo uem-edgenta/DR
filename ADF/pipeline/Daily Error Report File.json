@@ -1,0 +1,398 @@
+{
+	"name": "Daily Error Report File",
+	"properties": {
+		"activities": [
+			{
+				"name": "Daily Summary File",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select distinct FileNameZip [File Name],InterfaceID [Interface ID],sch.CodeDesc [Schedule Type],BusinessObject [Business Object],starttime [Start Time],endtime [End Time],\nEventMessage [Error Step],ErrorMessage [Error Message],cm.CodeDesc [Process Status],ISNULL([data status],'''') [Data Transaction Status] \nfrom EventLog el\ninner join CodeMaster cm on el.Status = cm.Code and cm.CodeType = ''STS''\ninner join CodeMaster sch on el.ScheduleType = sch.Code and sch.CodeType = ''SCH''\nouter apply (\n\tselect ''FAIL'' [Data Status]\n\tfrom ETLAudit ea\n\twhere el.EventID = ea.EventID and RowFailed > 0\n) a\nwhere el.ScheduleID <> '''' and el.ScheduleID <> ''1'' and EventType = ''O'' and (Status = 2 or [Data Status] = ''FAIL'') \nand CAST(StartTime as date) = CAST(''',pipeline().parameters.SingularDate,''' as date)\norder by StartTime')",
+							"type": "Expression"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DELIMITED_TEXT",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@replace(pipeline().parameters.SingularDate,'-','')",
+								"type": "Expression"
+							},
+							"FileName": "EVENTLOG.csv",
+							"PathFolder": {
+								"value": "@variables('Folder')",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@variables('Department')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "File List Lookup",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Daily Summary File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select distinct FileNameZip\nfrom EventLog el\ninner join CodeMaster cm on el.Status = cm.Code and cm.CodeType = ''STS''\ninner join CodeMaster sch on el.ScheduleType = sch.Code and sch.CodeType = ''SCH''\nouter apply (\n\tselect ''FAIL'' [Data Status]\n\tfrom ETLAudit ea\n\twhere el.EventID = ea.EventID and RowFailed > 0\n) a\nwhere el.ScheduleID <> '''' and el.ScheduleID <> ''1'' and EventType = ''O'' and (Status = 2 or [Data Status] = ''FAIL'') \nand CAST(StartTime as date) = CAST(''',pipeline().parameters.SingularDate,''' as date)\n')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "For Each File",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "File List Lookup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('File List Lookup').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "EVENTTASKLOG File",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT SeqNo,StepName,StepDescription,etl.StartTime,etl.EndTime,StepInput,StepOutput,st.CodeDesc [Status],etl.ErrorMessage FROM EventTaskLog etl inner join EventTaskLogStatus st on etl.Status = st.Code\nINNER JOIN EventLog el on etl.EventID = el.EventID\nwhere FileNameZip = ''',item().fileNameZip,'''\norder by SeqNo')",
+										"type": "Expression"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".csv"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "LOG_TABLE",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DELIMITED_TEXT",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@concat(replace(pipeline().parameters.SingularDate,'-',''),'/',item().fileNameZip)",
+											"type": "Expression"
+										},
+										"FileName": "EVENTTASKLOG.csv",
+										"PathFolder": {
+											"value": "@variables('Folder')",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@variables('Department')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "ETLDATAAUDIT File",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "EVENTTASKLOG File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select FileLine,cm.CodeDesc [Process Status],st.CodeDesc [Status], \n\tCASE WHEN etl.PackageType = 1 and isFailLoad = 0  THEN ''Success''\n\tWHEN etl.PackageType = 2 and flg is NULL THEN ''''\n\tWHEN etl.PackageType = 2 and flg = 1 and isFailLoad = 0 THEN ''Success''\n\tWHEN  etl.PackageType = 2 and flg = 1 and isFailLoad = 1 THEN ''Failed'' END [Data Validation],\nMessage\nfrom ETLDataAudit etl\nINNER JOIN EventLog el on etl.EventID = el.EventID \nINNER JOIN CodeMaster cm on cm.code = etl.PackageType and cm.CodeType = ''PKT''\nINNER JOIN Codemaster st on etl.status = st.code and st.codetype = ''STS''\nOUTER APPLY(\n\tSELECT 1 flg\n\tFROM ETLAudit ea\n\tWHERE el.EventID = ea.EventID and ea.PackageType = ''3''\n) a\nwhere el.FileNameZip = ''',item().fileNameZip,'''')",
+										"type": "Expression"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".csv"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "LOG_TABLE",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DELIMITED_TEXT",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@concat(replace(pipeline().parameters.SingularDate,'-',''),'/',item().fileNameZip)",
+											"type": "Expression"
+										},
+										"FileName": "ETLDATAAUDIT.csv",
+										"PathFolder": {
+											"value": "@variables('Folder')",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@variables('Department')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "ZIP File",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "ETLDATAAUDIT File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BlobSource",
+									"recursive": true
+								},
+								"sink": {
+									"type": "BlobSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ZIP_FILE_ROSS",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@replace(pipeline().parameters.SingularDate,'-','')",
+											"type": "Expression"
+										},
+										"FolderName": {
+											"value": "@item().fileNameZip",
+											"type": "Expression"
+										},
+										"FileName": "*",
+										"FolderPath": {
+											"value": "@variables('Folder')",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@variables('Department')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ZIP_ROSS",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@replace(pipeline().parameters.SingularDate,'-','')",
+											"type": "Expression"
+										},
+										"ZipName": {
+											"value": "@replace(replace(item().fileNameZip,'.zip','_errorfile.zip'),'EXPORT','Export')",
+											"type": "Expression"
+										},
+										"FolderPath": {
+											"value": "@variables('Folder')",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@variables('Department')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Delete1",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "ZIP File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "FOLDER_FUSION",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@replace(pipeline().parameters.SingularDate,'-','')",
+											"type": "Expression"
+										},
+										"FolderName": {
+											"value": "@item().fileNameZip",
+											"type": "Expression"
+										},
+										"PathFolder": {
+											"value": "@variables('Folder')",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@variables('Department')",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false,
+								"recursive": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"SingularDate": {
+				"type": "string",
+				"defaultValue": "2019-10-08"
+			}
+		},
+		"variables": {
+			"Folder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure"
+			},
+			"Department": {
+				"type": "String",
+				"defaultValue": "errorfile"
+			},
+			"Interface": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
