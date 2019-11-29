@@ -503,7 +503,7 @@
 						"EventType": "OUTBOUND",
 						"FilePath": "The step describes the process of send the success message of received file via API of source system",
 						"Input": {
-							"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Data Loading SP').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(activity('Data Loading SP').Error,'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+							"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Data Loading SP').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(string(activity('Data Loading SP').Error),'\"','\\\"'),'\",\"fileLine\":\"\"}')",
 							"type": "Expression"
 						}
 					}
