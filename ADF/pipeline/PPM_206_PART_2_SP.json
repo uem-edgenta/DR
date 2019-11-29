@@ -660,7 +660,9 @@
 								"body": {
 									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('File Generating').Status,'\",\n\"Output\" : ',activity('File Generating').Output,',\n\"Error\" : ',activity('File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
 									"type": "Expression"
-								}
+								},
+								"linkedServices": [],
+								"datasets": []
 							}
 						},
 						{
