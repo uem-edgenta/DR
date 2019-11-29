@@ -548,7 +548,7 @@
 							"type": "Expression"
 						},
 						"ActivityTask": {
-							"value": "@concat('Send File Processing ',pipeline().parameters.SourceSystem,' ACK')",
+							"value": "@concat('Send File Processing ',pipeline().parameters.SourceSystem,' ACK for ROSS')",
 							"type": "Expression"
 						},
 						"StartTime": {
@@ -572,7 +572,7 @@
 							"type": "Expression"
 						},
 						"EventType": "OUTBOUND",
-						"FilePath": "The step describes the process of send the success message of received file via API of source system",
+						"FilePath": "The step describes the process of send the success message of received file via API of source system for ROSS",
 						"Input": {
 							"value": "@concat(\n\t'{\"sourceSystem\":\"',activity('Get SSIS Result 2').output.firstRow.source,\n\t'\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n\t,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv')\n\t,'\",\"errorLocation\":\"',activity('Get SSIS Result 2').output.firstRow.errorLocation\n\t,'\",\"businessObject\":\"',activity('Get SSIS Result 2').output.firstRow.BusinessObject\n\t,'\",\"notificationType\":\"',activity('Get SSIS Result 2').output.firstRow.NotificationType\n\t,'\",\"eventOccurredTime\":\"',string(activity('Get SSIS Result 2').output.firstRow.starttime)\n\t,'\",\"messageDescription\":\"',if(equals(activity('Get Row Count').output.firstRow.RowInsert,0),'No Data',''),'\",\"fileLine\":\"\"}')",
 							"type": "Expression"
