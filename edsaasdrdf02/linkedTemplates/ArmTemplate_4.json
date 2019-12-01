@@ -23,7 +23,7 @@
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -95,7 +95,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -124,7 +124,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -153,7 +153,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -251,7 +251,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -331,7 +331,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -411,7 +411,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -440,7 +440,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -526,7 +526,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -560,7 +560,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -589,7 +589,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -694,7 +694,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -723,7 +723,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -752,7 +752,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -781,7 +781,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -1793,7 +1793,7 @@
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -1865,7 +1865,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -1894,7 +1894,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -1923,7 +1923,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2021,7 +2021,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2101,7 +2101,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2181,7 +2181,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2210,7 +2210,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2296,7 +2296,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2330,7 +2330,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2359,7 +2359,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2464,7 +2464,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2493,7 +2493,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -2522,7 +2522,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -3458,7 +3458,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -3537,7 +3537,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -3582,7 +3582,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -3611,7 +3611,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -3659,7 +3659,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -3689,12 +3689,12 @@
 							{
 								"activity": "File Generating",
 								"dependencyConditions": [
-									"Completed"
+									"Failed"
 								]
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -3706,7 +3706,7 @@
 							"method": "POST",
 							"headers": {},
 							"body": {
-								"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"Item\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('File Generating').Status,'\",\n\"Output\" : ',activity('File Generating').Output,',\n\"Error\" : \"',activity('File Generating').Error,'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"Item\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('File Generating').Status,'\",\n\"Output\" : ',activity('File Generating').Output,',\n\"Error\" : ',activity('File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
 								"type": "Expression"
 							}
 						}
@@ -3723,7 +3723,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -3757,7 +3757,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -3786,7 +3786,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -3798,7 +3798,7 @@
 							"method": "POST",
 							"headers": {},
 							"body": {
-								"value": "@concat('{\"sourceSystem\":\"Edgenta-Azure\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('File Generating').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(activity('File Generating').Error,'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+								"value": "@concat('{\"sourceSystem\":\"Edgenta-Azure\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('File Generating').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(string(activity('File Generating').Error),'\"','\\\"'),'\",\"fileLine\":\"\"}')",
 								"type": "Expression"
 							}
 						}
@@ -3815,7 +3815,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -3827,7 +3827,7 @@
 							"method": "POST",
 							"headers": {},
 							"body": {
-								"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"Item\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send File Processing ACK Fail 2').ActivityRunId,'\",\n\"ActivityTask\" : \"Send File Processing ',pipeline().parameters.SourceSystem,' ACK\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send File Processing ACK Fail 2').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send File Processing ACK Fail 2').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send File Processing ACK Fail 2').Status,'\",\n\"Output\" : ',concat('{\"sourceSystem\":\"Edgenta-Azure\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"BlankAggreement\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('File Generating').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(activity('File Generating').Error,'\"','\\\"'),'\",\"fileLine\":\"\"}'),',\n\"Error\" : \"',if(empty(activity('Send File Processing ACK Fail 2').Error),'',string(activity('Send File Processing ACK Fail 2').Error)),'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of send the failed message of processed file via API of ',pipeline().parameters.SourceSystem,'  system\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"Item\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send File Processing ACK Fail 2').ActivityRunId,'\",\n\"ActivityTask\" : \"Send File Processing ',pipeline().parameters.SourceSystem,' ACK\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send File Processing ACK Fail 2').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send File Processing ACK Fail 2').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send File Processing ACK Fail 2').Status,'\",\n\"Output\" : ',concat('{\"sourceSystem\":\"Edgenta-Azure\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"BlankAggreement\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('File Generating').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(string(activity('File Generating').Error),'\"','\\\"'),'\",\"fileLine\":\"\"}'),',\n\"Error\" : \"',if(empty(activity('Send File Processing ACK Fail 2').Error),'',string(activity('Send File Processing ACK Fail 2').Error)),'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of send the failed message of processed file via API of ',pipeline().parameters.SourceSystem,'  system\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
 								"type": "Expression"
 							}
 						}
@@ -3871,7 +3871,7 @@
 									"type": "Expression"
 								},
 								"ActivityTask": {
-									"value": "@concat('Send File Processing ',pipeline().parameters.SourceSystem,' ACK')",
+									"value": "@concat('Send File Processing ',pipeline().parameters.SourceSystem,' ACK for ECLIP')",
 									"type": "Expression"
 								},
 								"StartTime": {
@@ -3895,7 +3895,7 @@
 									"type": "Expression"
 								},
 								"EventType": "OUTBOUND",
-								"FilePath": "The step describes the process of send the success message of received file via API of source system",
+								"FilePath": "The step describes the process of send the success message of received file via API of source system for ECLIP",
 								"Input": {
 									"value": "@concat(\n\t'{\"sourceSystem\":\"',activity('Get SSIS Result 2').output.firstRow.source,\n\t'\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n\t,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv')\n\t,'\",\"errorLocation\":\"\",\"businessObject\":\"',activity('Get SSIS Result 2').output.firstRow.BusinessObject\n\t,'\",\"notificationType\":\"',activity('Get SSIS Result 2').output.firstRow.NotificationType\n\t,'\",\"eventOccurredTime\":\"',string(activity('Get SSIS Result 2').output.firstRow.starttime)\n\t,'\",\"messageDescription\":\"',if(equals(activity('Get Row Count').output.firstRow.RowInsert,0),'No Data',''),'\",\"fileLine\":\"\"}')",
 									"type": "Expression"
@@ -3908,7 +3908,7 @@
 						"type": "WebActivity",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -3930,6 +3930,35 @@
 									"type": "SecureString",
 									"value": "**********"
 								}
+							}
+						}
+					},
+					{
+						"name": "Add Log for Success File Generating",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "File Generating",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:06:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://edgenta.azure-api.net/adf/AuditLog",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('File Generating').Status,'\",\n\"Output\" : ',json(concat('{\"status\":',activity('File Generating').Output.Status,',\"message\":\"',activity('File Generating').Output.Message,'\"}')),',\n\"Error\" : ',activity('File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+								"type": "Expression"
 							}
 						}
 					}
@@ -5119,7 +5148,7 @@
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -5191,7 +5220,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5213,7 +5242,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5303,7 +5332,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5332,7 +5361,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5361,7 +5390,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5452,7 +5481,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5530,7 +5559,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5665,7 +5694,7 @@
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -5737,7 +5766,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5759,7 +5788,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5849,7 +5878,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5878,7 +5907,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5907,7 +5936,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -5998,7 +6027,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -6027,7 +6056,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -6162,7 +6191,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -6848,7 +6877,7 @@
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -6920,7 +6949,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -6942,7 +6971,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -7032,7 +7061,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -7061,7 +7090,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -7147,7 +7176,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -7181,7 +7210,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -7259,7 +7288,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -7940,7 +7969,7 @@
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -8012,7 +8041,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -8034,7 +8063,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -8124,7 +8153,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -8153,7 +8182,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -8239,7 +8268,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -8273,7 +8302,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -8351,7 +8380,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -10878,7 +10907,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -10957,7 +10986,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -11002,7 +11031,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -11031,7 +11060,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -11077,7 +11106,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -11099,7 +11128,7 @@
 									"type": "Copy",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -11178,7 +11207,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -11213,7 +11242,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -11242,7 +11271,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -11339,7 +11368,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -11368,7 +11397,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -11486,12 +11515,12 @@
 										{
 											"activity": "Execute Logic Apps for File Generating",
 											"dependencyConditions": [
-												"Completed"
+												"Failed"
 											]
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -11513,7 +11542,7 @@
 									"type": "WebActivity",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -11528,6 +11557,8 @@
 											"value": "@concat('{\n\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\"destination\": \"egsaasdrblob01/',concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(replace(pipeline().parameters.ZipFileName,'.csv',''),'.zip','')),'\",\n\"zipname\": \"',replace(pipeline().parameters.ZipFileName,'.csv',''),'\",\n\"ErrorLocation\": \"',pipeline().parameters.LogFolder,'\",\n\"file\": \"\",\n\"pipeline_dt\": \"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\",\n\"packagename\": \"',substring(pipeline().parameters.ZipFileName,0,indexof(pipeline().parameters.ZipFileName,'_INT')),'\"\n}')",
 											"type": "Expression"
 										},
+										"linkedServices": [],
+										"datasets": [],
 										"authentication": {
 											"type": "Basic",
 											"username": "uem_edgenta",
@@ -11536,6 +11567,37 @@
 												"value": "**********"
 											}
 										}
+									}
+								},
+								{
+									"name": "Add Log for Success File Generating",
+									"type": "WebActivity",
+									"dependsOn": [
+										{
+											"activity": "Execute Logic Apps for File Generating",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.00:06:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://edgenta.azure-api.net/adf/AuditLog",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Execute Logic Apps for File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Execute Logic Apps for File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Execute Logic Apps for File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Execute Logic Apps for File Generating').Status,'\",\n\"Output\" : ',json(concat('{\"status\":',activity('Execute Logic Apps for File Generating').Output.Status,',\"message\":\"',activity('Execute Logic Apps for File Generating').Output.Message,'\"}')),',\n\"Error\" : ',activity('Execute Logic Apps for File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+											"type": "Expression"
+										},
+										"linkedServices": [],
+										"datasets": []
 									}
 								}
 							]
@@ -11554,7 +11616,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -11608,7 +11670,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -11642,7 +11704,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -11664,7 +11726,7 @@
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -12714,7 +12776,7 @@
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "0.00:06:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -12786,7 +12848,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -12815,7 +12877,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -12844,7 +12906,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -12942,7 +13004,7 @@
 									"type": "SqlServerStoredProcedure",
 									"dependsOn": [],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13019,7 +13081,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13102,7 +13164,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13131,7 +13193,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13217,7 +13279,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13251,7 +13313,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13265,9 +13327,7 @@
 										"body": {
 											"value": "@concat('{\n\"Business_Unit\":\"',activity('Lookup BU').output.firstRow.BU,'\",\n\"Interface_ID\":\"INT_SCM_303\",\n\"Filename\":\"',pipeline().parameters.fileName,'\",\n\"Description\":\"ACK File Processed\",\n\"Run_Date\":\"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\",\n\"Status\":\"FAIL\",\n\"Error_Message\":\"\",\n\"Error_Filename\":\"',variables('fileProcessedFileRoss'),'\"\n}')",
 											"type": "Expression"
-										},
-										"linkedServices": [],
-										"datasets": []
+										}
 									}
 								},
 								{
@@ -13282,7 +13342,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13387,7 +13447,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13416,7 +13476,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
@@ -13445,7 +13505,7 @@
 										}
 									],
 									"policy": {
-										"timeout": "7.00:00:00",
+										"timeout": "0.00:06:00",
 										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
