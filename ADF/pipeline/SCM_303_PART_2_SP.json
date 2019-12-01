@@ -707,7 +707,7 @@
 								{
 									"activity": "Execute Logic Apps for File Generating",
 									"dependencyConditions": [
-										"Completed"
+										"Failed"
 									]
 								}
 							],
@@ -747,6 +747,8 @@
 									"value": "@concat('{\n\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\"destination\": \"egsaasdrblob01/',concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(replace(pipeline().parameters.ZipFileName,'.csv',''),'.zip','')),'\",\n\"zipname\": \"',replace(pipeline().parameters.ZipFileName,'.csv',''),'\",\n\"ErrorLocation\": \"',pipeline().parameters.LogFolder,'\",\n\"file\": \"\",\n\"pipeline_dt\": \"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\",\n\"packagename\": \"',substring(pipeline().parameters.ZipFileName,0,indexof(pipeline().parameters.ZipFileName,'_INT')),'\"\n}')",
 									"type": "Expression"
 								},
+								"linkedServices": [],
+								"datasets": [],
 								"authentication": {
 									"type": "Basic",
 									"username": "uem_edgenta",
@@ -755,6 +757,36 @@
 										"value": "**********"
 									}
 								}
+							}
+						},
+						{
+							"name": "Add Log for Success File Generating",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Execute Logic Apps for File Generating",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.00:06:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Execute Logic Apps for File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Execute Logic Apps for File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Execute Logic Apps for File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Execute Logic Apps for File Generating').Status,'\",\n\"Output\" : ',json(concat('{\"status\":',activity('Execute Logic Apps for File Generating').Output.Status,',\"error\":\"',activity('Execute Logic Apps for File Generating').Output.Error,'\"}')),',\n\"Error\" : ',activity('Execute Logic Apps for File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								},
+								"linkedServices": [],
+								"datasets": []
 							}
 						}
 					]
