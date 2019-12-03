@@ -953,18 +953,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation": {
-						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation')]"
-					},
-					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_interfaceName": {
-						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_interfaceName')]"
-					},
-					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_Department": {
-						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_Department')]"
-					},
-					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_ScheduleType": {
-						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_ScheduleType')]"
 					}
 				}
 			},
@@ -985,6 +973,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation": {
+						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation')]"
+					},
+					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_interfaceName": {
+						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_interfaceName')]"
+					},
+					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_Department": {
+						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_Department')]"
+					},
+					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_ScheduleType": {
+						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_ScheduleType')]"
 					}
 				}
 			},
