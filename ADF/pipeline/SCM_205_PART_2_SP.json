@@ -1,0 +1,1064 @@
+{
+	"name": "SCM_205_PART_2_SP",
+	"properties": {
+		"activities": [
+			{
+				"name": "If Load Data Success",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get Row Count",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(activity('Get Row Count').output.firstRow.RowFailed,0),greater(activity('Get Row Count').output.firstRow.RowInsert,0))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Generate ZIP File",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "GENERAL_PART_3",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"InterfaceName": {
+										"value": "@pipeline().parameters.InterfaceName",
+										"type": "Expression"
+									},
+									"ZipFileName": {
+										"value": "@pipeline().parameters.ZipFileName",
+										"type": "Expression"
+									},
+									"ParentPipelineID": {
+										"value": "@pipeline().parameters.ParentPipelineID",
+										"type": "Expression"
+									},
+									"SourceFolder": {
+										"value": "@pipeline().parameters.SourceFolder",
+										"type": "Expression"
+									},
+									"DestinationFolder": {
+										"value": "@pipeline().parameters.DestinationFolder",
+										"type": "Expression"
+									},
+									"StagingFolder": {
+										"value": "@pipeline().parameters.StagingFolder",
+										"type": "Expression"
+									},
+									"SourceArchiveFolder": {
+										"value": "@pipeline().parameters.SourceArchiveFolder",
+										"type": "Expression"
+									},
+									"DestinationArchiveFolder": {
+										"value": "@pipeline().parameters.DestinationArchiveFolder",
+										"type": "Expression"
+									},
+									"LogFolder": {
+										"value": "@pipeline().parameters.LogFolder",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"Foldername": {
+										"value": "@variables('Foldername')",
+										"type": "Expression"
+									},
+									"SourceSystem": {
+										"value": "@pipeline().parameters.SourceSystem",
+										"type": "Expression"
+									},
+									"DestinationSystem": {
+										"value": "@pipeline().parameters.DestinationSystem",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Backup Result File",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Generate ZIP File",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BlobSource",
+									"recursive": true
+								},
+								"sink": {
+									"type": "BlobSink"
+								},
+								"enableStaging": false,
+								"parallelCopies": 4
+							},
+							"inputs": [
+								{
+									"referenceName": "FILE_FUSION",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@pipeline().parameters.InterfaceName",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@pipeline().parameters.ZipFileName",
+											"type": "Expression"
+										},
+										"PathFolder": {
+											"value": "@pipeline().parameters.DestinationFolder",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@pipeline().parameters.Department",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "FILE_FUSION",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@pipeline().parameters.InterfaceName",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@pipeline().parameters.ZipFileName",
+											"type": "Expression"
+										},
+										"PathFolder": {
+											"value": "@pipeline().parameters.DestinationArchiveFolder",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@pipeline().parameters.Department",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Delete1",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Backup Result File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "FILE_FUSION",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@pipeline().parameters.InterfaceName",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@pipeline().parameters.ZipFileName",
+											"type": "Expression"
+										},
+										"PathFolder": {
+											"value": "@pipeline().parameters.DestinationFolder",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@pipeline().parameters.Department",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false
+							}
+						},
+						{
+							"name": "WebActivity7",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Backup Result File",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Backup Result File').ActivityRunId,'\",\n\"ActivityTask\" : \"Backup ',pipeline().parameters.DestinationSystem,'Destination File\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Backup Result File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Backup Result File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Backup Result File').Status,'\",\n\"Output\" : ',activity('Backup Result File').Output,',\n\"Error\" : ',activity('Backup Result File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of backup ',pipeline().parameters.DestinationSystem,' destination file in BLOB\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Delete2",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Delete1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "FOLDER_FUSION",
+									"type": "DatasetReference",
+									"parameters": {
+										"InterfaceFolder": {
+											"value": "@pipeline().parameters.InterfaceName",
+											"type": "Expression"
+										},
+										"FolderName": {
+											"value": "@replace(pipeline().parameters.ZipFileName,'.zip','')",
+											"type": "Expression"
+										},
+										"PathFolder": {
+											"value": "@pipeline().parameters.DestinationFolder",
+											"type": "Expression"
+										},
+										"Department": {
+											"value": "@pipeline().parameters.Department",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get Row Count",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "If Data Loading Success",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select (select RowFailed from ETLAudit where eventid = ''',pipeline().parameters.ParentPipelineID,''' and PackageType = ''1'') RowFailed ,(select RowInsert from ETLAudit where eventid = ''',pipeline().parameters.ParentPipelineID,''' and PackageType = ''2'') RowInsert ')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Send File Processing ACK Fail",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Execute SSIS for Data Loading",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Execute SSIS for Data Loading').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(activity('Execute SSIS for Data Loading').Output.OperationErrorMessages,'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for SSIS",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Execute SSIS for Data Loading",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Execute SSIS for Data Loading').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute SSIS for ',pipeline().parameters.SourceSystem,' Data Loading\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Execute SSIS for Data Loading').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Execute SSIS for Data Loading').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Execute SSIS for Data Loading').Status,'\",\n\"Output\" : ',activity('Execute SSIS for Data Loading').Output,',\n\"Error\" : ',activity('Execute SSIS for Data Loading').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.SourceSystem,' data loading by executing SSIS in the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Execute SSIS for Data Loading",
+				"type": "ExecuteSSISPackage",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"packageLocation": {
+						"packagePath": "edsaasdrssis/UEMEd_INTEGRATION_SCM/SCM_205.dtsx",
+						"type": "SSISDB"
+					},
+					"environmentPath": null,
+					"connectVia": {
+						"referenceName": "egsaasdrir",
+						"type": "IntegrationRuntimeReference"
+					},
+					"loggingLevel": "Basic",
+					"packageParameters": {
+						"ErrorLocation": {
+							"value": {
+								"value": "@pipeline().parameters.LogFolder",
+								"type": "Expression"
+							}
+						},
+						"File": {
+							"value": {
+								"value": "@concat(pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.ZipFileName,'/',replace(pipeline().parameters.ZipFileName,'zip','csv'))",
+								"type": "Expression"
+							}
+						},
+						"destination": {
+							"value": {
+								"value": "@concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName)",
+								"type": "Expression"
+							}
+						},
+						"pipeline_dt": {
+							"value": {
+								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss')",
+								"type": "Expression"
+							}
+						},
+						"pipeline_id": {
+							"value": {
+								"value": "@pipeline().parameters.ParentPipelineID",
+								"type": "Expression"
+							}
+						},
+						"zipname": {
+							"value": {
+								"value": "@replace(pipeline().parameters.ZipFileName,'.zip','')",
+								"type": "Expression"
+							}
+						}
+					},
+					"packageConnectionManagers": {
+						"OLEDBConnection": {
+							"Password": {
+								"value": {
+									"value": "@variables('Password')",
+									"type": "Expression"
+								}
+							}
+						},
+						"myConnectionDB": {
+							"Password": {
+								"value": {
+									"value": "@variables('Password')",
+									"type": "Expression"
+								}
+							}
+						},
+						"uemedblob 1": {
+							"AccountKey": {
+								"value": {
+									"value": "@variables('Key')",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				}
+			},
+			{
+				"name": "Get SSIS Result 2",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Get Row Count",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select top 1 etla.starttime,el.source,FileNameZip,FileNameData,el.BusinessObject,CASE WHEN a.Status IS NULL THEN ''SUCCESS'' ELSE ''ERROR'' END NotificationType,a.ErrorMessage,a.FileLine,\nCASE WHEN a.Status IS NULL THEN '''' ELSE ''/uem/dev/edgenta/azure/outbound/log/''+replace(el.FileNameZip,''.zip'','''')+''_Error_Log.zip'' END ErrorLocation\n from eventlog el --inner join eventtasklog etl on el.EventID = etl.EventID\n inner join ETLAudit etla on el.EventID = etla.EventID\n OUTER APPLY ( select FileLine,status,ErrorMessage\n from ETLDataAudit etld where el.EventID = etld.EventID and etld.Status = ''Failed'') a\nwhere el.eventid = ''',pipeline().parameters.ParentPipelineID,'''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Send Success ACK",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get SSIS Result 2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
+					"method": "POST",
+					"body": {
+						"value": "@concat(\n\t'{\"sourceSystem\":\"',activity('Get SSIS Result 2').output.firstRow.source,\n\t'\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n\t,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv')\n\t,'\",\"errorLocation\":\"\",\"businessObject\":\"',activity('Get SSIS Result 2').output.firstRow.BusinessObject\n\t,'\",\"notificationType\":\"',activity('Get SSIS Result 2').output.firstRow.NotificationType\n\t,'\",\"eventOccurredTime\":\"',string(activity('Get SSIS Result 2').output.firstRow.starttime)\n\t,'\",\"messageDescription\":\"',if(equals(activity('Get Row Count').output.firstRow.RowInsert,0),'No Data',''),'\",\"fileLine\":\"\"}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ExecutePipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Send File Processing ACK Fail",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "API_LOG",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EventID": {
+							"value": "@pipeline().parameters.ParentPipelineID",
+							"type": "Expression"
+						},
+						"EventName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"FileZipName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"Object": "PO",
+						"SourceSystem": "Edgenta-Azure",
+						"DestSystem": "ROSS-Azure",
+						"JobID": {
+							"value": "@activity('Send File Processing ACK Fail').ActivityRunId",
+							"type": "Expression"
+						},
+						"ActivityTask": {
+							"value": "@concat('Send File Processing ',pipeline().parameters.SourceSystem,' ACK')",
+							"type": "Expression"
+						},
+						"StartTime": {
+							"value": "@activity('Send File Processing ACK Fail').ExecutionStartTime",
+							"type": "Expression"
+						},
+						"EndTime": {
+							"value": "@activity('Send File Processing ACK Fail').ExecutionEndTime",
+							"type": "Expression"
+						},
+						"Status": {
+							"value": "@if(contains('200,201,202,204',string(activity('Send File Processing ACK Fail').Output.Status)),'Succeeded','Failed')",
+							"type": "Expression"
+						},
+						"Output": {
+							"value": "@activity('Send File Processing ACK Fail').output",
+							"type": "Expression"
+						},
+						"Error": {
+							"value": "@if(empty(activity('Send File Processing ACK Fail').Error),'',string(activity('Send File Processing ACK Fail').Error))",
+							"type": "Expression"
+						},
+						"EventType": "OUTBOUND",
+						"FilePath": "The step describes the process of send the success message of received file via API of source system",
+						"Input": {
+							"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Execute SSIS for Data Loading').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(activity('Execute SSIS for Data Loading').Output.OperationErrorMessages,'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Add Success ACK",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Send Success ACK",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "API_LOG",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EventID": {
+							"value": "@pipeline().parameters.ParentPipelineID",
+							"type": "Expression"
+						},
+						"EventName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"FileZipName": {
+							"value": "@variables('ZipFileName')",
+							"type": "Expression"
+						},
+						"Object": "PO",
+						"SourceSystem": "Edgenta-Azure",
+						"DestSystem": "ROSS-Azure",
+						"JobID": {
+							"value": "@activity('Send Success ACK').ActivityRunId",
+							"type": "Expression"
+						},
+						"ActivityTask": {
+							"value": "@concat('Send File Processing ',pipeline().parameters.SourceSystem,' ACK')",
+							"type": "Expression"
+						},
+						"StartTime": {
+							"value": "@activity('Send Success ACK').ExecutionStartTime",
+							"type": "Expression"
+						},
+						"EndTime": {
+							"value": "@activity('Send Success ACK').ExecutionEndTime",
+							"type": "Expression"
+						},
+						"Status": {
+							"value": "@if(contains('200,201,202,204',string(activity('Send Success ACK').Output.Status)),'Succeeded','Failed')",
+							"type": "Expression"
+						},
+						"Output": {
+							"value": "@activity('Send Success ACK').output",
+							"type": "Expression"
+						},
+						"Error": {
+							"value": "@if(empty(activity('Send Success ACK').Error),'',string(activity('Send Success ACK').Error))",
+							"type": "Expression"
+						},
+						"EventType": "OUTBOUND",
+						"FilePath": "The step describes the process of send the success message of received file via API of source system",
+						"Input": {
+							"value": "@concat(\n\t'{\"sourceSystem\":\"',activity('Get SSIS Result 2').output.firstRow.source,\n\t'\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n\t,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv')\n\t,'\",\"errorLocation\":\"\",\"businessObject\":\"',activity('Get SSIS Result 2').output.firstRow.BusinessObject\n\t,'\",\"notificationType\":\"',activity('Get SSIS Result 2').output.firstRow.NotificationType\n\t,'\",\"eventOccurredTime\":\"',string(activity('Get SSIS Result 2').output.firstRow.starttime)\n\t,'\",\"messageDescription\":\"',if(equals(activity('Get Row Count').output.firstRow.RowInsert,0),'No Data',''),'\",\"fileLine\":\"\"}')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Send Error Log to ORACLE",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Execute SSIS for Data Loading",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/sftp/oracle",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"blobPath\":\"/egsaasdrblob01/',concat(pipeline().parameters.LogFolder,replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt'),'\",\"fileName\":\"',concat(replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt'),'\",\"sftpTarget\":\"',variables('OraErrorPath'),'/',pipeline().parameters.Department,'/',variables('Foldername'),'\",\"sftpType\": 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Send Error Log to ORACLE",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Send Error Log to ORACLE",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send Error Log to ORACLE').ActivityRunId,'\",\n\"ActivityTask\" : \"Send Error Log to ',pipeline().parameters.SourceSystem,'\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send Error Log to ORACLE').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send Error Log to ORACLE').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send Error Log to ORACLE').Status,'\",\n\"Output\" : ',activity('Send Error Log to ORACLE').Output,',\n\"Error\" : ',activity('Send Error Log to ORACLE').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of sending error log file to ',pipeline().parameters.SourceSystem,'\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Data Loading Success",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Lookup SSIS Error",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Lookup SSIS Error').output.firstRow.Count,0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Execute SSIS For File Generating",
+							"type": "ExecuteSSISPackage",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"packageLocation": {
+									"packagePath": "edsaasdrssis/UEMEd_INTEGRATION_SCM/SCM_205_GenerateFile.dtsx",
+									"type": "SSISDB"
+								},
+								"environmentPath": null,
+								"connectVia": {
+									"referenceName": "egsaasdrir",
+									"type": "IntegrationRuntimeReference"
+								},
+								"loggingLevel": "Basic",
+								"packageParameters": {
+									"ErrorLocation": {
+										"value": {
+											"value": "@pipeline().parameters.LogFolder",
+											"type": "Expression"
+										}
+									},
+									"destination": {
+										"value": {
+											"value": "@concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(pipeline().parameters.ZipFileName,'.zip',''))",
+											"type": "Expression"
+										}
+									},
+									"file": {
+										"value": {
+											"value": "@concat(pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.ZipFileName,'/',replace(pipeline().parameters.ZipFileName,'zip','csv'))",
+											"type": "Expression"
+										}
+									},
+									"pipeline_dt": {
+										"value": {
+											"value": "@formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss')",
+											"type": "Expression"
+										}
+									},
+									"pipeline_id": {
+										"value": {
+											"value": "@pipeline().parameters.ParentPipelineID",
+											"type": "Expression"
+										}
+									},
+									"zipname": {
+										"value": {
+											"value": "@replace(pipeline().parameters.ZipFileName,'.zip','')",
+											"type": "Expression"
+										}
+									}
+								},
+								"packageConnectionManagers": {
+									"OLEDBConnection": {
+										"Password": {
+											"value": {
+												"value": "@variables('Password')",
+												"type": "Expression"
+											}
+										}
+									},
+									"edsaasdrsa02": {
+										"AccountKey": {
+											"value": {
+												"value": "@variables('Key')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							}
+						},
+						{
+							"name": "Send File Processing ACK Fail 2",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Execute SSIS For File Generating",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
+								"method": "POST",
+								"body": {
+									"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Execute SSIS For File Generating').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(activity('Execute SSIS For File Generating').Output.OperationErrorMessages,'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "ExecutePipeline2",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Send File Processing ACK Fail 2",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "API_LOG",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"EventID": {
+										"value": "@pipeline().parameters.ParentPipelineID",
+										"type": "Expression"
+									},
+									"EventName": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"FileZipName": {
+										"value": "@variables('ZipFileName')",
+										"type": "Expression"
+									},
+									"Object": "PO",
+									"SourceSystem": "Edgenta-Azure",
+									"DestSystem": "ROSS-Azure",
+									"JobID": {
+										"value": "@activity('Send File Processing ACK Fail 2').ActivityRunId",
+										"type": "Expression"
+									},
+									"ActivityTask": {
+										"value": "@concat('Send File Processing ',pipeline().parameters.SourceSystem,' ACK')",
+										"type": "Expression"
+									},
+									"StartTime": {
+										"value": "@activity('Send File Processing ACK Fail 2').ExecutionStartTime",
+										"type": "Expression"
+									},
+									"EndTime": {
+										"value": "@activity('Send File Processing ACK Fail 2').ExecutionEndTime",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@if(contains('200,201,202,204',string(activity('Send File Processing ACK Fail 2').Output.Status)),'Succeeded','Failed')",
+										"type": "Expression"
+									},
+									"Output": {
+										"value": "@activity('Send File Processing ACK Fail 2').output",
+										"type": "Expression"
+									},
+									"Error": {
+										"value": "@if(empty(activity('Send File Processing ACK Fail 2').Error),'',string(activity('Send File Processing ACK Fail 2').Error))",
+										"type": "Expression"
+									},
+									"EventType": "OUTBOUND",
+									"FilePath": "The step describes the process of send the success message of received file via API of source system",
+									"Input": {
+										"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Execute SSIS For File Generating').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(activity('Execute SSIS For File Generating').Output.OperationErrorMessages,'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "WebActivity10",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Execute SSIS For File Generating",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://edgenta.azure-api.net/adf/AuditLog",
+								"method": "POST",
+								"body": {
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Execute SSIS For File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute SSIS For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Execute SSIS For File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Execute SSIS For File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Execute SSIS For File Generating').Status,'\",\n\"Output\" : ',activity('Execute SSIS For File Generating').Output,',\n\"Error\" : \"',activity('Execute SSIS For File Generating').Error,'\",\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing SSIS via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Lookup SSIS Error",
+				"description": "",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Execute SSIS for Data Loading",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select sum(RowFailed) Count from etlaudit where PackageType = ''1'' and eventid = ''',pipeline().parameters.ParentPipelineID,'''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"InterfaceName": {
+				"type": "string",
+				"defaultValue": "SCM_205"
+			},
+			"ID": {
+				"type": "string",
+				"defaultValue": "444a652b-3337-46a0-9410-79d4e88db483"
+			},
+			"ZipFileName": {
+				"type": "string",
+				"defaultValue": "INT_SCM_205_PO_Export_45193_20190523112456.zip"
+			},
+			"ParentPipelineID": {
+				"type": "string",
+				"defaultValue": "444a652b-3337-46a0-9410-79d4e88db483"
+			},
+			"SourceFolder": {
+				"type": "string"
+			},
+			"DestinationFolder": {
+				"type": "string"
+			},
+			"StagingFolder": {
+				"type": "string"
+			},
+			"LogFolder": {
+				"type": "string"
+			},
+			"SourceArchiveFolder": {
+				"type": "string"
+			},
+			"DestinationArchiveFolder": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			},
+			"SourceSystem": {
+				"type": "string"
+			},
+			"DestinationSystem": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"ZipFileName": {
+				"type": "String"
+			},
+			"Foldername": {
+				"type": "String",
+				"defaultValue": "po"
+			},
+			"OraErrorPath": {
+				"type": "String",
+				"defaultValue": "/uem/dev/edgenta/azure/error"
+			},
+			"Password": {
+				"type": "String",
+				"defaultValue": "Wr=6*ABL^R1>"
+			},
+			"Key": {
+				"type": "String",
+				"defaultValue": "dYCX1swYYtqtRac5P1n9EMKw+8uKg2tXvMtoCxNOZwodLaNa2eaWL0OuDJM67Bfr9bgmBt/7AxcIdnWQ/ugHmw=="
+			}
+		},
+		"folder": {
+			"name": "INT_SCM_205_SP"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -419,7 +419,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "SCM_231_PART_4",
+									"referenceName": "SCM_231_PART_4_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -476,7 +476,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "SCM_205_PART_4",
+									"referenceName": "SCM_205_PART_4_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
