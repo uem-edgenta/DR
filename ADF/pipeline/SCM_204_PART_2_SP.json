@@ -799,7 +799,7 @@
 						},
 						"pipeline_dt": {
 							"value": {
-								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss')",
+								"value": "@formatDateTime(addhours(utcnow(),8),'yyyy-MM-dd hh:mm:ss')",
 								"type": "Expression"
 							},
 							"type": "String"

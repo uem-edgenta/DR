@@ -581,62 +581,6 @@
 				}
 			},
 			{
-				"name": "Send Error Log to ORACLE",
-				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "Data Loading SP",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.00:06:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"url": "https://edgenta.azure-api.net/adf/sftp/oracle",
-					"method": "POST",
-					"body": {
-						"value": "@concat('{\"blobPath\":\"/egsaasdrblob01/',concat(pipeline().parameters.LogFolder,replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt'),'\",\"fileName\":\"',concat(replace(pipeline().parameters.ZipFileName,'.zip',''),'_Error_log_validation.txt'),'\",\"sftpTarget\":\"',variables('OraErrorPath'),'/',pipeline().parameters.Department,'/',variables('Foldername'),'\",\"sftpType\": 0}')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Add Log for Send Error Log to ORACLE",
-				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "Send Error Log to ORACLE",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.00:06:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"url": "https://edgenta.azure-api.net/adf/AuditLog",
-					"method": "POST",
-					"body": {
-						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send Error Log to ORACLE').ActivityRunId,'\",\n\"ActivityTask\" : \"Send Error Log to ',pipeline().parameters.SourceSystem,'\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send Error Log to ORACLE').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send Error Log to ORACLE').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send Error Log to ORACLE').Status,'\",\n\"Output\" : ',activity('Send Error Log to ORACLE').Output,',\n\"Error\" : ',activity('Send Error Log to ORACLE').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of sending error log file to ',pipeline().parameters.SourceSystem,'\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "If Data Loading Success",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -917,7 +861,7 @@
 						},
 						"pipeline_dt": {
 							"value": {
-								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss')",
+								"value": "@formatDateTime(addhours(utcnow(),8),'yyyy-MM-dd hh:mm:ss')",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -941,6 +885,48 @@
 				"linkedServiceName": {
 					"referenceName": "edsaasdrdb",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Generate Error Log File",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Data Loading SP",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_ERROR_LOG",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ParentPipelineID": {
+							"value": "@pipeline().parameters.ParentPipelineID",
+							"type": "Expression"
+						},
+						"LogFolder": {
+							"value": "@pipeline().parameters.LogFolder",
+							"type": "Expression"
+						},
+						"zipfileName": {
+							"value": "@pipeline().parameters.ZipFileName",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],

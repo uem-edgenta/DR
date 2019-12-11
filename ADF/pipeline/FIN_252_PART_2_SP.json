@@ -1,5 +1,5 @@
 {
-	"name": "SCM_203_PART_2_SP",
+	"name": "FIN_252_PART_2_SP",
 	"properties": {
 		"activities": [
 			{
@@ -738,7 +738,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": "https://edgenta.azure-api.net/int/scm/203",
+								"url": "https://edgenta.azure-api.net/int/fin/252",
 								"method": "POST",
 								"body": {
 									"value": "@concat('{\n\t\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\t\"destination\": \"egsaasdrblob01/',concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(pipeline().parameters.ZipFileName,'.zip','')),'\",\n\t\"zipname\": \"',replace(pipeline().parameters.ZipFileName,'.zip',''),'\",\n\t\"ErrorLocation\": \"',pipeline().parameters.LogFolder,'\",\n\t\"file\": \"',concat(pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.ZipFileName,'/',replace(pipeline().parameters.ZipFileName,'zip','csv')),'\",\n\t\"pipeline_dt\": \"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\"\n}')",
@@ -832,7 +832,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[INSERT_INT_SCM_203_SUPPLIER]",
+					"storedProcedureName": "[dbo].[INSERT_INT_FIN_252_ARINVOICE]",
 					"storedProcedureParameters": {
 						"destination": {
 							"value": {
@@ -933,7 +933,7 @@
 		"parameters": {
 			"InterfaceName": {
 				"type": "string",
-				"defaultValue": "SCM_203"
+				"defaultValue": "FIN_252"
 			},
 			"ID": {
 				"type": "string",
@@ -941,7 +941,7 @@
 			},
 			"ZipFileName": {
 				"type": "string",
-				"defaultValue": "INT_SCM_203_PO_Export_45193_20190523112456.zip"
+				"defaultValue": "INT_FIN_252_PO_Export_45193_20190523112456.zip"
 			},
 			"ParentPipelineID": {
 				"type": "string",
@@ -981,7 +981,7 @@
 			},
 			"Foldername": {
 				"type": "String",
-				"defaultValue": "supplier"
+				"defaultValue": "arinvoice"
 			},
 			"OraErrorPath": {
 				"type": "String",
@@ -997,7 +997,7 @@
 			}
 		},
 		"folder": {
-			"name": "INT_SCM_203_SP"
+			"name": "INT_FIN_252_SP"
 		},
 		"annotations": []
 	},

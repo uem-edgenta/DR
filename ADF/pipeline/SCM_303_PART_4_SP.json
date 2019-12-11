@@ -5,7 +5,14 @@
 			{
 				"name": "Get Pipeline ID",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set variable filenane",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.00:06:00",
 					"retry": 0,
@@ -520,7 +527,7 @@
 								"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAckROSS",
 								"method": "POST",
 								"body": {
-									"value": "@concat('{\n\"Business_Unit\":\"',activity('Lookup BU').output.firstRow.BU,'\",\n\"Interface_ID\":\"INT_SCM_303\",\n\"Filename\":\"',pipeline().parameters.fileName,'\",\n\"Description\":\"ACK File Processed\",\n\"Run_Date\":\"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\",\n\"Status\":\"FAIL\",\n\"Error_Message\":\"\",\n\"Error_Filename\":\"',variables('fileProcessedFileRoss'),'\"\n}')",
+									"value": "@concat('{\n\"Business_Unit\":\"',activity('Lookup BU').output.firstRow.BU,'\",\n\"Interface_ID\":\"INT_SCM_303\",\n\"Filename\":\"',variables('fileName'),'\",\n\"Description\":\"ACK File Processed\",\n\"Run_Date\":\"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\",\n\"Status\":\"FAIL\",\n\"Error_Message\":\"\",\n\"Error_Filename\":\"',variables('fileProcessedFileRoss'),'\"\n}')",
 									"type": "Expression"
 								}
 							}
@@ -623,7 +630,7 @@
 									"EventType": "INBOUND",
 									"FilePath": "The step describes the process of send the success message of received file via API of source system",
 									"Input": {
-										"value": "@concat('{\n\"Business_Unit\":\"',activity('Lookup BU').output.firstRow.BU,'\",\n\"Interface_ID\":\"INT_SCM_303\",\n\"Filename\":\"',pipeline().parameters.fileName,'\",\n\"Description\":\"ACK File Processed\",\n\"Run_Date\":\"\",\n\"Status\":\"FAIL\",\n\"Error_Message\":\"\",\n\"Error_Filename\":\"',variables('fileProcessedFileRoss'),'\"\n}')",
+										"value": "@concat('{\n\"Business_Unit\":\"',activity('Lookup BU').output.firstRow.BU,'\",\n\"Interface_ID\":\"INT_SCM_303\",\n\"Filename\":\"',variables('fileName'),'\",\n\"Description\":\"ACK File Processed\",\n\"Run_Date\":\"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\",\n\"Status\":\"FAIL\",\n\"Error_Message\":\"\",\n\"Error_Filename\":\"',variables('fileProcessedFileRoss'),'\"\n}')",
 										"type": "Expression"
 									}
 								}
@@ -793,6 +800,19 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Set variable filenane",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileName",
+					"value": {
+						"value": "@replace(pipeline().parameters.fileName,'Import','IMPORT')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -847,6 +867,9 @@
 				"defaultValue": "ROSS"
 			},
 			"LookupPipelineID": {
+				"type": "String"
+			},
+			"fileName": {
 				"type": "String"
 			}
 		},

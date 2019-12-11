@@ -344,7 +344,7 @@
 					"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
 					"method": "POST",
 					"body": {
-						"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Data Loading SP').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(string(activity('Data Loading SP').Error),'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+						"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Data Loading SP').ExecutionStartTime),'\",\n\"messageDescription\":\"',string(activity('Data Loading SP').Error),'\",\"fileLine\":\"\"}')",
 						"type": "Expression"
 					}
 				}
@@ -682,8 +682,6 @@
 									"value": "@concat('{\n\t\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\t\"destination\": \"egsaasdrblob01/',concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(pipeline().parameters.ZipFileName,'.zip','')),'\",\n\t\"zipname\": \"',replace(pipeline().parameters.ZipFileName,'.zip',''),'\",\n\t\"ErrorLocation\": \"',pipeline().parameters.LogFolder,'\",\n\t\"file\": \"',concat(pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.ZipFileName,'/',replace(pipeline().parameters.ZipFileName,'zip','csv')),'\",\n\t\"pipeline_dt\": \"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\"\n}')",
 									"type": "Expression"
 								},
-								"linkedServices": [],
-								"datasets": [],
 								"authentication": {
 									"type": "Basic",
 									"username": "uem_edgenta",
@@ -801,7 +799,7 @@
 						},
 						"pipeline_dt": {
 							"value": {
-								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss')",
+								"value": "@formatDateTime(addhours(utcnow(),8),'yyyy-MM-dd hh:mm:ss')",
 								"type": "Expression"
 							},
 							"type": "String"

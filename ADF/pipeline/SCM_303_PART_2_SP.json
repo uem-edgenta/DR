@@ -477,7 +477,7 @@
 					"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAckROSS",
 					"method": "POST",
 					"body": {
-						"value": "@concat('{\n\"Business_Unit\":\"\",\n\"Interface_ID\":\"',pipeline().parameters.InterfaceName,'\",\n\"Filename\":\"',pipeline().parameters.ZipFileName,'\",\n\"Description\":\"ACK File Received\",\n\"Run_Date\":\"\",\n\"Status\":\"',if(equals(activity('Execute Procedure for Data Loading').Status,'Successed'),'SUCCESS','FAIL'),'\",\n\"Error_Message\":\"',replace(activity('Execute Procedure for Data Loading').Output.OperationErrorMessages,'\"','\\\"'),'\"\n}')",
+						"value": "@concat('{\n\"Business_Unit\":\"\",\n\"Interface_ID\":\"',pipeline().parameters.InterfaceName,'\",\n\"Filename\":\"',pipeline().parameters.ZipFileName,'\",\n\"Description\":\"ACK File Received\",\n\"Run_Date\":\"\",\n\"Status\":\"',if(equals(activity('Execute Procedure for Data Loading').Status,'Successed'),'SUCCESS','FAIL'),'\",\n\"Error_Message\":\"',string(activity('Execute Procedure for Data Loading').Error),'\"\n}')",
 						"type": "Expression"
 					}
 				}
@@ -544,7 +544,7 @@
 						"EventType": "OUTBOUND",
 						"FilePath": "The step describes the process of send the success message of received file via API of source system",
 						"Input": {
-							"value": "@concat('{\n\"Business_Unit\":\"\",\n\"Interface_ID\":\"',pipeline().parameters.InterfaceName,'\",\n\"Filename\":\"',pipeline().parameters.ZipFileName,'\",\n\"Description\":\"ACK File Received\",\n\"Run_Date\":\"\",\n\"Status\":\"',if(equals(activity('Execute Procedure for Data Loading').Status,'Succeeded'),'SUCCESS','FAIL'),'\",\n\"Error_Message\":\"',replace(activity('Execute Procedure for Data Loading').Output.OperationErrorMessages,'\"','\\\"'),'\"\n}')",
+							"value": "@concat('{\n\"Business_Unit\":\"\",\n\"Interface_ID\":\"',pipeline().parameters.InterfaceName,'\",\n\"Filename\":\"',pipeline().parameters.ZipFileName,'\",\n\"Description\":\"ACK File Received\",\n\"Run_Date\":\"\",\n\"Status\":\"',if(equals(activity('Execute Procedure for Data Loading').Status,'Succeeded'),'SUCCESS','FAIL'),'\",\n\"Error_Message\":\"',string(activity('Execute Procedure for Data Loading').Error),'\"\n}')",
 							"type": "Expression"
 						}
 					}
@@ -980,7 +980,7 @@
 						},
 						"pipeline_dt": {
 							"value": {
-								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss')",
+								"value": "@formatDateTime(addhours(utcnow(),8),'yyyy-MM-dd hh:mm:ss')",
 								"type": "Expression"
 							},
 							"type": "String"

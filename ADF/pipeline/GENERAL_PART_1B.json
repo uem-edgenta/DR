@@ -107,7 +107,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "SCM_205_PART_1",
+									"referenceName": "SCM_205_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -347,7 +347,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "FIN_253_PART_1",
+									"referenceName": "FIN_253_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -427,7 +427,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "FIN_254_PART_1",
+									"referenceName": "FIN_254_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -667,7 +667,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "SCM_231_PART_1",
+									"referenceName": "SCM_231_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -808,7 +808,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "PPM_337_PART_1",
+									"referenceName": "PPM_337_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -870,7 +870,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "FIN_252_PART_1",
+									"referenceName": "FIN_252_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -950,7 +950,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "FIN_249_PART_1",
+									"referenceName": "FIN_249_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -1030,7 +1030,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "PPM_363_PART_1",
+									"referenceName": "PPM_363_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -1092,7 +1092,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "SCM_303_PART_1",
+									"referenceName": "SCM_303_PART_1_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,

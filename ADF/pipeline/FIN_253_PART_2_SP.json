@@ -1,5 +1,5 @@
 {
-	"name": "SCM_203_PART_2_SP",
+	"name": "FIN_253_PART_2_SP",
 	"properties": {
 		"activities": [
 			{
@@ -234,7 +234,7 @@
 								"url": "https://edgenta.azure-api.net/adf/AuditLog",
 								"method": "POST",
 								"body": {
-									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Backup Result File').ActivityRunId,'\",\n\"ActivityTask\" : \"Backup ',pipeline().parameters.DestinationSystem,'Destination File\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Backup Result File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Backup Result File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Backup Result File').Status,'\",\n\"Output\" : ',activity('Backup Result File').Output,',\n\"Error\" : ',activity('Backup Result File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of backup ',pipeline().parameters.DestinationSystem,' destination file in BLOB\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arcreditnote\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Backup Result File').ActivityRunId,'\",\n\"ActivityTask\" : \"Backup ',pipeline().parameters.DestinationSystem,'Destination File\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Backup Result File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Backup Result File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Backup Result File').Status,'\",\n\"Output\" : ',activity('Backup Result File').Output,',\n\"Error\" : ',activity('Backup Result File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of backup ',pipeline().parameters.DestinationSystem,' destination file in BLOB\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
 									"type": "Expression"
 								}
 							}
@@ -372,7 +372,7 @@
 					"url": "https://edgenta.azure-api.net/adf/AuditLog",
 					"method": "POST",
 					"body": {
-						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Data Loading SP').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Procedure for ',pipeline().parameters.SourceSystem,' Data Loading\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Data Loading SP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Data Loading SP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Data Loading SP').Status,'\",\n\"Output\" : ',activity('Data Loading SP').Output,',\n\"Error\" : ',activity('Data Loading SP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.SourceSystem,' data loading by executing procedure in the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arcreditnote\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Data Loading SP').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Procedure for ',pipeline().parameters.SourceSystem,' Data Loading\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Data Loading SP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Data Loading SP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Data Loading SP').Status,'\",\n\"Output\" : ',activity('Data Loading SP').Output,',\n\"Error\" : ',activity('Data Loading SP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.SourceSystem,' data loading by executing procedure in the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
 						"type": "Expression"
 					}
 				}
@@ -720,7 +720,7 @@
 								"url": "https://edgenta.azure-api.net/adf/AuditLog",
 								"method": "POST",
 								"body": {
-									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('File Generating').Status,'\",\n\"Output\" : ',activity('File Generating').Output,',\n\"Error\" : ',activity('File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arcreditnote\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('File Generating').Status,'\",\n\"Output\" : ',activity('File Generating').Output,',\n\"Error\" : ',activity('File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
 									"type": "Expression"
 								}
 							}
@@ -738,7 +738,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": "https://edgenta.azure-api.net/int/scm/203",
+								"url": "https://edgenta.azure-api.net/int/fin/253",
 								"method": "POST",
 								"body": {
 									"value": "@concat('{\n\t\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\t\"destination\": \"egsaasdrblob01/',concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(pipeline().parameters.ZipFileName,'.zip','')),'\",\n\t\"zipname\": \"',replace(pipeline().parameters.ZipFileName,'.zip',''),'\",\n\t\"ErrorLocation\": \"',pipeline().parameters.LogFolder,'\",\n\t\"file\": \"',concat(pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.ZipFileName,'/',replace(pipeline().parameters.ZipFileName,'zip','csv')),'\",\n\t\"pipeline_dt\": \"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\"\n}')",
@@ -777,7 +777,7 @@
 								"url": "https://edgenta.azure-api.net/adf/AuditLog",
 								"method": "POST",
 								"body": {
-									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arInvoice\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('File Generating').Status,'\",\n\"Output\" : ',json(concat('{\"status\":',activity('File Generating').Output.Status,',\"message\":\"',activity('File Generating').Output.Message,'\"}')),',\n\"Error\" : ',activity('File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+									"value": "@concat('\n{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',pipeline().parameters.ZipFileName,'\",\n\"FileName\" : \"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\n\"Object\" : \"arcreditnote\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('File Generating').ActivityRunId,'\",\n\"ActivityTask\" : \"Execute Logic Apps For ',pipeline().parameters.DestinationSystem,' File Generating\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('File Generating').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('File Generating').ExecutionEndTime,'\",\n\"Status\" : \"',activity('File Generating').Status,'\",\n\"Output\" : ',json(concat('{\"status\":',activity('File Generating').Output.Status,',\"message\":\"',activity('File Generating').Output.Message,'\"}')),',\n\"Error\" : ',activity('File Generating').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of ',pipeline().parameters.DestinationSystem,' .CSV file generating into BLOB by executing Logic Apps via the Azure Data Factory\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
 									"type": "Expression"
 								}
 							}
@@ -832,7 +832,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[INSERT_INT_SCM_203_SUPPLIER]",
+					"storedProcedureName": "[dbo].[INSERT_INT_FIN_253_ARCREDITNOTE]",
 					"storedProcedureParameters": {
 						"destination": {
 							"value": {
@@ -933,7 +933,7 @@
 		"parameters": {
 			"InterfaceName": {
 				"type": "string",
-				"defaultValue": "SCM_203"
+				"defaultValue": "FIN_253"
 			},
 			"ID": {
 				"type": "string",
@@ -941,7 +941,7 @@
 			},
 			"ZipFileName": {
 				"type": "string",
-				"defaultValue": "INT_SCM_203_PO_Export_45193_20190523112456.zip"
+				"defaultValue": "INT_FIN_253_PO_Export_45193_20190523112456.zip"
 			},
 			"ParentPipelineID": {
 				"type": "string",
@@ -981,7 +981,7 @@
 			},
 			"Foldername": {
 				"type": "String",
-				"defaultValue": "supplier"
+				"defaultValue": "arcreditnote"
 			},
 			"OraErrorPath": {
 				"type": "String",
@@ -997,7 +997,7 @@
 			}
 		},
 		"folder": {
-			"name": "INT_SCM_203_SP"
+			"name": "INT_FIN_253_SP"
 		},
 		"annotations": []
 	},

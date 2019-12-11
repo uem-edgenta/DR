@@ -1,0 +1,432 @@
+{
+	"name": "INT_FIN_249_DIR_SP",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Folder Metadata",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Fusion_FolderShare",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileLocation": {
+								"value": "@pipeline().parameters.fileLocation",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "Filter File Name",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Folder Metadata').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@and(startswith(item().name,pipeline().parameters.interfaceName),\nnot(contains(activity('Lookup1').output.value,json(concat('{\"name\" : \"',item().name,'\"}')))))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter File Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter File Name').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Get File Metadata",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "FUSION_FileShare",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"fileLocation": {
+											"value": "@pipeline().parameters.fileLocation",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"itemName",
+									"itemType",
+									"lastModified"
+								]
+							}
+						},
+						{
+							"name": "SqlServerStoredProcedure1",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Get File Metadata",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[InsertFileLog]",
+								"storedProcedureParameters": {
+									"EventID": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"FileName": {
+										"value": {
+											"value": "@activity('Get File Metadata').output.ItemName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"FilePath": {
+										"value": {
+											"value": "@pipeline().parameters.fileLocation",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"FileType": {
+										"value": {
+											"value": "@activity('Get File Metadata').output.ItemType",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"LastModifiedDate": {
+										"value": {
+											"value": "@activity('Get File Metadata').output.LastModified",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "edsaasdrdb",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Sort File",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select Filename from FileLog where Refid = ''',pipeline().RunId,''' order by lastmodifieddate')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach2",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Sort File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Sort File').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FIN_249_PART_1_SP",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"InterfaceName": {
+										"value": "@pipeline().parameters.interfaceName",
+										"type": "Expression"
+									},
+									"ParentPipelineID": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"SourceFolder": {
+										"value": "@variables('SourceFolder')",
+										"type": "Expression"
+									},
+									"DestinationFolder": {
+										"value": "@variables('DestinationFolder')",
+										"type": "Expression"
+									},
+									"LogFolder": {
+										"value": "@variables('LogFolder')",
+										"type": "Expression"
+									},
+									"SourceArchiveFolder": {
+										"value": "@variables('SourceArchiveFolder')",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@pipeline().parameters.Department",
+										"type": "Expression"
+									},
+									"DestinationArchiveFolder": {
+										"value": "@variables('DestinationArchiveFolder')",
+										"type": "Expression"
+									},
+									"StagingFolder": {
+										"value": "@variables('StagingFolder')",
+										"type": "Expression"
+									},
+									"FileName": {
+										"value": "@item().filename",
+										"type": "Expression"
+									},
+									"FileLocation": {
+										"value": "@pipeline().parameters.fileLocation",
+										"type": "Expression"
+									},
+									"ScheduleType": {
+										"value": "@pipeline().parameters.ScheduleType",
+										"type": "Expression"
+									},
+									"SourceSystem": {
+										"value": "@variables('SourceSystem')",
+										"type": "Expression"
+									},
+									"DestinationSystem": {
+										"value": "@variables('DestinationSystem')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Add Log for Unprocessed File List",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Sort File",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('\n{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"\",\n\"FileName\" : \"\",\n\"Object\" : \"SUPPLIERPAYMENT\",\n\"SourceSystem\" : \"Edgenta-Azure\",\n\"DestSystem\" : \"ROSS-Azure\",\n\"JobId\" : \"',activity('Sort File').ActivityRunId,'\",\n\"ActivityTask\" : \"Get ',variables('SourceSystem'),' Unprocessed File List\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Sort File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Sort File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Sort File').Status,'\",\n\"Output\" : ',activity('Sort File').Output,',\n\"Error\" : ',activity('Sort File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"The step describes the process of retrieve unprocessed file from ',variables('SourceSystem'),' SFTP folder. ',if(equals(activity('Sort File').output.count,0),'File list is empty.',''),'\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Get Folder Metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select distinct FileNameZip name from EventLog el where FileNameZip like ''%',pipeline().parameters.interfaceName,'%''')",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "LOG_TABLE",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"fileLocation": {
+				"type": "string",
+				"defaultValue": "/uem/dev/edgenta/azure/outbound/fin/supplierPayment"
+			},
+			"interfaceName": {
+				"type": "string",
+				"defaultValue": "INT_FIN_249"
+			},
+			"Department": {
+				"type": "string",
+				"defaultValue": "fin"
+			},
+			"ScheduleType": {
+				"type": "string",
+				"defaultValue": "2"
+			}
+		},
+		"variables": {
+			"SourceFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/source"
+			},
+			"DestinationFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/destination/ross"
+			},
+			"LogFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/log/"
+			},
+			"SourceArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/source"
+			},
+			"Department": {
+				"type": "String",
+				"defaultValue": "fin"
+			},
+			"DestinationArchiveFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/archive/destination/ross"
+			},
+			"StagingFolder": {
+				"type": "String",
+				"defaultValue": "uem/dev/edgenta/azure/outbound/main/source"
+			},
+			"ScheduleType": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"SourceSystem": {
+				"type": "String",
+				"defaultValue": "ORACLE"
+			},
+			"DestinationSystem": {
+				"type": "String",
+				"defaultValue": "ROSS"
+			}
+		},
+		"folder": {
+			"name": "INT_FIN_249_SP"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

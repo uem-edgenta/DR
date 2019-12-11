@@ -44,7 +44,7 @@
 										"type": "Expression"
 									},
 									"ZipFileName": {
-										"value": "@pipeline().parameters.ZipFileName",
+										"value": "@variables('ZipFileName')",
 										"type": "Expression"
 									},
 									"ParentPipelineID": {
@@ -134,7 +134,7 @@
 											"type": "Expression"
 										},
 										"FileName": {
-											"value": "@replace(pipeline().parameters.ZipFileName,'.csv','.zip')",
+											"value": "@replace(variables('ZipFileName'),'.csv','.zip')",
 											"type": "Expression"
 										},
 										"PathFolder": {
@@ -158,7 +158,7 @@
 											"type": "Expression"
 										},
 										"FileName": {
-											"value": "@replace(pipeline().parameters.ZipFileName,'.csv','.zip')",
+											"value": "@replace(variables('ZipFileName'),'.csv','.zip')",
 											"type": "Expression"
 										},
 										"PathFolder": {
@@ -202,7 +202,7 @@
 											"type": "Expression"
 										},
 										"FileName": {
-											"value": "@pipeline().parameters.ZipFileName",
+											"value": "@variables('ZipFileName')",
 											"type": "Expression"
 										},
 										"PathFolder": {
@@ -275,7 +275,7 @@
 											"type": "Expression"
 										},
 										"FolderName": {
-											"value": "@replace(pipeline().parameters.ZipFileName,'.zip','')",
+											"value": "@replace(variables('ZipFileName'),'.zip','')",
 											"type": "Expression"
 										},
 										"PathFolder": {
@@ -305,10 +305,10 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": "https://edsaasdrfc01.azurewebsites.net/api/PGPEncrypt",
+								"url": "https://edsaasdrsitfc01.azurewebsites.net/api/PGPEncrypt",
 								"method": "POST",
 								"body": {
-									"value": "@concat('{\"filePath\":\"egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(pipeline().parameters.ZipFileName,'.zip',''),'/',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"outputPath\":\"egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(pipeline().parameters.ZipFileName,'.zip',''),'/',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"passPhrase\":\"\"}')",
+									"value": "@concat('{\"filePath\":\"egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(variables('ZipFileName'),'.zip',''),'/',replace(variables('ZipFileName'),'zip','csv'),'\",\"outputPath\":\"egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(variables('ZipFileName'),'.zip',''),'/',replace(variables('ZipFileName'),'zip','csv'),'\",\"passPhrase\":\"\"}')",
 									"type": "Expression"
 								}
 							}
@@ -696,7 +696,7 @@
 								"url": "https://edgenta.azure-api.net/int/ppm/337",
 								"method": "POST",
 								"body": {
-									"value": "@concat('{\n\t\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\t\"destination\": \"egsaasdrblob01/',concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(pipeline().parameters.ZipFileName,'.zip','')),'\",\n\t\"zipname\": \"',replace(pipeline().parameters.ZipFileName,'.zip',''),'\",\n\t\"ErrorLocation\": \"',pipeline().parameters.LogFolder,'\",\n\t\"file\": \"',concat(pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.ZipFileName,'/',replace(pipeline().parameters.ZipFileName,'zip','csv')),'\",\n\t\"pipeline_dt\": \"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\"\n}')",
+									"value": "@concat('{\n\t\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\t\"destination\": \"egsaasdrblob01/',concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(variables('ZipFileName'),'.zip','')),'\",\n\t\"zipname\": \"',replace(variables('ZipFileName'),'.zip',''),'\",\n\t\"ErrorLocation\": \"',pipeline().parameters.LogFolder,'\",\n\t\"file\": \"',concat(pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.ZipFileName,'/',replace(pipeline().parameters.ZipFileName,'zip','csv')),'\",\n\t\"pipeline_dt\": \"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\"\n}')",
 									"type": "Expression"
 								},
 								"authentication": {
@@ -897,7 +897,7 @@
 						},
 						"pipeline_dt": {
 							"value": {
-								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss')",
+								"value": "@formatDateTime(addhours(utcnow(),8),'yyyy-MM-dd hh:mm:ss')",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -921,6 +921,19 @@
 				"linkedServiceName": {
 					"referenceName": "edsaasdrdb",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set variable zip file name",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ZipFileName",
+					"value": {
+						"value": "@replace(pipeline().parameters.ZipFileName,'IMPORT','Import')",
+						"type": "Expression"
+					}
 				}
 			}
 		],

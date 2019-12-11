@@ -23,11 +23,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "BinarySource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true
-						}
+						"type": "FileSystemSource",
+						"recursive": true
 					},
 					"sink": {
 						"type": "BlobSink",
@@ -39,7 +36,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "AzureBLOBSFTPFileDef",
+						"referenceName": "ROSSFileShareZip",
 						"type": "DatasetReference",
 						"parameters": {
 							"FileLocation": {

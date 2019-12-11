@@ -590,7 +590,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "FIN_249_PART_4",
+									"referenceName": "FIN_249_PART_4_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -647,7 +647,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "FIN_252_PART_4",
+									"referenceName": "FIN_252_PART_4_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -704,7 +704,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "FIN_253_PART_4",
+									"referenceName": "FIN_253_PART_4_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -761,7 +761,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "FIN_254_PART_4",
+									"referenceName": "FIN_254_PART_4_SP",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,

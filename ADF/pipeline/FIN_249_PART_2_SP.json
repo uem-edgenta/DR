@@ -1,5 +1,5 @@
 {
-	"name": "SCM_203_PART_2_SP",
+	"name": "FIN_249_PART_2_SP",
 	"properties": {
 		"activities": [
 			{
@@ -344,7 +344,7 @@
 					"url": "https://edsaasdrfc01.azurewebsites.net/api/PostAck",
 					"method": "POST",
 					"body": {
-						"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Data Loading SP').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(string(activity('Data Loading SP').Error),'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+						"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('Data Loading SP').ExecutionStartTime),'\",\n\"messageDescription\":\"',string(activity('Data Loading SP').Error),'\",\"fileLine\":\"\"}')",
 						"type": "Expression"
 					}
 				}
@@ -691,7 +691,7 @@
 									"EventType": "OUTBOUND",
 									"FilePath": "The step describes the process of send the success message of received file via API of source system",
 									"Input": {
-										"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('File Generating').ExecutionStartTime),'\",\n\"messageDescription\":\"',replace(string(activity('File Generating').Error),'\"','\\\"'),'\",\"fileLine\":\"\"}')",
+										"value": "@concat('{\"sourceSystem\":\"Azure-Edgenta\",\"zipfileName\":\"',pipeline().parameters.ZipFileName\n,'\",\"dataFileName\":\"',replace(pipeline().parameters.ZipFileName,'zip','csv'),'\",\"errorLocation\":\"\",\"businessObject\":\"',variables('Foldername'),'\",\"notificationType\":\"ERROR\",\"eventOccurredTime\":\"',string(activity('File Generating').ExecutionStartTime),'\",\n\"messageDescription\":\"',string(activity('File Generating').Error),'\",\"fileLine\":\"\"}')",
 										"type": "Expression"
 									}
 								}
@@ -738,7 +738,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": "https://edgenta.azure-api.net/int/scm/203",
+								"url": "https://edgenta.azure-api.net/int/fin/249",
 								"method": "POST",
 								"body": {
 									"value": "@concat('{\n\t\"eventID\": \"',pipeline().parameters.ParentPipelineID,'\",\n\t\"destination\": \"egsaasdrblob01/',concat(pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(pipeline().parameters.ZipFileName,'.zip','')),'\",\n\t\"zipname\": \"',replace(pipeline().parameters.ZipFileName,'.zip',''),'\",\n\t\"ErrorLocation\": \"',pipeline().parameters.LogFolder,'\",\n\t\"file\": \"',concat(pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.ZipFileName,'/',replace(pipeline().parameters.ZipFileName,'zip','csv')),'\",\n\t\"pipeline_dt\": \"',formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss'),'\"\n}')",
@@ -832,7 +832,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[INSERT_INT_SCM_203_SUPPLIER]",
+					"storedProcedureName": "[dbo].[INSERT_INT_FIN_249_SUPPLIERPAYMENT]",
 					"storedProcedureParameters": {
 						"destination": {
 							"value": {
@@ -933,7 +933,7 @@
 		"parameters": {
 			"InterfaceName": {
 				"type": "string",
-				"defaultValue": "SCM_203"
+				"defaultValue": "FIN_249"
 			},
 			"ID": {
 				"type": "string",
@@ -941,7 +941,7 @@
 			},
 			"ZipFileName": {
 				"type": "string",
-				"defaultValue": "INT_SCM_203_PO_Export_45193_20190523112456.zip"
+				"defaultValue": "INT_FIN_249_PO_Export_45193_20190523112456.zip"
 			},
 			"ParentPipelineID": {
 				"type": "string",
@@ -981,7 +981,7 @@
 			},
 			"Foldername": {
 				"type": "String",
-				"defaultValue": "supplier"
+				"defaultValue": "supplierpayment"
 			},
 			"OraErrorPath": {
 				"type": "String",
@@ -997,7 +997,7 @@
 			}
 		},
 		"folder": {
-			"name": "INT_SCM_203_SP"
+			"name": "INT_FIN_249_SP"
 		},
 		"annotations": []
 	},
