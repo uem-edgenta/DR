@@ -1,0 +1,470 @@
+{
+	"name": "HCM Data Loading SP 2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Send to ORACLE",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "HCM Data Loading",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/sftp/oracle",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"blobPath\":\"/egsaasdrblob01/',concat(pipeline().parameters.SourceFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.fileName),'\",\"fileName\":\"',pipeline().parameters.fileName,'\",\"sftpTarget\":\"/uem/dev/all/clocking/inbound\",\"sftpType\": 1}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for HCM Data Loading",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "HCM Data Loading",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"\",\n\"FileName\" : \"',pipeline().parameters.fileName,'\",\n\"Object\" : \"HCM\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Oracle-FUSION\",\n\"JobId\" : \"',activity('HCM Data Loading').ActivityRunId,'\",\n\"ActivityTask\" : \"HCM Data Loading\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('HCM Data Loading').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('HCM Data Loading').ExecutionEndTime,'\",\n\"Status\" : \"',activity('HCM Data Loading').Status,'\",\n\"Output\" : ',activity('HCM Data Loading').Output,',\n\"Error\" : ',activity('HCM Data Loading').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of HCM data loading from BLOB to database\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Add Log for Sending to Oracle",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Send to ORACLE",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"\",\n\"FileName\" : \"',pipeline().parameters.fileName,'\",\n\"Object\" : \"HCM\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Oracle-FUSION\",\n\"JobId\" : \"',activity('Send to ORACLE').ActivityRunId,'\",\n\"ActivityTask\" : \"Send to ORACLE\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send to ORACLE').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send to ORACLE').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send to ORACLE').Status,'\",\n\"Output\" : ',activity('Send to ORACLE').Output,',\n\"Error\" : ',activity('Send to ORACLE').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of sending file from BLOB to ORACLE SFTP\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get data from TERAS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "FileSystemSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ROSSFileShare",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileLocation": {
+								"value": "@pipeline().parameters.filePath",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.fileName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "FOLDER_ROSS",
+						"type": "DatasetReference",
+						"parameters": {
+							"InterfaceFolder": {
+								"value": "@pipeline().parameters.InterfaceName",
+								"type": "Expression"
+							},
+							"FolderName": "-1",
+							"PathFolder": {
+								"value": "@pipeline().parameters.SourceFolder",
+								"type": "Expression"
+							},
+							"Department": {
+								"value": "@pipeline().parameters.Department",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Add Log for Getting Data from TERAS",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get data from TERAS",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://edgenta.azure-api.net/adf/AuditLog",
+					"method": "POST",
+					"body": {
+						"value": "@concat('{\"EventID\" : \"',pipeline().RunId,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"\",\n\"FileName\" : \"',pipeline().parameters.fileName,'\",\n\"Object\" : \"HCM\",\n\"SourceSystem\" : \"TERAS-Azure\",\n\"DestSystem\" : \"OracleFusion\",\n\"JobId\" : \"',activity('Get Data From TERAS').ActivityRunId,'\",\n\"ActivityTask\" : \"Get Data From TERAS\",\n\"ActivityType\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"StartTime\" : \"',activity('Get Data From TERAS').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Get Data From TERAS').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Get Data From TERAS').Status,'\",\n\"Output\" : ',activity('Get Data From TERAS').Output,',\n\"Error\" : ',activity('Get Data From TERAS').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"INBOUND\",\n\"FilePath\" : \"The step describes the process of Get Data From TERAS from BLOB to database\",\n\"TotalRow\" : ',pipeline().parameters.ScheduleType,',\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Backup Source File Complete",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Send to ORACLE",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_SOURCE_BACKUP_FILE",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"SourceFolder": {
+							"value": "@pipeline().parameters.SourceFolder",
+							"type": "Expression"
+						},
+						"SourceArchiveFolder": {
+							"value": "@pipeline().parameters.SourceArchiveFolder",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"FileName": {
+							"value": "@pipeline().parameters.fileName",
+							"type": "Expression"
+						},
+						"FileLocation": {
+							"value": "@pipeline().parameters.filePath",
+							"type": "Expression"
+						},
+						"ScheduleType": {
+							"value": "@pipeline().parameters.ScheduleType",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						},
+						"DestinationSystem": {
+							"value": "@pipeline().parameters.DestinationSystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Backup Source File Skipped",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Send to ORACLE",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GENERAL_SOURCE_BACKUP_FILE",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"InterfaceName": {
+							"value": "@pipeline().parameters.InterfaceName",
+							"type": "Expression"
+						},
+						"ParentPipelineID": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"SourceFolder": {
+							"value": "@pipeline().parameters.SourceFolder",
+							"type": "Expression"
+						},
+						"SourceArchiveFolder": {
+							"value": "@pipeline().parameters.SourceArchiveFolder",
+							"type": "Expression"
+						},
+						"Department": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						},
+						"FileName": {
+							"value": "@pipeline().parameters.fileName",
+							"type": "Expression"
+						},
+						"FileLocation": {
+							"value": "@pipeline().parameters.filePath",
+							"type": "Expression"
+						},
+						"ScheduleType": {
+							"value": "@pipeline().parameters.ScheduleType",
+							"type": "Expression"
+						},
+						"SourceSystem": {
+							"value": "@pipeline().parameters.SourceSystem",
+							"type": "Expression"
+						},
+						"DestinationSystem": {
+							"value": "@pipeline().parameters.DestinationSystem",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Backup Source File Complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ROSSFileShare",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileLocation": {
+								"value": "@pipeline().parameters.filePath",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false
+				}
+			},
+			{
+				"name": "Delete2",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Backup Source File Skipped",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ROSSFileShare",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileLocation": {
+								"value": "@pipeline().parameters.filePath",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false
+				}
+			},
+			{
+				"name": "HCM Data Loading",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Get data from TERAS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Add Log for Getting Data from TERAS",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[INSERT_INT_HCM_312_CLOCKING_ROW]",
+					"storedProcedureParameters": {
+						"filepath": {
+							"value": {
+								"value": "@concat(pipeline().parameters.SourceFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',pipeline().parameters.fileName)",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"pipeline_date": {
+							"value": {
+								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd hh:mm:ss')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"pipeline_id": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "edsaasdrdb",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"filePath": {
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
+			},
+			"SourceFolder": {
+				"type": "string"
+			},
+			"SourceArchiveFolder": {
+				"type": "string"
+			},
+			"Department": {
+				"type": "string"
+			},
+			"ScheduleType": {
+				"type": "string"
+			},
+			"SourceSystem": {
+				"type": "string"
+			},
+			"DestinationSystem": {
+				"type": "string"
+			},
+			"InterfaceName": {
+				"type": "string"
+			},
+			"ParentPipelineID": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "HCM"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

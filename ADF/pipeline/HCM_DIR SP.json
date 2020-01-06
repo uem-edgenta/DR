@@ -233,7 +233,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "HCM Data Loading SP",
+									"referenceName": "HCM Data Loading SP 2",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
