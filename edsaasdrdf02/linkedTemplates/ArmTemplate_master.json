@@ -47,6 +47,750 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'urbanizedb'"
 		},
+		"ADHOC_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"ADHOC_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"ADHOC_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"ADHOC_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"ADHOC_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"ADHOC_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"FIN_249_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_249_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_252_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_252_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_253_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_253_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_254_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_254_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_267_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"FIN_267_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"GENERAL_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"GENERAL_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"GENERAL_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"GENERAL_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"GENERAL_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"GENERAL_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"HCM_DIR SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"HCM_DIR SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"HCM_DIR SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"HCM_DIR SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"HCM_DIR SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"HCM_DIR SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"HCM_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"HCM_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"HCM_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"HCM_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"HCM_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"HCM_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_249_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_252_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_253_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_254_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_FIN_267_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_206_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_337_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_PPM_363_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_201_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_203_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_204_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_205_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_231_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_SP_properties_variables_SourceFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_SP_properties_variables_DestinationFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_SP_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_SP_properties_variables_SourceArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"INT_SCM_303_DIR_SP_properties_variables_StagingFolder": {
+			"type": "string"
+		},
+		"PPM_206_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"PPM_206_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"PPM_337_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"PPM_337_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"PPM_363_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"PPM_363_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_201_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_201_PART_4_ECLIP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_201_PART_4_ECLIP_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_201_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_203_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_203_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_204_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_204_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_205_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_205_PART_4_properties_variables_LogFolder": {
+			"type": "string"
+		},
+		"SCM_205_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_231_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_231_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_303_PART_4_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
+		"SCM_303_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+			"type": "string"
+		},
 		"ADHOC_BLOB_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@dataset().FileName"
@@ -199,25 +943,13 @@
 			"type": "string",
 			"defaultValue": "@if(equals(dataset().InterfaceFolder,'-1'),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department),concat('egsaasdrblob01/',dataset().FolderPath,'/',dataset().Department,'/',dataset().InterfaceFolder))"
 		},
-		"HCMSftp_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "129.154.84.0"
-		},
 		"HCMSftp_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "dev_timeclock"
 		},
-		"ROSSSftp_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "sftp01.uemedgenta.com"
-		},
 		"ROSSSftp_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "oracle"
-		},
-		"fusionSftp_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "129.154.84.0"
 		},
 		"fusionSftp_properties_typeProperties_userName": {
 			"type": "string",
@@ -675,14 +1407,8 @@
 					"egsaasdrBlobStorage_connectionString": {
 						"value": "[parameters('egsaasdrBlobStorage_connectionString')]"
 					},
-					"ROSSSftp_properties_typeProperties_host": {
-						"value": "[parameters('ROSSSftp_properties_typeProperties_host')]"
-					},
 					"ROSSSftp_properties_typeProperties_userName": {
 						"value": "[parameters('ROSSSftp_properties_typeProperties_userName')]"
-					},
-					"fusionSftp_properties_typeProperties_host": {
-						"value": "[parameters('fusionSftp_properties_typeProperties_host')]"
 					},
 					"fusionSftp_properties_typeProperties_userName": {
 						"value": "[parameters('fusionSftp_properties_typeProperties_userName')]"
@@ -731,9 +1457,6 @@
 					},
 					"ROSSFolderShare_properties_typeProperties_folderPath": {
 						"value": "[parameters('ROSSFolderShare_properties_typeProperties_folderPath')]"
-					},
-					"HCMSftp_properties_typeProperties_host": {
-						"value": "[parameters('HCMSftp_properties_typeProperties_host')]"
 					},
 					"HCMSftp_properties_typeProperties_userName": {
 						"value": "[parameters('HCMSftp_properties_typeProperties_userName')]"
@@ -873,6 +1596,36 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FIN_249_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_249_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_249_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_249_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_252_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_252_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_252_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_252_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_253_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_253_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_253_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_253_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_254_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_254_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_254_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_254_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_267_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_267_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"FIN_267_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('FIN_267_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
 					}
 				}
 			},
@@ -893,6 +1646,54 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"PPM_206_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('PPM_206_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"PPM_206_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('PPM_206_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"PPM_337_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('PPM_337_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"PPM_337_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('PPM_337_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"PPM_363_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('PPM_363_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"PPM_363_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('PPM_363_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_201_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_201_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_201_PART_4_ECLIP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_201_PART_4_ECLIP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_201_PART_4_ECLIP_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_201_PART_4_ECLIP_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_201_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_201_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_203_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_203_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_203_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_203_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_204_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_204_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_204_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_204_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_205_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_205_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_205_PART_4_properties_variables_LogFolder": {
+						"value": "[parameters('SCM_205_PART_4_properties_variables_LogFolder')]"
 					}
 				}
 			},
@@ -913,6 +1714,57 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"SCM_205_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_205_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_231_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_231_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_231_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_231_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_303_PART_4_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_303_PART_4_properties_variables_DestinationArchiveFolder')]"
+					},
+					"SCM_303_PART_4_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('SCM_303_PART_4_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"HCM_DIR SP_properties_variables_SourceFolder": {
+						"value": "[parameters('HCM_DIR SP_properties_variables_SourceFolder')]"
+					},
+					"HCM_DIR SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('HCM_DIR SP_properties_variables_DestinationFolder')]"
+					},
+					"HCM_DIR SP_properties_variables_LogFolder": {
+						"value": "[parameters('HCM_DIR SP_properties_variables_LogFolder')]"
+					},
+					"HCM_DIR SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('HCM_DIR SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"HCM_DIR SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('HCM_DIR SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"HCM_DIR SP_properties_variables_StagingFolder": {
+						"value": "[parameters('HCM_DIR SP_properties_variables_StagingFolder')]"
+					},
+					"HCM_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('HCM_DIR_properties_variables_SourceFolder')]"
+					},
+					"HCM_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('HCM_DIR_properties_variables_DestinationFolder')]"
+					},
+					"HCM_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('HCM_DIR_properties_variables_LogFolder')]"
+					},
+					"HCM_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('HCM_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"HCM_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('HCM_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"HCM_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('HCM_DIR_properties_variables_StagingFolder')]"
 					}
 				}
 			},
@@ -933,6 +1785,42 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"INT_SCM_303_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_303_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_303_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_303_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_303_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_303_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_303_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_303_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_303_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_303_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_303_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_303_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_303_DIR_SP_properties_variables_StagingFolder')]"
 					}
 				}
 			},
@@ -953,6 +1841,57 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"INT_FIN_267_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_267_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_267_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_267_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_267_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_267_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_267_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_267_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_267_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_267_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_PPM_337_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_PPM_337_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_PPM_337_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_PPM_337_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_PPM_337_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_PPM_337_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_PPM_337_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_PPM_337_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_PPM_337_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_PPM_337_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_PPM_337_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_PPM_337_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_PPM_337_DIR_SP_properties_variables_StagingFolder')]"
 					}
 				}
 			},
@@ -973,6 +1912,42 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"INT_PPM_363_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_PPM_363_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_PPM_363_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_PPM_363_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_PPM_363_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_PPM_363_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_PPM_363_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_PPM_363_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_PPM_363_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_PPM_363_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_PPM_363_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_PPM_363_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_PPM_363_DIR_SP_properties_variables_StagingFolder')]"
 					},
 					"1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation": {
 						"value": "[parameters('1110-Hourly10to7_properties_INT_SCM_303_DIR_parameters_fileLocation')]"
@@ -1005,6 +1980,500 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"INT_FIN_249_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_249_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_249_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_249_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_249_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_249_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_249_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_249_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_249_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_249_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_249_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_249_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_249_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_252_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_252_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_252_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_252_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_252_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_252_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_252_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_252_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_252_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_252_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_252_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_252_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_252_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_253_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_253_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_253_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_253_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_253_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_253_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_253_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_253_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_253_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_253_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_253_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_253_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_253_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_254_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_254_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_254_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_254_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_254_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_254_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_254_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_254_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_254_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_254_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_254_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_254_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_254_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_267_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_267_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_267_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_267_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_267_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_267_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_FIN_267_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_FIN_267_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_FIN_267_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_FIN_267_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_FIN_267_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_FIN_267_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_FIN_267_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_PPM_206_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_PPM_206_properties_variables_SourceFolder')]"
+					},
+					"INT_PPM_206_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_PPM_206_properties_variables_DestinationFolder')]"
+					},
+					"INT_PPM_206_properties_variables_LogFolder": {
+						"value": "[parameters('INT_PPM_206_properties_variables_LogFolder')]"
+					},
+					"INT_PPM_206_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_PPM_206_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_PPM_206_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_PPM_206_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_PPM_206_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_PPM_206_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_PPM_206_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_PPM_206_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_PPM_206_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_PPM_206_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_PPM_206_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_PPM_206_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_PPM_206_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_PPM_206_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_PPM_206_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_PPM_206_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_PPM_206_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_201_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_201_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_201_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_201_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_201_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_201_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_201_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_201_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_201_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_201_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_201_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_201_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_201_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_201_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_201_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_201_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_201_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_201_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_201_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_201_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_201_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_201_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_201_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_203_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_203_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_203_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_203_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_203_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_203_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_203_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_203_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_203_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_203_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_203_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_203_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_203_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_203_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_203_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_203_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_203_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_203_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_203_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_203_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_203_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_203_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_203_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_204_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_204_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_204_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_204_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_204_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_204_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_204_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_204_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_204_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_204_properties_variables_DestinationArchiveFolder')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_8')]"
+			]
+		},
+		{
+			"name": "ArmTemplate_10",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_10.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"INT_SCM_204_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_204_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_204_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_204_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_204_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_204_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_204_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_204_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_204_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_204_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_204_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_204_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_204_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_205_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_205_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_205_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_205_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_205_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_205_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_205_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_205_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_205_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_205_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_205_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_205_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_205_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_231_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_231_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_231_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_231_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_231_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_231_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_properties_variables_StagingFolder')]"
+					},
+					"INT_SCM_231_DIR_SP_properties_variables_SourceFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_SP_properties_variables_SourceFolder')]"
+					},
+					"INT_SCM_231_DIR_SP_properties_variables_DestinationFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_SP_properties_variables_DestinationFolder')]"
+					},
+					"INT_SCM_231_DIR_SP_properties_variables_LogFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_SP_properties_variables_LogFolder')]"
+					},
+					"INT_SCM_231_DIR_SP_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_SP_properties_variables_SourceArchiveFolder')]"
+					},
+					"INT_SCM_231_DIR_SP_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_SP_properties_variables_DestinationArchiveFolder')]"
+					},
+					"INT_SCM_231_DIR_SP_properties_variables_StagingFolder": {
+						"value": "[parameters('INT_SCM_231_DIR_SP_properties_variables_StagingFolder')]"
+					},
+					"GENERAL_DIR_properties_variables_SourceFolder": {
+						"value": "[parameters('GENERAL_DIR_properties_variables_SourceFolder')]"
+					},
+					"GENERAL_DIR_properties_variables_DestinationFolder": {
+						"value": "[parameters('GENERAL_DIR_properties_variables_DestinationFolder')]"
+					},
+					"GENERAL_DIR_properties_variables_LogFolder": {
+						"value": "[parameters('GENERAL_DIR_properties_variables_LogFolder')]"
+					},
+					"GENERAL_DIR_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('GENERAL_DIR_properties_variables_SourceArchiveFolder')]"
+					},
+					"GENERAL_DIR_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('GENERAL_DIR_properties_variables_DestinationArchiveFolder')]"
+					},
+					"GENERAL_DIR_properties_variables_StagingFolder": {
+						"value": "[parameters('GENERAL_DIR_properties_variables_StagingFolder')]"
 					},
 					"0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_fileLocation": {
 						"value": "[parameters('0710-Hourly10to17_properties_INT_SCM_201_DIR_parameters_fileLocation')]"
@@ -1281,11 +2750,29 @@
 					},
 					"1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType": {
 						"value": "[parameters('1110-TwoHourly10to6_properties_INT_SCM_205_DIR_parameters_ScheduleType')]"
+					},
+					"ADHOC_properties_variables_SourceFolder": {
+						"value": "[parameters('ADHOC_properties_variables_SourceFolder')]"
+					},
+					"ADHOC_properties_variables_DestinationFolder": {
+						"value": "[parameters('ADHOC_properties_variables_DestinationFolder')]"
+					},
+					"ADHOC_properties_variables_LogFolder": {
+						"value": "[parameters('ADHOC_properties_variables_LogFolder')]"
+					},
+					"ADHOC_properties_variables_SourceArchiveFolder": {
+						"value": "[parameters('ADHOC_properties_variables_SourceArchiveFolder')]"
+					},
+					"ADHOC_properties_variables_DestinationArchiveFolder": {
+						"value": "[parameters('ADHOC_properties_variables_DestinationArchiveFolder')]"
+					},
+					"ADHOC_properties_variables_StagingFolder": {
+						"value": "[parameters('ADHOC_properties_variables_StagingFolder')]"
 					}
 				}
 			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_8')]"
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_9')]"
 			]
 		}
 	]

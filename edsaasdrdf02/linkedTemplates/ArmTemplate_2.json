@@ -160,6 +160,429 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Daily Error Report File 24H')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Daily Summary File",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('select distinct FileNameZip [File Name],InterfaceID [Interface ID],sch.CodeDesc [Schedule Type],BusinessObject [Business Object],starttime [Start Time],endtime [End Time],\nEventMessage [Error Step],ErrorMessage [Error Message],cm.CodeDesc [Process Status],ISNULL([data status],'''') [Data Transaction Status] \nfrom EventLog el\ninner join CodeMaster cm on el.Status = cm.Code and cm.CodeType = ''STS''\ninner join CodeMaster sch on el.ScheduleType = sch.Code and sch.CodeType = ''SCH''\nouter apply (\n\tselect ''FAIL'' [Data Status]\n\tfrom ETLAudit ea\n\twhere el.EventID = ea.EventID and RowFailed > 0\n) a\nwhere el.ScheduleID <> '''' and el.ScheduleID <> ''1'' and EventType = ''O'' and (Status IN (0,2,3) or [Data Status] = ''FAIL'') \nand StartTime >= DATEADD(day, -1, GETDATE())\norder by StartTime')",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "LOG_TABLE",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DELIMITED_TEXT",
+								"type": "DatasetReference",
+								"parameters": {
+									"InterfaceFolder": {
+										"value": "@variables('Datetime')",
+										"type": "Expression"
+									},
+									"FileName": "EVENTLOG.csv",
+									"PathFolder": {
+										"value": "@variables('Folder')",
+										"type": "Expression"
+									},
+									"Department": {
+										"value": "@variables('Department')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "File List Lookup",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Daily Summary File",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('select distinct FileNameZip\nfrom EventLog el\ninner join CodeMaster cm on el.Status = cm.Code and cm.CodeType = ''STS''\ninner join CodeMaster sch on el.ScheduleType = sch.Code and sch.CodeType = ''SCH''\nouter apply (\n\tselect ''FAIL'' [Data Status]\n\tfrom ETLAudit ea\n\twhere el.EventID = ea.EventID and RowFailed > 0\n) a\nwhere el.ScheduleID <> '''' and el.ScheduleID <> ''1'' and EventType = ''O'' and (Status = 2 or [Data Status] = ''FAIL'') \nand StartTime >= DATEADD(day, -1, GETDATE()) \n')",
+									"type": "Expression"
+								}
+							},
+							"dataset": {
+								"referenceName": "LOG_TABLE",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "For Each File",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "File List Lookup",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('File List Lookup').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "EVENTTASKLOG File",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT SeqNo,StepName,StepDescription,etl.StartTime,etl.EndTime,StepInput,StepOutput,st.CodeDesc [Status],etl.ErrorMessage FROM EventTaskLog etl inner join EventTaskLogStatus st on etl.Status = st.Code\nINNER JOIN EventLog el on etl.EventID = el.EventID\nwhere FileNameZip = ''',item().fileNameZip,'''\norder by SeqNo')",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".csv"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "LOG_TABLE",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DELIMITED_TEXT",
+											"type": "DatasetReference",
+											"parameters": {
+												"InterfaceFolder": {
+													"value": "@Concat(variables('Datetime'),'/',item().fileNameZip)",
+													"type": "Expression"
+												},
+												"FileName": "EVENTTASKLOG.csv",
+												"PathFolder": {
+													"value": "@variables('Folder')",
+													"type": "Expression"
+												},
+												"Department": {
+													"value": "@variables('Department')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "ETLDATAAUDIT File",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "EVENTTASKLOG File",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('select FileLine,cm.CodeDesc [Process Status],st.CodeDesc [Status], \n\tCASE WHEN etl.PackageType = 1 and isFailLoad = 0  THEN ''Success''\n\tWHEN etl.PackageType = 2 and flg is NULL THEN ''''\n\tWHEN etl.PackageType = 2 and flg = 1 and isFailLoad = 0 THEN ''Success''\n\tWHEN  etl.PackageType = 2 and flg = 1 and isFailLoad = 1 THEN ''Failed'' END [Data Validation],\nMessage\nfrom ETLDataAudit etl\nINNER JOIN EventLog el on etl.EventID = el.EventID \nINNER JOIN CodeMaster cm on cm.code = etl.PackageType and cm.CodeType = ''PKT''\nINNER JOIN Codemaster st on etl.status = st.code and st.codetype = ''STS''\nOUTER APPLY(\n\tSELECT 1 flg\n\tFROM ETLAudit ea\n\tWHERE el.EventID = ea.EventID and ea.PackageType = ''3''\n) a\nwhere el.FileNameZip = ''',item().fileNameZip,'''')",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".csv"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "LOG_TABLE",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DELIMITED_TEXT",
+											"type": "DatasetReference",
+											"parameters": {
+												"InterfaceFolder": {
+													"value": "@Concat(variables('Datetime'),'/',item().fileNameZip)",
+													"type": "Expression"
+												},
+												"FileName": "ETLDATAAUDIT.csv",
+												"PathFolder": {
+													"value": "@variables('Folder')",
+													"type": "Expression"
+												},
+												"Department": {
+													"value": "@variables('Department')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "ZIP File",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "ETLDATAAUDIT File",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BlobSource",
+											"recursive": true
+										},
+										"sink": {
+											"type": "BlobSink"
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ZIP_FILE_ROSS",
+											"type": "DatasetReference",
+											"parameters": {
+												"InterfaceFolder": {
+													"value": "@variables('Datetime')",
+													"type": "Expression"
+												},
+												"FolderName": {
+													"value": "@item().fileNameZip",
+													"type": "Expression"
+												},
+												"FileName": "*",
+												"FolderPath": {
+													"value": "@variables('Folder')",
+													"type": "Expression"
+												},
+												"Department": {
+													"value": "@variables('Department')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ZIP_ROSS",
+											"type": "DatasetReference",
+											"parameters": {
+												"InterfaceFolder": {
+													"value": "@variables('Datetime')",
+													"type": "Expression"
+												},
+												"ZipName": {
+													"value": "@replace(replace(item().fileNameZip,'.zip','_errorfile.zip'),'EXPORT','Export')",
+													"type": "Expression"
+												},
+												"FolderPath": {
+													"value": "@variables('Folder')",
+													"type": "Expression"
+												},
+												"Department": {
+													"value": "@variables('Department')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Delete1",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "ZIP File",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "FOLDER_FUSION",
+											"type": "DatasetReference",
+											"parameters": {
+												"InterfaceFolder": {
+													"value": "@variables('Datetime')",
+													"type": "Expression"
+												},
+												"FolderName": {
+													"value": "@item().fileNameZip",
+													"type": "Expression"
+												},
+												"PathFolder": {
+													"value": "@variables('Folder')",
+													"type": "Expression"
+												},
+												"Department": {
+													"value": "@variables('Department')",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"recursive": true
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Datetime",
+							"value": {
+								"value": "@Concat(formatDateTime(addhours(utcnow(),-16),'yyyyMMddhhmmss'),'-',formatDateTime(addhours(utcnow(),8),'yyyyMMddhhmmss'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"variables": {
+					"Folder": {
+						"type": "String",
+						"defaultValue": "uem/dev/edgenta/azure"
+					},
+					"Department": {
+						"type": "String",
+						"defaultValue": "errorfile"
+					},
+					"Interface": {
+						"type": "String"
+					},
+					"Datetime": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ZIP_ROSS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Daily Error Report File')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -5693,444 +6116,6 @@
 				},
 				"folder": {
 					"name": "INT_SCM_204"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ZIP_ROSS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SCM_205_PART_3')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Generate Checksum",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "Set ZipFileName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://edsaasdrfc01.azurewebsites.net/api/GenChecksum",
-							"method": "POST",
-							"headers": {},
-							"body": {
-								"value": "@concat('{\n\"filePath\":\"egsaasdrblob01/',pipeline().parameters.StagingFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',replace(variables('ZipFileName'),'zip',''),'/',concat(variables('ZipFileName'),'.csv'),'\"}')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set ZipFileName",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Get FileName",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "ZipFileName",
-							"value": {
-								"value": "@last(split(activity('Get FileName').Output.firstRow.Destination,'/'))",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Get FileName",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT DISTINCT Destination FROM ETLAudit WHERE EventID = ''',pipeline().parameters.ParentPipelineID,'''')",
-									"type": "Expression"
-								}
-							},
-							"dataset": {
-								"referenceName": "LOG_TABLE",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "If Get Checksum",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "Generate Checksum",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@not(equals(activity('Generate Checksum').output.Response,''))",
-								"type": "Expression"
-							},
-							"ifTrueActivities": [
-								{
-									"name": "Generate Checksum File",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"sqlReaderQuery": {
-												"value": "@concat('select ''',activity('Generate Checksum').output.Response,'''')",
-												"type": "Expression"
-											}
-										},
-										"sink": {
-											"type": "BlobSink"
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "LOG_TABLE",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ZIP_FILE_ROSS_CS",
-											"type": "DatasetReference",
-											"parameters": {
-												"InterfaceFolder": {
-													"value": "@pipeline().parameters.InterfaceName",
-													"type": "Expression"
-												},
-												"FolderName": {
-													"value": "@replace(variables('ZipFileName'),'.zip','')",
-													"type": "Expression"
-												},
-												"FileName": "checksum.txt",
-												"FolderPath": {
-													"value": "@pipeline().parameters.StagingFolder",
-													"type": "Expression"
-												},
-												"Department": {
-													"value": "@pipeline().parameters.Department",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Compress Folder",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Generate Checksum File",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "BlobSource",
-											"recursive": true
-										},
-										"sink": {
-											"type": "BlobSink"
-										},
-										"enableStaging": false,
-										"enableSkipIncompatibleRow": false
-									},
-									"inputs": [
-										{
-											"referenceName": "ZIP_FILE_ROSS",
-											"type": "DatasetReference",
-											"parameters": {
-												"InterfaceFolder": {
-													"value": "@pipeline().parameters.InterfaceName",
-													"type": "Expression"
-												},
-												"FolderName": {
-													"value": "@replace(variables('ZipFileName'),'.zip','')",
-													"type": "Expression"
-												},
-												"FileName": {
-													"value": "*",
-													"type": "Expression"
-												},
-												"FolderPath": {
-													"value": "@pipeline().parameters.StagingFolder",
-													"type": "Expression"
-												},
-												"Department": {
-													"value": "@pipeline().parameters.Department",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ZIP_ROSS",
-											"type": "DatasetReference",
-											"parameters": {
-												"InterfaceFolder": {
-													"value": "@pipeline().parameters.InterfaceName",
-													"type": "Expression"
-												},
-												"ZipName": {
-													"value": "@concat(variables('ZipFileName'),'.zip')",
-													"type": "Expression"
-												},
-												"FolderPath": {
-													"value": "@pipeline().parameters.DestinationFolder",
-													"type": "Expression"
-												},
-												"Department": {
-													"value": "@pipeline().parameters.Department",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Add log for Checksum File Generating",
-									"type": "WebActivity",
-									"dependsOn": [
-										{
-											"activity": "Generate Checksum File",
-											"dependencyConditions": [
-												"Completed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"url": "https://edgenta.azure-api.net/adf/AuditLog",
-										"method": "POST",
-										"headers": {},
-										"body": {
-											"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Generate Checksum File').ActivityRunId,'\",\n\"ActivityTask\" : \"Generate Checksum File\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Generate Checksum File').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Generate Checksum File').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Generate Checksum File').Status,'\",\n\"Output\" : ',activity('Generate Checksum File').Output,',\n\"Error\" : ',activity('Generate Checksum File').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Add Log for File Compression",
-									"type": "WebActivity",
-									"dependsOn": [
-										{
-											"activity": "Compress Folder",
-											"dependencyConditions": [
-												"Completed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"url": "https://edgenta.azure-api.net/adf/AuditLog",
-										"method": "POST",
-										"headers": {},
-										"body": {
-											"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Compress Folder').ActivityRunId,'\",\n\"ActivityTask\" : \"Compress Folder\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Compress Folder').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Compress Folder').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Compress Folder').Status,'\",\n\"Output\" : ',activity('Compress Folder').Output,',\n\"Error\" : ',activity('Compress Folder').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')\n",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Send to ROSS SFTP",
-									"type": "WebActivity",
-									"dependsOn": [
-										{
-											"activity": "Compress Folder",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"url": "https://edgenta.azure-api.net/adf/sftp/ross",
-										"method": "POST",
-										"headers": {},
-										"body": {
-											"value": "@concat('{\"blobPath\":\"/egsaasdrblob01/',pipeline().parameters.DestinationFolder,'/',pipeline().parameters.Department,'/',pipeline().parameters.InterfaceName,'/',concat(variables('ZipFileName'),'.zip'),'\",\"fileName\":\"',concat(variables('ZipFileName'),'.zip'),'\",\"sftpTarget\":\"/uem_edgenta/dev/erp/ross/fusion_outbound/supplier\"}')",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Add Log for File Sending",
-									"type": "WebActivity",
-									"dependsOn": [
-										{
-											"activity": "Send to ROSS SFTP",
-											"dependencyConditions": [
-												"Completed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"url": "https://edgenta.azure-api.net/adf/AuditLog",
-										"method": "POST",
-										"headers": {},
-										"body": {
-											"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Send to ROSS SFTP').ActivityRunId,'\",\n\"ActivityTask\" : \"Send to ROSS SFTP\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Send to ROSS SFTP').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Send to ROSS SFTP').ExecutionEndTime,'\",\n\"Status\" : \"',activity('Send to ROSS SFTP').Status,'\",\n\"Output\" : ',activity('Send to ROSS SFTP').Output,',\n\"Error\" : ',activity('Send to ROSS SFTP').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Add Log for Generate Checksum",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "Generate Checksum",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://edgenta.azure-api.net/adf/AuditLog",
-							"method": "POST",
-							"headers": {},
-							"body": {
-								"value": "@concat('{\"EventID\" : \"',pipeline().parameters.ParentPipelineID,'\",\n\"EventName\" : \"',pipeline().Pipeline,'\",\n\"FileZipName\" : \"',variables('ZipFileName'),'\",\n\"FileName\" : \"',replace(variables('ZipFileName'),'zip','csv'),'\",\n\"Object\" : \"BlanketAggreement\",\n\"SourceSystem\" : \"Azure-Edgenta\",\n\"DestSystem\" : \"Azure-ROSS\",\n\"JobId\" : \"',activity('Generate Checksum').ActivityRunId,'\",\n\"ActivityTask\" : \"Generate Checksum\",\n\"ActivityType\" : \"\",\n\"StartTime\" : \"',activity('Generate Checksum').ExecutionStartTime,'\",\n\"EndTime\" : \"',activity('Generate Checksum').ExecutionEndTime,'\",\n\"Status\" : \"',if(equals(activity('Generate Checksum').Output.Response,''),'Failed','Succeeded'),'\",\n\"Output\" : ',activity('Generate Checksum').Output,',\n\"Error\" : ',activity('Generate Checksum').Error,',\n\"ErrorLoc\" : \"\",\n\"Type\" : 0,\n\"EventType\" : \"OUTBOUND\",\n\"FilePath\" : \"\",\n\"TotalRow\" : 0,\n\"SuccessRow\" : 0,\n\"FailedRow\" : 0}')",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"parameters": {
-					"InterfaceName": {
-						"type": "string",
-						"defaultValue": "scm_204"
-					},
-					"ZipFileName": {
-						"type": "string",
-						"defaultValue": "INT_SCM_204_BLANKETAGREEMENT_Export_12345_20190513211645.zip"
-					},
-					"ParentPipelineID": {
-						"type": "string"
-					},
-					"SourceFolder": {
-						"type": "string"
-					},
-					"DestinationFolder": {
-						"type": "string"
-					},
-					"StagingFolder": {
-						"type": "string"
-					},
-					"SourceArchiveFolder": {
-						"type": "string"
-					},
-					"DestinationArchiveFolder": {
-						"type": "string"
-					},
-					"LogFolder": {
-						"type": "string"
-					},
-					"Department": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"ZipFileName": {
-						"type": "String"
-					}
-				},
-				"folder": {
-					"name": "INT_SCM_205"
 				},
 				"annotations": []
 			},

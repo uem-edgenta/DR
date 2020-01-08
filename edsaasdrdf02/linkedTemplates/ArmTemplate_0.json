@@ -47,17 +47,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'egsaasdrBlobStorage'"
 		},
-		"ROSSSftp_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "sftp01.uemedgenta.com"
-		},
 		"ROSSSftp_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "oracle"
-		},
-		"fusionSftp_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "129.154.84.0"
 		},
 		"fusionSftp_properties_typeProperties_userName": {
 			"type": "string",
@@ -121,10 +113,6 @@
 		"ROSSFolderShare_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "@dataset().FileLocation"
-		},
-		"HCMSftp_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "129.154.84.0"
 		},
 		"HCMSftp_properties_typeProperties_userName": {
 			"type": "string",
@@ -484,7 +472,7 @@
 				"annotations": [],
 				"type": "Sftp",
 				"typeProperties": {
-					"host": "[parameters('ROSSSftp_properties_typeProperties_host')]",
+					"host": "sftp01.uemedgenta.com",
 					"port": "2223",
 					"skipHostKeyValidation": true,
 					"authenticationType": "SshPublicKey",
@@ -509,7 +497,7 @@
 				"annotations": [],
 				"type": "Sftp",
 				"typeProperties": {
-					"host": "[parameters('fusionSftp_properties_typeProperties_host')]",
+					"host": "129.154.84.0",
 					"port": 22,
 					"skipHostKeyValidation": true,
 					"authenticationType": "SshPublicKey",
@@ -1317,7 +1305,7 @@
 				"annotations": [],
 				"type": "Sftp",
 				"typeProperties": {
-					"host": "[parameters('HCMSftp_properties_typeProperties_host')]",
+					"host": "129.154.84.0",
 					"port": 22,
 					"skipHostKeyValidation": true,
 					"authenticationType": "SshPublicKey",
